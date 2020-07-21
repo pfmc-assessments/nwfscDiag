@@ -32,7 +32,14 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     printlikes = FALSE,
     verbose = FALSE,
     jitter_fraction = 0.05,
-    init_values_src = NULL
+    init_values_src = NULL,
+    # Retrospective Settings
+    oldsubdir = "",
+    newsubdir = 'retro',
+    retro_yrs = 0:-5,
+    overwrite = TRUE,
+    CallType = "system",
+    RemoveBlocks = FALSE
     )
 
   Settings_all <- c(Settings, Settings_add)
