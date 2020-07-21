@@ -1,18 +1,31 @@
+#' 
+#'
+#' 
+#' 
+#' 
+#'
+#' @param mydir Directory where model files are located.
+#' @param model_settings input of all settings created using the get_settings function
+#' 
+#' @author Chantel Wetzel
+#' @return A vector of likelihoods for each jitter iteration.
+#' @export
+
 jitter_wrapper <- function(mydir,  model_settings){
 
-	if(!file.exists("Report.sso")) {
-    	message("There is no Report.sso file in the base model directory", mydir)
+	if(!file.exists(paste0(mydir, "/", model_settings$base_name, "/Report.sso"))) {
+    	message("There is no Report.sso file in the base model directory", paste0(mydir, "/", model_settings$base_name))
     	stop()
   	}
 
 	# Create a jitter folder with the same naming structure as the base model
 	jitter_dir <- paste0(mydir, "/", model_settings$base_name, "_jitter_", model_settings$jitter_fraction)
-  	dir.create(jitter_dir)
+  	dir.create(jitter_dir, showWarnings = FALSE)
   	all_files = list.files(paste0(mydir, "/", model_settings$base_name)) 
   	capture.output(file.copy(from = paste0(mydir, "/", model_settings$base_name,"/", all_files), 
   			  to = jitter_dir, 
   			  overwrite = TRUE), file = "run_diag_warning.txt")
-  	message("Temporarily changing working directory to: ", jitter_dir)
+  	message("Running jitters: temporarily changing working directory to: ", jitter_dir)
 
   	r4ss::SS_RunJitter(mydir = jitter_dir,
                        model = model_settings$model,
@@ -65,5 +78,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 	# write tables
 	write.csv(x = table(unlist(bounds)), file = paste0(jitter_dir, "/jitter_parsonbounds.csv"), row.names = FALSE)
 	write.csv(x = out, file = paste0(jitter_dir,"/jitter_results.csv"), row.names = FALSE)
+
+	message("Finished jitters: you are an amazing!")
 	
 }
