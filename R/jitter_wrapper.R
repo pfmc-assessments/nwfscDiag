@@ -13,16 +13,16 @@
 
 jitter_wrapper <- function(mydir,  model_settings){
 
-	if(!file.exists(paste0(mydir, "/", model_settings$base_name, "/Report.sso"))) {
-    	message("There is no Report.sso file in the base model directory", paste0(mydir, "/", model_settings$base_name))
+	if(!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
+    	message("There is no Report.sso file in the base model directory", file.path(mydir, model_settings$base_name))
     	stop()
   	}
 
 	# Create a jitter folder with the same naming structure as the base model
-	jitter_dir <- paste0(mydir, "/", model_settings$base_name, "_jitter_", model_settings$jitter_fraction)
+	jitter_dir <- file.path(mydir,  paste0(model_settings$base_name, "_jitter_", model_settings$jitter_fraction))
   	dir.create(jitter_dir, showWarnings = FALSE)
-  	all_files = list.files(paste0(mydir, "/", model_settings$base_name)) 
-  	capture.output(file.copy(from = paste0(mydir, "/", model_settings$base_name,"/", all_files), 
+  	all_files = list.files(file.path(mydir, model_settings$base_name)) 
+  	capture.output(file.copy(from = file.path(mydir, model_settings$base_name, all_files), 
   			  to = jitter_dir, 
   			  overwrite = TRUE), file = "run_diag_warning.txt")
   	message("Running jitters: temporarily changing working directory to: ", jitter_dir)
@@ -49,7 +49,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 									   )
 	# summarize output
 	profilesummary <- r4ss::SSsummarize(profilemodels)
-	save(profilesummary, file = paste0(jitter_dir, "/jitter_summary.Rdat"))
+	save(profilesummary, file = file.path(jitter_dir, "jitter_summary.Rdat"))
 
 	like <- profilesummary$likelihoods[1, 1:length(keys)]
 	ymax <- as.numeric(quantile(profilesummary$likelihoods[1, 1:length(keys)], 0.80))
@@ -76,8 +76,8 @@ jitter_wrapper <- function(mydir,  model_settings){
 
 	out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
 	# write tables
-	write.csv(x = table(unlist(bounds)), file = paste0(jitter_dir, "/jitter_parsonbounds.csv"), row.names = FALSE)
-	write.csv(x = out, file = paste0(jitter_dir,"/jitter_results.csv"), row.names = FALSE)
+	write.csv(x = table(unlist(bounds)), file = file.path(jitter_dir, "jitter_parsonbounds.csv"), row.names = FALSE)
+	write.csv(x = out, file = file.path(jitter_dir, "jitter_results.csv"), row.names = FALSE)
 
 	message("Finished jitters: you are an amazing!")
 	

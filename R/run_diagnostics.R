@@ -27,7 +27,7 @@ run_diagnostics <- function(mydir,
   #   OS <- "Windows"
   # }
 
-  setwd(paste0(mydir, "/", model_settings$base_name))
+  setwd(file.path(mydir, model_settings$base_name))
   if (length(dir(pattern = paste0("^",model_settings$model,"$","|",model_settings$model,"\\.exe"))) != 1) {
     stop(model_settings$model, " was not found in ", paste0(mydir, "/", model_settings$base_name), call. = FALSE)
   }

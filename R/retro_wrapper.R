@@ -11,16 +11,16 @@
 
 retro_wrapper <- function(mydir,  model_settings){
 
-	if(!file.exists(paste0(mydir, "/", model_settings$base_name, "/Report.sso"))) {
-    	message("There is no Report.sso file in the base model directory", paste0(mydir, "/", model_settings$base_name))
+	if(!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
+    	message("There is no Report.sso file in the base model directory", file.path(mydir, model_settings$base_name))
     	stop()
   	}
 
 	# Create a jitter folder with the same naming structure as the base model
-	retro_dir <- paste0(mydir, "/", model_settings$base_name, "_retro")
+	retro_dir <- file.path(mydir, paste0(model_settings$base_name, "_retro"))
   	dir.create(retro_dir, showWarnings = FALSE)
-  	all_files = list.files(paste0(mydir, "/", model_settings$base_name)) 
-  	capture.output(file.copy(from = paste0(mydir, "/", model_settings$base_name,"/", all_files), 
+  	all_files = list.files(file.path(mydir, model_settings$base_name)) 
+  	capture.output(file.copy(from = file.path(mydir, model_settings$base_name, all_files), 
   			  to = retro_dir, 
   			  overwrite = TRUE), file = "run_diag_warning.txt")
   	message("Running retrospecitives")
@@ -33,13 +33,13 @@ retro_wrapper <- function(mydir,  model_settings){
   				     newsubdir = model_settings$newsubdir, 
   				     years = model_settings$retro_yrs)
 
-  	capture.output(file.remove(from = paste0(retro_dir, "/", all_files)), file = "run_diag_warning.txt")
+  	capture.output(file.remove(from = file.path(retro_dir, all_files)), file = "run_diag_warning.txt")
 
   	runs <- list()
   	for(aa in 1:(length(model_settings$retro_yrs) + 1)){
-  		if (aa == 1) { runs[[aa]] = SS_output(paste0(mydir, "/", model_settings$base_name), verbose = FALSE, printstats = FALSE)
+  		if (aa == 1) { runs[[aa]] = SS_output(file.path(mydir, model_settings$base_name), verbose = FALSE, printstats = FALSE)
   		}else{
-  			tmp = paste0(retro_dir, "/", model_settings$newsubdir, "/retro", model_settings$retro_yrs[aa-1])
+  			tmp = file.path(retro_dir, model_settings$newsubdir, paste0("retro", model_settings$retro_yrs[aa-1]))
   			runs[[aa]] = SS_output(tmp, verbose = FALSE, printstats = FALSE)
   		}
   	}
