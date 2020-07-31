@@ -1,4 +1,4 @@
-#' Retrospecitiv runs
+#' Retrospecitive runs
 #' To be called from the run_diagnostics function after creating
 #' the model settings using the get_settings function.
 #' 
@@ -31,7 +31,13 @@ retro_wrapper <- function(mydir,  model_settings){
                      extras = model_settings$extras,
   				     oldsubdir = model_settings$oldsubdir, 
   				     newsubdir = model_settings$newsubdir, 
-  				     years = model_settings$retro_yrs)
+  				     years = model_settings$retro_yrs,
+  				     overwrite = model_settings$overwrite,
+                     exefile = model_settings$exefile, 
+                     extras = model_settings$extras, 
+                     intern = model_settings$intern,
+                     CallType = model_settings$CallType,
+                     RemoveBlocks = model_settings$RemoveBlocks)
 
   	capture.output(file.remove(from = file.path(retro_dir, all_files)), file = "run_diag_warning.txt")
 
