@@ -17,12 +17,15 @@
 #' settings <- list()
 
 get_settings <- function(settings = NULL, verbose = FALSE) {
+
   if (is.vector(settings)) settings <- as.list(settings)
-  Settings = list(
-  	base_name = "model", 
-  	run = c("jitter", "profile_m", "profile_h", "profile_r0", "retro")
-    )
-  Settings_add <- list(
+
+  Settings_all = list(
+    base_name = "model", 
+    para_offset = FALSE,
+    run = c("jitter", "profile", "retro"),
+    profile_para = c("female_m", "h", "r0"),
+
   	# Jitter Settings
     model = "ss",
     extras = "-nohess",
@@ -33,16 +36,39 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     verbose = FALSE,
     jitter_fraction = 0.05,
     init_values_src = NULL,
+    
     # Retrospective Settings
     oldsubdir = "",
     newsubdir = 'retro',
-    retro_yrs = 0:-5,
+    retro_yrs = -1:-5,
     overwrite = TRUE,
     CallType = "system",
-    RemoveBlocks = FALSE
+    RemoveBlocks = FALSE,
+    
+    # Profile Settings
+    para_range = 'default',
+    remove_files = TRUE,
+    newctlfile = "control_modified.ss", 
+    init_values_src = 1, # run from the par file
+    prior_like = 0, # turn off the prior contribution to likelihood
+    linenum = NULL, 
+    string = NULL, 
+    profilevec = NULL,
+    usepar = FALSE, 
+    globalpar = FALSE, 
+    parfile = "ss.par",
+    parlinenum = NULL, 
+    parstring = NULL,
+    dircopy = TRUE, 
+    exe.delete = FALSE,
+    saveoutput = TRUE,
+    overwrite = TRUE, 
+    whichruns = NULL, 
+    SSversion = "3.30", 
+    prior_check = TRUE,
+    read_like = TRUE
     )
 
-  Settings_all <- c(Settings, Settings_add)
   need <- !names(Settings_all) %in% names(settings)
   if (verbose) {
     message("Adding the following objects to settings:\n",
@@ -50,6 +76,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
       appendLF = TRUE)
   }
   Settings_all <- c(settings, Settings_all[need])
+
 
   return(Settings_all)
 }
