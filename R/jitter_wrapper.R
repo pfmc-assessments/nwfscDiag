@@ -36,7 +36,7 @@ jitter_wrapper <- function(mydir,  model_settings){
                        printlikes = model_settings$printlikes,
                        verbose = model_settings$verbose,
                        jitter_fraction = model_settings$jitter_fraction,
-                       init_values_src = model_settings$init_values_src )	
+                       init_values_src = model_settings$jitter_init_values_src )	
 
   	#### Read in results using other r4ss functions
   	keys <- gsub("Report([0-9]+)\\.sso", "\\1", dir(jitter_dir, pattern = "^Report[0-9]"))
