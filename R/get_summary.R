@@ -4,20 +4,24 @@
 #' 
 #'
 #' @param mydir Directory where model files are located.
-#' @param model_settings input of all settings created using the get_settings function
+#' @param name Identify if the csv file show jitter, retro, or profile results
+#' @param profilemodels object created by the SSgetoutput funciton
+#' @param profilesummary object created by the SSsummarize funciton
 #' 
 #' @author Chantel Wetzel & Kelli Johnson
 #' @export
 
-get_output <- function(mydir, profilemodels, name){
+get_output <- function(mydir, name, profilemodels, profilesummary){
 
-	offset <- r4ss::SS_readctl(file = file.path(mydir, "control.ss_new"))$parameter_offset_approach
+	# Need to identify a way to determine if a model estmates male growth parameters as offsets from females
+	# May need to add this into the SS_output code
+	#offset <- r4ss::SS_readctl(file = file.path(mydir, "control.ss_new"))$parameter_offset_approach
 
 	# get output
 	outputs <- profilemodels
 	quants  <- lapply(outputs, "[[", "derived_quants")
 	status  <- sapply(sapply(outputs, "[[", "parameters", simplify = FALSE), "[[", "Status")
-	#bounds  <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
+	bounds  <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
 	out     <- data.frame("run" = gsub("replist", "", names(outputs)),
 	  					  "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
 	  					  "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
@@ -30,6 +34,7 @@ get_output <- function(mydir, profilemodels, name){
 
 	out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
 	# write tables
+	write.csv(x=table(unlist(bounds)), file= file.path(mydir, name, "_parsonbounds.csv"), row.names=FALSE)
 	write.csv(x = out, file = file.path(mydir, name, "_results.csv"), row.names = FALSE)
 
 	x <- profilesummary
@@ -66,4 +71,6 @@ get_output <- function(mydir, profilemodels, name){
 	  				  stringsAsFactors = FALSE)
 
 	write.csv(x = out, file = file.path(mydir, name, "_quant_table.csv"), row.names = FALSE)
+
+	return (out)
 }
