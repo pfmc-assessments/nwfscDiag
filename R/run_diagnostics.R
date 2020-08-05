@@ -32,20 +32,18 @@ run_diagnostics <- function(mydir,
     stop(model_settings$model, " was not found in ", paste0(mydir, "/", model_settings$base_name), call. = FALSE)
   }
 
+
   if ("jitter" %in% model_settings$run){
   	jitter_wrapper(mydir = mydir, model_settings = model_settings)	
   }
 
-  if ("profile_m" %in% model_settings$run){
-	
+  if ("profile" %in% model_settings$run){
+	   profile_wrapper(mydir = mydir, model_settings = model_settings)
   }
 
-  if ("profile_h" %in% model_settings$run){
-	
-  }
-
-  if ("profile_r0" %in% model_settings$run){
-	
+  if ("profile_custom" %in% model_settings$run){
+     para = model_settings$profile_para[!(model_settings$profile_para %in% c("female_m", "h", "r0"))]
+     profile_wrapper(mydir = mydir, model_settings = model_settings, custom_para = para)
   }
 
   if ("retro" %in% model_settings$run){
