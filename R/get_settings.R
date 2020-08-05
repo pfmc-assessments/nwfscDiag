@@ -35,7 +35,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     printlikes = FALSE,
     verbose = FALSE,
     jitter_fraction = 0.05,
-    init_values_src = NULL,
+    jitter_init_values_src = NULL,
     
     # Retrospective Settings
     oldsubdir = "",
@@ -49,7 +49,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     para_range = 'default',
     remove_files = TRUE,
     newctlfile = "control_modified.ss", 
-    init_values_src = 1, # run from the par file
+    profile_init_values_src = 0, 
     prior_like = 0, # turn off the prior contribution to likelihood
     linenum = NULL, 
     string = NULL, 
@@ -65,7 +65,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     overwrite = TRUE, 
     whichruns = NULL, 
     SSversion = "3.30", 
-    prior_check = TRUE,
+    prior_check = FALSE,
     read_like = TRUE
     )
 
