@@ -9,37 +9,49 @@
 #' @author Chantel Wetzel.
 #' @export
 
-profile_plot <- function(mydir, model_settings, para, profilesummary){
+profile_plot <- function(mydir, model_settings, para_name, profilesummary){
 
-  label = ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0]))
-  	      ifelse(para == "NatM_p_1_Fem_GP_1", "Natural Mortality (female)",
-  	      ifelse(para == "NatM_p_1_Mal_GP_1", "Natural Mortality (male)",
-  	      ifelse(para == "steep", "Steepness (h)",
-  	      para))))
+  label = ifelse(para_name == "SR_LN(R0)", expression(log(italic(R)[0])),
+  	      ifelse(para_name == "NatM_p_1_Fem_GP_1", "Natural Mortality (female)",
+  	      ifelse(para_name == "NatM_p_1_Mal_GP_1", "Natural Mortality (male)",
+  	      ifelse(para_name == "steep", "Steepness (h)",
+  	      para_name))))
 
-  png(file.path(mydir, "piner_panel_", para, ".png"), height = 7, width = 7, units = "in", res = 300)
+  get = ifelse(para_name == "SR_LN(R0)", "R0",
+  	      ifelse(para_name == "NatM_p_1_Fem_GP_1", "NatM_p_1_Fem_GP_1",
+  	      ifelse(para_name == "NatM_p_1_Mal_GP_1", "NatM_p_1_Mal_GP_1",
+  	      ifelse(para_name == "steep", "steep",
+  	      para_name))))
+
+  y.max = max(profilesummary$likelihoods[1,1:length(profilemodels)]) - min(profilesummary$likelihoods[1,1:length(profilemodels)])
+  len.y = max(profilesummary$likelihoods[8,1:length(profilemodels)]) - min(profilesummary$likelihoods[8,1:length(profilemodels)])
+  age.y = max(profilesummary$likelihoods[9,1:length(profilemodels)]) - min(profilesummary$likelihoods[9,1:length(profilemodels)])
+  survey.y = max(profilesummary$likelihoods[4,1:length(profilemodels)]) - min(profilesummary$likelihoods[4,1:length(profilemodels)])
+  y.max2 = max(len.y, age.y, survey.y)
+
+  png(file.path(mydir, "piner_panel_", para_name, ".png"), height = 7, width = 7, units = "in", res = 300)
   par(mfrow = c(2,2))
   SSplotProfile(summaryoutput = profilesummary, 
   			    main = "Changes in total likelihood", 
-  			    profile.string = para, 
+  			    profile.string = get, 
                 profile.label = label,
                 ymax = y.max)
   
   PinerPlot (summaryoutput = profilesummary,
              plot=TRUE, print=FALSE,
              component = "Length_like",
-             main = "Changes in length-composition likelihoods",
-             profile.string = para,
+             main = "Length-composition likelihoods",
+             profile.string = get,
              profile.label = label,
              ylab = "Change in -log-likelihood",
-            legendloc = "topright", 
-            ymax = y.max2)
+             legendloc = "topright", 
+             ymax = y.max2)
   
   PinerPlot (summaryoutput = profilesummary,
              plot = TRUE, print = FALSE,
              component = "Age_like",
-             main = "Changes in age-composition likelihoods",
-             profile.string = para,
+             main = "Age-composition likelihoods",
+             profile.string = get,
              profile.label = label,
              ylab = "Change in -log-likelihood",
             legendloc = "topright",
@@ -48,8 +60,8 @@ profile_plot <- function(mydir, model_settings, para, profilesummary){
   PinerPlot (summaryoutput = profilesummary,
              plot = TRUE, print = FALSE,
              component = "Surv_like",
-             main = "Changes in survey likelihoods",
-             profile.string = para,
+             main = "Survey likelihoods",
+             profile.string = get,
              profile.label = label,
              ylab = "Change in -log-likelihood",
             legendloc = "topright",
