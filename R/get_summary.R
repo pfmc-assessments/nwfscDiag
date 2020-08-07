@@ -11,11 +11,9 @@
 #' @author Chantel Wetzel & Kelli Johnson
 #' @export
 
-get_output <- function(mydir, name, profilemodels, profilesummary){
+get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 
 	# Need to identify a way to determine if a model estmates male growth parameters as offsets from females
-	# May need to add this into the SS_output code
-	#offset <- r4ss::SS_readctl(file = file.path(mydir, "control.ss_new"))$parameter_offset_approach
 
 	# get output
 	outputs <- profilemodels
@@ -28,14 +26,14 @@ get_output <- function(mydir, name, profilemodels, profilesummary){
 	  					  "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
 	  					  "SBfinal" = sapply(quants, "[[", paste0("SSB_", outputs[[1]]$endyr), "Value"),
 	  					  "Deplfinal" = sapply(quants, "[[", paste0("Bratio_", outputs[[1]]$endyr), "Value"),
-	  					  "Fmsy" = sapply(quants, "[[", "annF_MSY", "Value"),
+	  					  #"Fmsy" = sapply(quants, "[[", "annF_MSY", "Value"),
 	  					  "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
 	  					  stringsAsFactors = FALSE)
 
 	out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
 	# write tables
-	write.csv(x=table(unlist(bounds)), file= file.path(mydir, name, "_parsonbounds.csv"), row.names=FALSE)
-	write.csv(x = out, file = file.path(mydir, name, "_results.csv"), row.names = FALSE)
+	write.csv(x = table(unlist(bounds)), file= file.path(mydir, paste0(name, "_parsonbounds.csv")), row.names=FALSE)
+	write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
 
 	x <- profilesummary
 	n <- x$n
@@ -55,7 +53,7 @@ get_output <- function(mydir, name, profilemodels, profilesummary){
         			  SBfinal = as.numeric(x$SpawnBio[x$SpawnBio$Label == paste0("SSB_", endyr), 1:n]),
         			  deplfinal = as.numeric(x$Bratio[x$Bratio$Label == paste0("Bratio_", endyr), 1:n]), 
         			  yieldspr = as.numeric(x$quants[x$quants$Label == "Dead_Catch_SPR", 1:n]),
-        			  steep = as.numeric(x$pars[x$pars$Label == "steep", 1:n]),
+        			  steep = as.numeric(x$pars[x$pars$Label == "SR_BH_steep", 1:n]),
         			  mfem = as.numeric(x$pars[x$pars$Label == "NatM_p_1_Fem_GP_1", 1:n]),
         			  lminfem = as.numeric(x$pars[x$pars$Label == "L_at_Amin_Fem_GP_1", 1:n]),
         			  lmaxfem = as.numeric(x$pars[x$pars$Label == "L_at_Amax_Fem_GP_1", 1:n]),
@@ -70,7 +68,13 @@ get_output <- function(mydir, name, profilemodels, profilesummary){
         			  cv2male = as.numeric(x$pars[grep("old_Mal_GP_1", x$pars$Label), 1:n])*exp(as.numeric(x$pars[grep("old_Mal_GP_1", x$pars$Label), 1:n])), 
 	  				  stringsAsFactors = FALSE)
 
-	write.csv(x = out, file = file.path(mydir, name, "_quant_table.csv"), row.names = FALSE)
+	new_out = t(out)
+	if (para == "r0") { colnames(new_out) =  paste0("R0 ", vec) }
+	if (para == "female_m") { colnames(new_out) =  paste0("Mf ", vec) }
+	if (para == "male_m") { colnames(new_out) =  paste0("Mm ", vec) }
+	if (para == "h") { colnames(new_out) =  paste0("h ", vec) }
+	
+	write.csv(x = new_out, file = file.path(mydir, paste0(name, "_quant_table.csv")), row.names = TRUE)
 
 	return (out)
 }
