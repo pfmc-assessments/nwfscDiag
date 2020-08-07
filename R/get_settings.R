@@ -46,7 +46,8 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     RemoveBlocks = FALSE,
     
     # Profile Settings
-    para_range = 'default',
+    para_range = 'default', # needs to be seq( low, high, step size)
+    profile_custom = NULL,
     remove_files = TRUE,
     newctlfile = "control_modified.ss", 
     profile_init_values_src = 0, 
@@ -76,6 +77,14 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
       appendLF = TRUE)
   }
   Settings_all <- c(settings, Settings_all[need])
+
+  # Check some items
+  if (!is.null( Settings_all$custom_para)) {
+    if(  Settings_all$para_range == 'default'){
+      stop("If doing a custom parameter you must include the para_range.  The expected input is c(low, high, step size).")
+    }
+    message("Make sure the profile_custom setting matches the string for the control.ss_new for your paticular parameter.")
+  }
 
 
   return(Settings_all)
