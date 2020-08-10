@@ -32,9 +32,6 @@ retro_wrapper <- function(mydir,  model_settings){
   				     oldsubdir = model_settings$oldsubdir, 
   				     newsubdir = model_settings$newsubdir, 
   				     years = model_settings$retro_yrs,
-  				     overwrite = model_settings$overwrite,
-                     exefile = model_settings$exefile, 
-                     extras = model_settings$extras, 
                      intern = model_settings$intern,
                      CallType = model_settings$CallType,
                      RemoveBlocks = model_settings$RemoveBlocks)
@@ -65,4 +62,5 @@ retro_wrapper <- function(mydir,  model_settings){
 	#file.rename(paste0(retro_dir, "/plots/compare4_Bratio_uncertainty.png"),  paste0(retro_dir, "/plots/retro_depl.png"))
 	#file.rename(paste0(retro_dir, "/plots/compare9_recdevs.png"), 			  paste0(retro_dir, "/plots/retro_recdevs.png"))
 
+	message("Finished retrospective runs.")
 }
