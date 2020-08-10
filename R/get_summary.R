@@ -5,6 +5,8 @@
 #'
 #' @param mydir Directory where model files are located.
 #' @param name Identify if the csv file show jitter, retro, or profile results
+#' @param para
+#' @param vec
 #' @param profilemodels object created by the SSgetoutput funciton
 #' @param profilesummary object created by the SSsummarize funciton
 #' 
@@ -70,11 +72,11 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 
 	new_out = t(out)
 	if (para == "r0") { colnames(new_out) =  paste0("R0 ", vec) }
-	if (para == "female_m") { colnames(new_out) =  paste0("Mf ", vec) }
-	if (para == "male_m") { colnames(new_out) =  paste0("Mm ", vec) }
+	if (para == "female_m") { colnames(new_out) =  paste0("M_f ", vec) }
+	if (para == "male_m") { colnames(new_out) =  paste0("M_m ", vec) }
 	if (para == "h") { colnames(new_out) =  paste0("h ", vec) }
 	
 	write.csv(x = new_out, file = file.path(mydir, paste0(name, "_quant_table.csv")), row.names = TRUE)
 
-	return (out)
+	return (NULL)
 }
