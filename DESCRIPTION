@@ -1,11 +1,19 @@
 Package: nwfscDiag
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: Generate standard NWFSC assessment diagnostics
+Version: 1.0
+Author: Chantel Wetzel (chantel.wetzel@noaa.gov)
+Description: Package that can create jitter runs, retrospective runs, and profiles over SS parameters.  
 License: What license is it under?
-Encoding: UTF-8
+URL: https://github.com/nwfsc-assess/nwfscDiag
+BugReports: https://github.com/nwfsc-assess/nwfscDiag/issues
 LazyData: true
+Depends:
+	R (>= 3.5)
+Imports:
+	r4ss (>= 1.38.0),
+	plyr,
+	HandyCode
+Remotes: github::chantelwetzel-noaa/HandyCode
+RoxygenNote: 7.1.1
+Encoding: UTF-8
