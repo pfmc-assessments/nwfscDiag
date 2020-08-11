@@ -37,11 +37,11 @@ profile_wrapper <- function(mydir, model_settings){
 
 	for (aa in 1:N){
   	
-  	para = list[aa]
-
-  	# Create a profile folder with the same naming structure as the base model
-	profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
-  	dir.create(profile_dir, showWarnings = FALSE)
+    para = list[aa]
+   
+    # Create a profile folder with the same naming structure as the base model
+	  profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
+     	dir.create(profile_dir, showWarnings = FALSE)
 
   	# Check for existing files and delete
   	if (model_settings$remove_files & length(list.files(profile_dir)) != 0) { 
@@ -85,8 +85,8 @@ profile_wrapper <- function(mydir, model_settings){
       }
   	}
 
-  	file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
-  	# Change the control file name in the starter file
+  file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
+  # Change the control file name in the starter file
 	starter <- r4ss::SS_readstarter(file.path(profile_dir, 'starter.ss'))
 	starter$ctlfile <- "control_modified.ss"
 	starter$init_values_src <- model_settings$profile_init_values_src
@@ -94,13 +94,13 @@ profile_wrapper <- function(mydir, model_settings){
 	starter$prior_like <- model_settings$prior_like
 	r4ss::SS_writestarter(starter, dir = profile_dir, overwrite=TRUE) 
 
-  	# Read in the base model
-  	base <- r4ss::SS_output(file.path(mydir, model_settings$base_name), covar = FALSE,
+  # Read in the base model
+  base <- r4ss::SS_output(file.path(mydir, model_settings$base_name), covar = FALSE,
   							printstats = FALSE, verbose = FALSE)
 	est  <- base$parameters[base$parameters$Label == para_name, "Value"]
 
 	# Determine the parameter range
-	if( para %in% c("female_m", "male_m")) {
+	if( para %in% c("female_m", "NatM_p_1_Mal_GP_1")) {
 		if (model_settings$para_range_m == 'default'){
 			if (est <= 0.10) { range <- c( est - est * 0.50, est + est * 0.50 ) }
 			if (est >  0.10) { range <- c( est - est * 0.25, est + est * 0.25 ) }
@@ -122,14 +122,22 @@ profile_wrapper <- function(mydir, model_settings){
 		step_size <- model_settings$para_range_r0[3]
 	}
 
-	if( !(list[aa] %in% c("h", "female_m", "male_m", "r0"))){
+	if( !(list[aa] %in% c("h", "female_m", "r0", "NatM_p_1_Mal_GP_1"))){
 		range <- c(model_settings$para_custom_range[1], model_settings$para_custom_range[2])
 		step_size <- model_settings$para_custom_range [3]
 	}
 
 	# Create parameter vect from base down and the base up
-	low  <- rev(seq(range[1], plyr::round_any(est, step_size, f = floor), step_size))
-	high <- c(est, seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size))
+	if (est != plyr::round_any(est, step_size, f = floor)) {
+    low  <- rev(seq(range[1], plyr::round_any(est, step_size, f = floor), step_size))
+  }else{
+    low  <- rev(seq(range[1], plyr::round_any(est, step_size, f = floor) - step_size, step_size))
+  }
+	if (est != plyr::round_any(est, step_size, f = ceiling)) {
+    high <- c(est, seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size)) 
+  }else{
+    high <- c(seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size)) 
+  }
 	vec  <- c(low, high)
 	num <- sort(vec, index.return = TRUE)$ix
 
@@ -142,19 +150,19 @@ profile_wrapper <- function(mydir, model_settings){
         						extras = model_settings$extras, 
         						systemcmd = model_settings$systemcmd,
         						linenum = model_settings$linenum, 
-    							usepar = model_settings$usepar, 
-    							globalpar = model_settings$globalpar, 
-    							parfile = model_settings$parfile,
-    							parlinenum = model_settings$parlinenum, 
-    							parstring = model_settings$parstring,
-    							dircopy = model_settings$dircopy, 
-    							exe.delete = model_settings$exe.delete,
-    							saveoutput = model_settings$saveoutput,
-    							overwrite = model_settings$overwrite, 
-    							whichruns = model_settings$whichruns, 
-    							SSversion = model_settings$SSversion, 
-    							prior_check = model_settings$prior_check,
-    							read_like = model_settings$read_like)
+    							  usepar = model_settings$usepar, 
+    							  globalpar = model_settings$globalpar, 
+    							  parfile = model_settings$parfile,
+    							  parlinenum = model_settings$parlinenum, 
+    							  parstring = model_settings$parstring,
+    							  dircopy = model_settings$dircopy, 
+    							  exe.delete = model_settings$exe.delete,
+    							  saveoutput = model_settings$saveoutput,
+    							  overwrite = model_settings$overwrite, 
+    							  whichruns = model_settings$whichruns, 
+    							  SSversion = model_settings$SSversion, 
+    							  prior_check = model_settings$prior_check,
+    							  read_like = model_settings$read_like)
 
 
 	profilemodels <- SSgetoutput(dirvec = profile_dir, keyvec = num)
