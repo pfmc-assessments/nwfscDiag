@@ -62,12 +62,12 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
         			  kfem = as.numeric(x$pars[x$pars$Label == "VonBert_K_Fem_GP_1", 1:n]),
         			  cv1fem = as.numeric(x$pars[grep("young_Fem_GP_1", x$pars$Label), 1:n]),
         			  cv2fem = as.numeric(x$pars[grep("old_Fem_GP_1", x$pars$Label), 1:n]),
-        			  mmale = as.numeric(x$pars[x$pars$Label == "NatM_p_1_Fem_GP_1", 1:n])*exp(as.numeric(x$pars[x$pars$Label =="NatM_p_1_Mal_GP_1", 1:n])),
-        			  lminmale = as.numeric(x$pars[x$pars$Label == "L_at_Amin_Fem_GP_1", 1:n])*exp(as.numeric(x$pars[x$pars$Label =="L_at_Amin_Mal_GP_1", 1:n])),
-        			  lmaxmale = as.numeric(x$pars[x$pars$Label == "L_at_Amax_Fem_GP_1", 1:n])*exp(as.numeric(x$pars[x$pars$Label =="L_at_Amax_Mal_GP_1", 1:n])),
-        			  kmale = as.numeric(x$pars[x$pars$Label == "VonBert_K_Fem_GP_1", 1:n])*exp(as.numeric(x$pars[x$pars$Label =="VonBert_K_Mal_GP_1", 1:n])),
-        			  cv1male = as.numeric(x$pars[grep("young_Fem_GP_1", x$pars$Label), 1:n])*exp(as.numeric(x$pars[grep("young_Mal_GP_1", x$pars$Label), 1:n])),
-        			  cv2male = as.numeric(x$pars[grep("old_Mal_GP_1", x$pars$Label), 1:n])*exp(as.numeric(x$pars[grep("old_Mal_GP_1", x$pars$Label), 1:n])), 
+        			  mmale = as.numeric(x$pars[x$pars$Label =="NatM_p_1_Mal_GP_1", 1:n]),
+        			  lminmale = as.numeric(x$pars[x$pars$Label =="L_at_Amin_Mal_GP_1", 1:n]),
+        			  lmaxmale = as.numeric(x$pars[x$pars$Label =="L_at_Amax_Mal_GP_1", 1:n]),
+        			  kmale = as.numeric(x$pars[x$pars$Label =="VonBert_K_Mal_GP_1", 1:n]),
+        			  cv1male = as.numeric(x$pars[grep("young_Mal_GP_1", x$pars$Label), 1:n]),
+        			  cv2male = as.numeric(x$pars[grep("old_Mal_GP_1", x$pars$Label), 1:n]), 
 	  				  stringsAsFactors = FALSE)
 
 	new_out = t(out)
