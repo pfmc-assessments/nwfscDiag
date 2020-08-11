@@ -32,7 +32,7 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 	  					  "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
 	  					  stringsAsFactors = FALSE)
 
-	out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
+	#out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
 	# write tables
 	write.csv(x = table(unlist(bounds)), file= file.path(mydir, paste0(name, "_parsonbounds.csv")), row.names=FALSE)
 	write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
