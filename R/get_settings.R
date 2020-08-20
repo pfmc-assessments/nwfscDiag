@@ -24,8 +24,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     base_name = "model", 
     para_offset = FALSE,
     run = c("jitter", "profile", "retro"),
-    profile_para = c("female_m", "h", "r0"),
-    profile_custom = NULL,
+    profile_details = NULL,
 
   	# Jitter Settings
     model = "ss",
@@ -48,10 +47,10 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     RemoveBlocks = FALSE,
     
     # Profile Settings
-    para_range_m = 'default',
-    para_range_h = c(0.25, 1.0, 0.05), # Absolute parameter scale
-    para_range_r0 = c(2, 2, 0.25), # Relative to R0 where this is R0 - 2 and R0 + 2
-    para_custom_range = NULL, # needs to be seq( low, high, step size)
+    #para_range_m = 'default',
+    #para_range_h = c(0.25, 1.0, 0.05), # Absolute parameter scale
+    #para_range_r0 = c(2, 2, 0.25), # Relative to R0 where this is R0 - 2 and R0 + 2
+    #para_custom_range = NULL, # needs to be seq( low, high, step size)
     remove_files = TRUE,
     newctlfile = "control_modified.ss", 
     profile_init_values_src = 0, 
@@ -73,6 +72,8 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     read_like = TRUE
     )
 
+  Settings_all$profile_details = get_settings_profile()
+
   need <- !names(Settings_all) %in% names(settings)
   if (verbose) {
     message("Adding the following objects to settings:\n",
@@ -82,13 +83,20 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
   Settings_all <- c(settings, Settings_all[need])
 
   # Check some items
-  if (!is.null( Settings_all$profile_custom)) {
-    if( is.null(Settings_all$para_custom_range )){
-      stop("If doing a custom parameter you must include the para_custom_range.  The expected input is c(low, high, step size).")
+  if (!is.null( Settings_all$profile_details) ) {
+    if (length(Settings_all$profile_details[is.na(Settings_all$profile_details)]) > 0){
+      stop("Missing entry in the get_settings_profile data frame.")
     }
-    message("Make sure the profile_custom setting matches the string for the control.ss_new for your paticular parameter.")
-  }
+    if (!is.numeric(Settings_all$profile_details$low) &
+        !is.numeric(Settings_all$profile_details$high) &
+        !is.numeric(Settings_all$profile_details$step_size)){
+      stop("There is a non-numeric value in the low, high, or step size fiedl of the get_settings_profile data frame.")
+    }
+    if (sum(!Settings_all$profile_details$param_space %in% c("real", "relative", "multiplier")) > 0){
+      stop("The param_space column should be either real or relative in the get_settings_profile data frame.")
+    }
 
+  }
 
   return(Settings_all)
 }

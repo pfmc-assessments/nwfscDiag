@@ -71,12 +71,12 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 	  				  stringsAsFactors = FALSE)
 
 	new_out = t(out)
-	if (para == "r0") { colnames(new_out) =  paste0("R0 ", vec) }
-	if (para == "female_m") { colnames(new_out) =  paste0("M_f ", vec) }
-	if (para == "male_m") { colnames(new_out) =  paste0("M_m ", vec) }
-	if (para == "h") { colnames(new_out) =  paste0("h ", vec) }
+	if (para == "SR_LN(R0)") { colnames(new_out) =  paste0("R0 ", vec) }
+	if (para == "NatM_p_1_Fem_GP_1") { colnames(new_out) =  paste0("M_f ", vec) }
+	if (para == "NatM_p_1_Mal_GP_1") { colnames(new_out) =  paste0("M_m ", vec) }
+	if (para == "SR_BH_steep") { colnames(new_out) =  paste0("h ", vec) }
 	
 	write.csv(x = new_out, file = file.path(mydir, paste0(name, "_quant_table.csv")), row.names = TRUE)
 
-	return (NULL)
+	return ()
 }

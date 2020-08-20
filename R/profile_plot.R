@@ -7,21 +7,21 @@
 #' @param model_settings input of all settings created using the get_settings function
 #' @param rep base model outpus
 #' @param vec vector of value that were profiled over
-#' @param para_name
+#' @param para parameter name SS control.ss_new expected parameter name
 #' @param profilesummary
 #'
 #' @author Chantel Wetzel.
 #' @export
 
-profile_plot <- function(mydir, model_settings, rep, vec, para_name, profilesummary){
+profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 
-  label = ifelse(para_name == "SR_LN(R0)", expression(log(italic(R)[0])),
-  	      ifelse(para_name == "NatM_p_1_Fem_GP_1", "Natural Mortality (female)",
-  	      ifelse(para_name == "NatM_p_1_Mal_GP_1", "Natural Mortality (male)",
-  	      ifelse(para_name == "steep", "Steepness (h)",
-  	      para_name))))
+  label = ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
+  	      ifelse(para == "NatM_p_1_Fem_GP_1", "Natural Mortality (female)",
+  	      ifelse(para == "NatM_p_1_Mal_GP_1", "Natural Mortality (male)",
+  	      ifelse(para == "SR_BH_steep", "Steepness (h)",
+  	      para))))
 
-  get = ifelse(para_name == "SR_LN(R0)", "R0", para_name)
+  get = ifelse(para == "SR_LN(R0)", "R0", para)
 
   n <- 1:profilesummary$n
 
@@ -52,18 +52,18 @@ profile_plot <- function(mydir, model_settings, rep, vec, para_name, profilesumm
   maxyr <- min(profilesummary$endyrs)
   minyr <- max(profilesummary$startyrs)
 
-  est  <- rep$parameters[rep$parameters$Label == para_name, "Value", 2] 
+  est      <- rep$parameters[rep$parameters$Label == para, "Value", 2] 
   sb0_est  <- rep$derived_quants[rep$derived_quants$Label == "SSB_Virgin", "Value"]
   sbf_est  <- rep$derived_quants[rep$derived_quants$Label == paste0("SSB_", maxyr), "Value"]
   depl_est <- rep$derived_quants[rep$derived_quants$Label == paste0("Bratio_", maxyr), "Value"]
 
 
-  x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para_name, n]) 
+  x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n]) 
   like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - rep$likelihoods_used[1,1])
   ylike<- c(0, max(like))
-  sb0  <- as.numeric(profilesummary$SpawnBio[profilesummary$SpawnBio$Label == "SSB_Virgin", n])
-  sbf  <- as.numeric(profilesummary$SpawnBio[profilesummary$SpawnBio$Yr == maxyr, n])
-  depl <- as.numeric(profilesummary$Bratio[profilesummary$Bratio$Yr == maxyr, n])
+  sb0  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
+  sbf  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
+  depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
   
   png(file.path(mydir, paste0("parameter_panel_", para_name, ".png")), height = 7, width = 7, units = "in", res = 300)
   par(mfrow = c(2,2))
@@ -90,11 +90,11 @@ profile_plot <- function(mydir, model_settings, rep, vec, para_name, profilesumm
 
   # Create the sb and depl trajectories plot
   # Figure out what the base model parameter is in order to label that in the plot
-  get = ifelse(para_name == "SR_LN(R0)", "R0",
-  	    ifelse(para_name == "NatM_p_1_Fem_GP_1", "M (f)",
-  	    ifelse(para_name == "NatM_p_1_Mal_GP_1", "M (f)",
-  	    ifelse(para_name == "SR_BH_steep", "h",
-  	    para_name))))
+  get = ifelse(para == "SR_LN(R0)", "log(R0)",
+  	    ifelse(para == "NatM_p_1_Fem_GP_1", "M (f)",
+  	    ifelse(para == "NatM_p_1_Mal_GP_1", "M (m)",
+  	    ifelse(para == "SR_BH_steep", "h",
+  	    para))))
 
   find <- which(est == vec)
   modelnames <- paste(get, "=", vec)
@@ -103,6 +103,6 @@ profile_plot <- function(mydir, model_settings, rep, vec, para_name, profilesumm
   					legendlabels = modelnames, 
   					plotdir = mydir, subplots = c(1, 3), 
   					pdf = FALSE, print = TRUE, 
-  					filenameprefix = paste0(para_name, "_trajectories_"))
+  					filenameprefix = paste0(para, "_trajectories_"))
 
 }
