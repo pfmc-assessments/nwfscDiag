@@ -5,8 +5,8 @@
 #'
 #' @param mydir Directory where model files are located.
 #' @param name Identify if the csv file show jitter, retro, or profile results
-#' @param para
-#' @param vec
+#' @param para SS parameter name that the profile was run across 
+#' @param vec vector of parameter values the profile covers
 #' @param profilemodels object created by the SSgetoutput funciton
 #' @param profilesummary object created by the SSsummarize funciton
 #' 
