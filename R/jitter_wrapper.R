@@ -1,8 +1,6 @@
-#' 
-#'
-#' 
-#' 
-#' 
+#' Code to run jitters for a model
+#' Output will be saved in an Rdata object called "jitter_output"
+#' Plots and tables generated to visualize results
 #'
 #' @param mydir Directory where model files are located.
 #' @param model_settings input of all settings created using the get_settings function
@@ -49,7 +47,6 @@ jitter_wrapper <- function(mydir,  model_settings){
 
 	# summarize output
 	profilesummary <- r4ss::SSsummarize(profilemodels)
-	save(profilesummary, file = file.path(jitter_dir, "jitter_summary.Rdat"))
 
 	# Read in the base model
   	base <- r4ss::SS_output(file.path(mydir, model_settings$base_name), covar = FALSE,
@@ -58,6 +55,15 @@ jitter_wrapper <- function(mydir,  model_settings){
 	like <- as.numeric(profilesummary$likelihoods[1, keys])
 	ymax <- as.numeric(quantile(profilesummary$likelihoods[1, keys], 0.80))
 	ymin <- 0 
+
+	jitter_output <- list()
+	jitter_output$plotdir <-jitter_dir
+	jitter_output$keys <- keys
+	jitter_output$like <- like
+	jitter_output$model_settings <- model_settings
+	jitter_output$profilesummary <- profilesummary 
+	jitter_output$profilemodels  <- profilemodels
+	save(jitter_output, file = file.path(jitter_dir, "jitter_output.Rdata"))
 
 	pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
 	plot(keys, like, ylim = c(ymin, ymax), ylab="-log-likelihood", xlab = "Iteration")
@@ -72,15 +78,13 @@ jitter_wrapper <- function(mydir,  model_settings){
 	bounds  <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
 	out     <- data.frame("run" = gsub("replist", "", names(outputs)),
 	  					  "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
-	  					  #"deltaNLL" = as.numeric(sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1)) - est,
 	  					  "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
 	  					  "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
 	  					  "SBfinal" = sapply(quants, "[[", paste0("SSB_", profilesummary$endyrs[1]), "Value"),
-	  					  #"Fmsy" = sapply(quants, "[[", "annF_MSY", "Value"),
 	  					  "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
 	  					  stringsAsFactors = FALSE)
 	
-	#out[, "deltaNLL"] <- out[, "likelihood"] - est
+
 	# write tables
 	write.csv(x = table(unlist(bounds)), file = file.path(jitter_dir, "jitter_parsonbounds.csv"), row.names = FALSE)
 	write.csv(x = out, file = file.path(jitter_dir, "jitter_results.csv"), row.names = FALSE)
