@@ -13,6 +13,7 @@
 
 run_diagnostics <- function(mydir, model_settings ){
 
+
   if ("jitter" %in% model_settings$run){
   	jitter_wrapper(mydir = mydir, model_settings = model_settings)	
   }
