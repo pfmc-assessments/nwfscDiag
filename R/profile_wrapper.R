@@ -147,11 +147,8 @@ profile_wrapper <- function(mydir, model_settings){
 
 
   # Save the output and the summary
-	profilemodels <- SSgetoutput(dirvec = profile_dir, keyvec = num)
-  #save(profilemodels, file = file.path(profile_dir, paste0(para, "_profilemodels.Rdat"))
-
-	profilesummary <- SSsummarize(profilemodels)
-	#save(profilesummary, file = file.path(profile_dir, paste0(para, "_profilesummary.Rdat")))
+	profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
+	profilesummary <- r4ss::SSsummarize(profilemodels)
 
   profile_output <- list()
   profile_output$mydir <- profile_dir
