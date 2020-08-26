@@ -11,7 +11,9 @@ library(nwfscDiag)
 # Define the working directory where the base model is and where all jitter, profile, and retrospective
 # runs will be done:
 
-mydir = "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/example"
+mydir = "Directory to Run Analysis"
+
+# The base model should be within a fold in the above directory.
 
 #######################################################################################################
 # Define the parameters to profile and the parameter ranges:
