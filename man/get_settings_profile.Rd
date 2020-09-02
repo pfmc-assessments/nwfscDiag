@@ -52,6 +52,4 @@ opt to define the range in 'real' space which could be selected in the "param_sp
 get_settings_profile()
 }
 
-
-
 }

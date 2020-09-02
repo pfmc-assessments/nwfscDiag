@@ -32,7 +32,7 @@
 #' get_settings_profile()
 #' }
 #' 
-#' 
+#' @export
 #'
 get_settings_profile <- function( parameters =  c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
 								  low =  c(0.40, 0.25, -2),
