@@ -8,7 +8,7 @@
 #' @param rep base model outpus
 #' @param vec vector of value that were profiled over
 #' @param para parameter name SS control.ss_new expected parameter name
-#' @param profilesummary
+#' @param profilesummary output from [r4ss::SSsummarize()]
 #'
 #' @author Chantel Wetzel.
 #' @export

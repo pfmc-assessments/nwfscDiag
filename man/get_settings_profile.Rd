@@ -23,7 +23,7 @@ get_settings_profile(
 
 \item{param_space}{options: real, mulitplier, relative indicates how to interpret the low and high bound values.
 real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
-multiplier indicates that low and high bounds are set at x% above and below the base parameter.}
+multiplier indicates that low and high bounds are set at x\% above and below the base parameter.}
 }
 \value{
 A matrix of low, high, and step size values for the default parameters
@@ -47,8 +47,10 @@ and should be considered if the default settings are appropriate for your specif
 opt to define the range in 'real' space which could be selected in the "param_space" column of the matrix.
 }
 \examples{
-Use the default settings
+\dontrun{
+# Use the default settings
 get_settings_profile()
+}
 
 
 

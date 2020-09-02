@@ -19,7 +19,7 @@ profile_plot(mydir, model_settings, rep, vec, para, profilesummary)
 
 \item{para}{parameter name SS control.ss_new expected parameter name}
 
-\item{profilesummary}{}
+\item{profilesummary}{output from [r4ss::SSsummarize()]}
 }
 \description{
 Generate likelihood profiles plots
