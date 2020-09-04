@@ -2,7 +2,8 @@ Package: nwfscDiag
 Type: Package
 Title: Generate standard NWFSC assessment diagnostics
 Version: 1.0
-Author: Chantel Wetzel (chantel.wetzel@noaa.gov)
+Author: Chantel R. Wetzel (chantel.wetzel@noaa.gov)
+Maintainer: Chantel R. Wetzel (chantel.wetzel@noaa.gov)
 Description: Package that can create jitter runs, retrospective runs, and profiles over SS parameters.  
 License: What license is it under?
 URL: https://github.com/nwfsc-assess/nwfscDiag
