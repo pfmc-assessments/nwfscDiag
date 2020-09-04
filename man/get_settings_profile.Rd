@@ -23,7 +23,7 @@ get_settings_profile(
 
 \item{param_space}{options: real, mulitplier, relative indicates how to interpret the low and high bound values.
 real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
-multiplier indicates that low and high bounds are set at x% above and below the base parameter (i.e. (M - 0.40 * M) - (M + 0.40 * M)).}
+multiplier indicates that low and high bounds are set at x\% above and below the base parameter.}
 }
 \value{
 A matrix of low, high, and step size values for the default parameters

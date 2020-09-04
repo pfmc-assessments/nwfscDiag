@@ -3,7 +3,7 @@
 #' Create a matrix of default values for profiling over
 #' the typical parameters given results will be presented to the
 #' Pacific Fisheries Management Council.
-#'
+#' 
 #' The column titled 'param_space' indicated where the range of of the profile parameter
 #' should be interpretted as relative to the base model estimate vs. across a pre-specified range.
 #' An example is for R0 where the default setting below indicates that the param_space is relative
@@ -20,7 +20,7 @@
 #' @param step_size increments to run the profile between the low and high bounds
 #' @param param_space options: real, mulitplier, relative indicates how to interpret the low and high bound values.
 #' real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
-#' multiplier indicates that low and high bounds are set at x% above and below the base parameter (i.e. (M - 0.40 * M) - (M + 0.40 * M)).
+#' multiplier indicates that low and high bounds are set at x\% above and below the base parameter.
 #'
 #' @return A matrix of low, high, and step size values for the default parameters
 #' that should be profiled. The goal is to provide users with a template

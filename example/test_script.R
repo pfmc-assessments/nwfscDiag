@@ -21,7 +21,8 @@ mydir = "Directory to Run Analysis"
 # Can use the get_settings_profile function to specify which parameters to run a profile for and 
 # the parameter ranges for each profile.  The low and high values can be specified in 3 ways:
 # as a 'multiplier' where a percent where the low and high range will be specified as x% of the base 
-# parameter, in 'real' space where the low and high values are in the parameter space, and finally as
+# parameter (i.e., (base parameter - base parameter* x) - (base parameter + base parameter * x)),
+# in 'real' space where the low and high values are in the parameter space, and finally as
 # 'relative' where the low and high is a specified amount relative to the base model parameter 
 # (i.e., (base parameter - x) - (base parameter + x).
 # Here is an example call to the get_settings_profile function:

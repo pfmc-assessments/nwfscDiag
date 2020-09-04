@@ -65,7 +65,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 	jitter_output$profilemodels  <- profilemodels
 	save(jitter_output, file = file.path(jitter_dir, "jitter_output.Rdata"))
 
-	pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
+	HandyCode::pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
 	plot(keys, like, ylim = c(ymin, ymax), ylab="-log-likelihood", xlab = "Iteration")
 	abline(h = est, col = 'red', lwd = 2)
 	abline(h =  min(like), col = 1, lty = 2)
