@@ -20,3 +20,6 @@ pngfun(wd, file, w = 7, h = 7, pt = 12)
 \description{
 PNG figure funtion
 }
+\author{
+by Chantel Wetzel
+}

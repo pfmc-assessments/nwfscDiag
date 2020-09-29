@@ -13,7 +13,7 @@ Depends:
 	R (>= 3.5)
 Imports:
 	r4ss (>= 1.38.0),
-	plyr,
+	plyr
 Remotes: 
 	github::r4ss/r4ss
 RoxygenNote: 7.1.1

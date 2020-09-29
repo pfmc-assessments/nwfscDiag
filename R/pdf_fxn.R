@@ -5,7 +5,8 @@
 #' @param w figure width
 #' @param h figure height in inches
 #' @param pt point size
-#' @authorwritten by Chantel Wetzel
+#' @author by Chantel Wetzel
+#' @export
 pngfun <- function(wd, file,w=7,h=7,pt=12){
   file <- file.path(wd, file)
   cat('writing PNG to',file,'\n')

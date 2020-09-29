@@ -27,6 +27,9 @@
 #' to add additional rows for parameters that they want to profile beyond
 #' the default ones.
 #'
+#' @author Chantel Wetzel & Kelli Johnson
+#' @export
+#' 
 #' @examples
 #' \dontrun{
 #' 

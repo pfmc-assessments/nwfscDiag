@@ -62,3 +62,6 @@ get_settings_profile( parameters =  c("NatM_p_1_Fem_GP_1"),
 }
 
 }
+\author{
+Chantel Wetzel & Kelli Johnson
+}
