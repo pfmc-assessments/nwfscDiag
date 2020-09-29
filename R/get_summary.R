@@ -35,6 +35,10 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 	#out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
 	# write tables
 	write.csv(x = table(unlist(bounds)), file= file.path(mydir, paste0(name, "_parsonbounds.csv")), row.names=FALSE)
+	if (para == "SR_LN(R0)")         { rownames(out) =  paste0("R0 ", vec) }
+	if (para == "NatM_p_1_Fem_GP_1") { rownames(out) =  paste0("M_f ", vec) }
+	if (para == "NatM_p_1_Mal_GP_1") { rownames(out) =  paste0("M_m ", vec) }
+	if (para == "SR_BH_steep")       { rownames(out) =  paste0("h ", vec) }
 	write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
 
 	x <- profilesummary
