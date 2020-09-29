@@ -14,9 +14,7 @@ Depends:
 Imports:
 	r4ss (>= 1.38.0),
 	plyr,
-	HandyCode
 Remotes: 
-	github::chantelwetzel-noaa/HandyCode,
 	github::r4ss/r4ss
 RoxygenNote: 7.1.1
 Encoding: UTF-8

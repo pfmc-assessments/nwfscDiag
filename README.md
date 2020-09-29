@@ -17,9 +17,8 @@ remotes::install_github("nwfsc-assess/nwfscDiag")
 ## Running the code
 The package depends upon a few other packages and they should be installed upon installation of the package. The dependant packages are:
 ```
-install.packages('dplyr')
+install.packages('plyr')
 remotes::install_github('r4ss/r4ss')
-remotes::install_github('chantelwetzel-noaa/HandyCode')
 ```
 
 ## Reporting problems
