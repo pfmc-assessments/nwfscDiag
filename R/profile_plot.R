@@ -32,19 +32,19 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h= 7, w = 7)
   par(mfrow = c(2,2))
-  SSplotProfile(summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get, 
+  r4ss::SSplotProfile(summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get, 
                 profile.label = label, ymax = ymax1)
   if(ymax1 < 15) { abline(h = 1.92, lty = 3, col = 'red') }
 
-  PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Length_like",
+  r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Length_like",
              main = "Length-composition likelihoods", profile.string = get, profile.label = label,
              ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
   
-  PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Age_like",
+  r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Age_like",
              main = "Age-composition likelihoods", profile.string = get, profile.label = label,
              ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
   
-  PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Surv_like",
+  r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Surv_like",
              main = "Survey likelihoods", profile.string = get, profile.label = label,
              ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
   dev.off()
@@ -99,7 +99,7 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   find <- which(est == vec)
   modelnames <- paste(get, "=", vec)
   modelnames[find] = paste("Base:", modelnames[find])
-  SSplotComparisons(profilesummary, 
+  r4ss::SSplotComparisons(profilesummary, 
   					legendlabels = modelnames, 
   					plotdir = mydir, subplots = c(1, 3), 
   					pdf = FALSE, print = TRUE, 
