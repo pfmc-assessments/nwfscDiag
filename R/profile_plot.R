@@ -30,7 +30,7 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 		      max(profilesummary$likelihoods[9, n])  - min(profilesummary$likelihoods[9, n]),
 		      max(profilesummary$likelihoods[4, n])  - min(profilesummary$likelihoods[4, n]) )
 
-  pngfun(file.path(mydir, paste0("piner_panel_", para, ".png")), height = 7, width = 7, units = "in", res = 300)
+  pngfun(file.path(mydir, paste0("piner_panel_", para, ".png")), h= 7, w = 7)
   par(mfrow = c(2,2))
   SSplotProfile(summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get, 
                 profile.label = label, ymax = ymax1)
@@ -65,7 +65,7 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   sbf  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
   
-  pngfun(file.path(mydir, paste0("parameter_panel_", para, ".png")), height = 7, width = 7, units = "in", res = 300)
+  pngfun(file.path(mydir, paste0("parameter_panel_", para, ".png")), h = 7, w = 7)
   par(mfrow = c(2,2))
   # parameter vs. likelihood
   plot(x, like, type = "l", lwd = 2, xlab =  label, ylab ="Change in -log-likelihood", ylim = ylike)
