@@ -22,7 +22,10 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 	quants  <- lapply(outputs, "[[", "derived_quants")
 	status  <- sapply(sapply(outputs, "[[", "parameters", simplify = FALSE), "[[", "Status")
 	bounds  <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
+
 	out     <- data.frame("run" = gsub("replist", "", names(outputs)),
+						  "profile_parameter" = para,
+						  "parameter_value" = vec, 
 	  					  "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
 	  					  "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
 	  					  "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
@@ -32,13 +35,9 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 	  					  "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
 	  					  stringsAsFactors = FALSE)
 
-	#out[, "deltaNLL"] <- out[, "likelihood"] - out[row.names(out) == "replist0", "likelihood"]
 	# write tables
 	write.csv(x = table(unlist(bounds)), file= file.path(mydir, paste0(name, "_parsonbounds.csv")), row.names=FALSE)
-	if (para == "SR_LN(R0)")         { rownames(out) =  paste0("R0 ", vec) }
-	if (para == "NatM_p_1_Fem_GP_1") { rownames(out) =  paste0("M_f ", vec) }
-	if (para == "NatM_p_1_Mal_GP_1") { rownames(out) =  paste0("M_m ", vec) }
-	if (para == "SR_BH_steep")       { rownames(out) =  paste0("h ", vec) }
+
 	write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
 
 	x <- profilesummary
