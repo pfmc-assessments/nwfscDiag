@@ -24,6 +24,11 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   get = ifelse(para == "SR_LN(R0)", "R0", para)
 
   n <- 1:profilesummary$n
+  
+  like_comp  <- unique(profilesummary$likelihoods_by_fleet$Label[-grep("_lambda", profilesummary$likelihoods_by_fleet$Label)])
+  tot_plot   <- sum(c("Length_like", "Age_like", "Surv_like") %in% like_comp) 
+  if(tot_plot == 1) { panel <- c(2, 1) }
+  if(tot_plot != 1) { panel <- c(2, 2) }
 
   ymax1 = max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
   ymax2 = max(max(profilesummary$likelihoods[8,  n]) - min(profilesummary$likelihoods[8, n]),
@@ -31,22 +36,28 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 		      max(profilesummary$likelihoods[4, n])  - min(profilesummary$likelihoods[4, n]) )
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h= 7, w = 7)
-  par(mfrow = c(2,2))
+  par(mfrow = panel)
   r4ss::SSplotProfile(summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get, 
                 profile.label = label, ymax = ymax1)
   if(ymax1 < 15) { abline(h = 1.92, lty = 3, col = 'red') }
 
+  if ("Length_like" %in% like_comp){
   r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Length_like",
              main = "Length-composition likelihoods", profile.string = get, profile.label = label,
              ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+  }
   
+  if ("Age_like" %in% like_comp){
   r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Age_like",
              main = "Age-composition likelihoods", profile.string = get, profile.label = label,
              ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+  }
   
+  if ("Surv_like" %in% like_comp){
   r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Surv_like",
              main = "Survey likelihoods", profile.string = get, profile.label = label,
              ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+  }
   dev.off()
 
   maxyr <- min(profilesummary$endyrs)
