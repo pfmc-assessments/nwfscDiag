@@ -158,6 +158,7 @@ profile_wrapper <- function(mydir, model_settings){
   profile_output$model_settings <- model_settings
   profile_output$profilemodels <- profilemodels
   profile_output$profilesummary <- profilesummary
+  profile_output$rep <- rep
 
   save(profile_output, file = file.path(profile_dir, paste0(para, "_profile_output.Rdata")))
 
