@@ -71,17 +71,19 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 
   x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n]) 
   like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - rep$likelihoods_used[1,1])
-  ylike<- c(0, max(like))
+  ylike<- c(min(like) + ifelse(min(like) < 0, -0.5, 0), max(like))
   sb0  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
   sbf  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
   
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
-  par(mfrow = c(2,2))
+  par(mfrow = c(2,2), mar = c(4,4,2,2), oma = c(1,1,1,1))
   # parameter vs. likelihood
   plot(x, like, type = "l", lwd = 2, xlab =  label, ylab ="Change in -log-likelihood", ylim = ylike)
   abline(h = 0, lty = 2, col = 'black')
-  if(max(ylike) < 15) { abline(h =  1.92, lty = 3, col = 'red') }
+  if(max(ylike) < 40) { 
+    abline(h =  1.92, lty = 3, col = 'red') 
+    abline(h = -1.92, lty = 3, col = 'red') }
   points(est, 0, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. final depletion
