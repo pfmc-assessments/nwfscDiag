@@ -71,7 +71,7 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 
   x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n]) 
   like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - rep$likelihoods_used[1,1])
-  ylike<- c(min(like) + ifelse(min(like) < 0, -0.5, 0), max(like))
+  ylike<- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
   sb0  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
   sbf  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
