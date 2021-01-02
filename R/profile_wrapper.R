@@ -106,10 +106,10 @@ profile_wrapper <- function(mydir, model_settings){
 
 	  # Create parameter vect from base down and the base up
 	  if (est != plyr::round_any(est, step_size, f = floor)) {
-      low  <- rev(seq(plyr::round_any(range[1], step_size, f = floor), 
+      low  <- rev(seq(plyr::round_any(range[1], step_size, f = ceiling), 
                       plyr::round_any(est, step_size, f = floor), step_size))
     } else {
-      low  <- rev(seq(plyr::round_any(range[1], step_size, f = floor), 
+      low  <- rev(seq(plyr::round_any(range[1], step_size, f = ceiling), 
                   plyr::round_any(est, step_size, f = floor) - step_size, step_size))
     }
 
