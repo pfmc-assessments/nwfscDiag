@@ -13,21 +13,17 @@
 
 run_diagnostics <- function(mydir, model_settings ){
 
-  #library(r4ss)
-  #library(HandyCode)
-  #library(plyr)
-
-  if ("jitter" %in% model_settings$run){
-  	jitter_wrapper(mydir = mydir, model_settings = model_settings)	
-  }
+  if ("retro" %in% model_settings$run){
+    retro_wrapper(mydir = mydir, model_settings = model_settings)
+  
+  } 
 
   if ("profile" %in% model_settings$run){
 	   profile_wrapper(mydir = mydir, model_settings = model_settings)
   }
 
-  if ("retro" %in% model_settings$run){
-    retro_wrapper(mydir = mydir, model_settings = model_settings)
-	
-  }  
+  if ("jitter" %in% model_settings$run){
+    jitter_wrapper(mydir = mydir, model_settings = model_settings)  
+  } 
 
 }
