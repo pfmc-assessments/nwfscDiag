@@ -159,8 +159,10 @@ profile_wrapper <- function(mydir, model_settings){
   profile_output$profilemodels <- profilemodels
   profile_output$profilesummary <- profilesummary
   profile_output$rep <- rep
+  profile_output$vec_unordered <- vec
+  profile_output$num <- num
 
-  save(profile_output, file = file.path(profile_dir, paste0(para, "_profile_output.Rdata")))
+  save(profile_output, file = file.path(profile_dir, paste0(para, "_profile_output.Rdat")))
 
 	get_summary(mydir = profile_dir, 
 						  name = paste0("profile_", para),
