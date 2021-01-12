@@ -23,41 +23,70 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 
   get = ifelse(para == "SR_LN(R0)", "R0", para)
 
+  if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", "SR_BH_steep")){
+    exact = FALSE  
+  } else {
+    exact = TRUE
+  }  
+
   n <- 1:profilesummary$n
   
-  like_comp  <- unique(profilesummary$likelihoods_by_fleet$Label[-grep("_lambda", profilesummary$likelihoods_by_fleet$Label)])
-  tot_plot   <- sum(c("Length_like", "Age_like", "Surv_like") %in% like_comp) 
+  like_comp  <- unique(profilesummary$likelihoods_by_fleet$Label[
+                  c(-grep("_lambda", profilesummary$likelihoods_by_fleet$Label),
+                    -grep("_N_use", profilesummary$likelihoods_by_fleet$Label),
+                    -grep("_N_skip", profilesummary$likelihoods_by_fleet$Label))])
+  ii <- which(profilesummary$likelihoods_by_fleet$Label %in% like_comp)
+  check <- aggregate(ALL~Label, profilesummary$likelihoods_by_fleet[ii,], FUN = sum)
+  use <- check[which(check$ALL != 0),"Label"]
+  # Based on the length of use determine the panel number but adjust by 1 
+  # to account for the fact that "Catch_like" will be included but should not be plotted
+  tot_plot <- length(use) - 1 
   if(tot_plot == 1) { panel <- c(2, 1) }
-  if(tot_plot != 1) { panel <- c(2, 2) }
+  if(tot_plot != 1 & tot_plot <= 3) { panel <- c(2, 2) }
+  if(tot_plot >  3) { panel <- c(2, 3) }
 
+  # Determine the y-axis for the profile plot for all data types together
   ymax1 = max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
+  if(ymax1 > 100){ ymax1 = 100}
+  if(ymax1 <   5){ ymax1 = 5}
+
+  # Determine the y-axis for the piner profile plots by each data type
   ymax2 = max(max(profilesummary$likelihoods[8,  n]) - min(profilesummary$likelihoods[8, n]),
 		      max(profilesummary$likelihoods[9, n])  - min(profilesummary$likelihoods[9, n]),
 		      max(profilesummary$likelihoods[4, n])  - min(profilesummary$likelihoods[4, n]) )
+  if(ymax2 > 100){ ymax2 = 100}
+  if(ymax2 <   5){ ymax2 = 5}
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h= 7, w = 7)
   par(mfrow = panel)
   r4ss::SSplotProfile(summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get, 
-                profile.label = label, ymax = ymax1)
-  if(ymax1 < 15) { abline(h = 1.92, lty = 3, col = 'red') }
+                profile.label = label, ymax = ymax1, exact = exact)
+  abline(h = 1.92, lty = 3, col = 'red') 
 
-  if ("Length_like" %in% like_comp){
+  if ("Length_like" %in% use){
   r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Length_like",
              main = "Length-composition likelihoods", profile.string = get, profile.label = label,
-             ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+             exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
   }
   
-  if ("Age_like" %in% like_comp){
+  if ("Age_like" %in% use){
   r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Age_like",
              main = "Age-composition likelihoods", profile.string = get, profile.label = label,
-             ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+             exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
   }
   
-  if ("Surv_like" %in% like_comp){
+  if ("Surv_like" %in% use){
   r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Surv_like",
              main = "Survey likelihoods", profile.string = get, profile.label = label,
-             ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+             exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
   }
+
+  if ("Init_equ_like" %in% use){
+  r4ss::PinerPlot (summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Init_equ_like",
+             main = "Initial equilibrium likelihoods", profile.string = get, profile.label = label,
+             exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2)
+  }
+
   dev.off()
 
   maxyr <- min(profilesummary$endyrs)
@@ -67,7 +96,6 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   sb0_est  <- rep$derived_quants[rep$derived_quants$Label == "SSB_Virgin", "Value"]
   sbf_est  <- rep$derived_quants[rep$derived_quants$Label == paste0("SSB_", maxyr), "Value"]
   depl_est <- rep$derived_quants[rep$derived_quants$Label == paste0("Bratio_", maxyr), "Value"]
-
 
   x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n]) 
   like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - rep$likelihoods_used[1,1])
@@ -114,6 +142,7 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   modelnames[find] = paste("Base:", modelnames[find])
   r4ss::SSplotComparisons(profilesummary, 
   					legendlabels = modelnames, 
+            ylimAdj = 1.15,
   					plotdir = mydir, subplots = c(1, 3), 
   					pdf = FALSE, print = TRUE, 
   					filenameprefix = paste0(para, "_trajectories_"))
