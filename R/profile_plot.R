@@ -42,19 +42,20 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   # to account for the fact that "Catch_like" will be included but should not be plotted
   tot_plot <- length(use) - 1 
   if(tot_plot == 1) { panel <- c(2, 1) }
-  if(tot_plot != 1 & tot_plot <= 3) { panel <- c(2, 2) }
-  if(tot_plot >  3) { panel <- c(2, 3) }
+  if(tot_plot != 1 & tot_plot <= 3) { panel <- c(3, 1) }
+  if(tot_plot >  3) { panel <- c(2, 2) }
+  if(tot_plot >=  4) { panel <- c(3, 2) }
 
   # Determine the y-axis for the profile plot for all data types together
   ymax1 = max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
-  if(ymax1 > 100){ ymax1 = 100}
+  if(ymax1 > 70){ ymax1 = 70}
   if(ymax1 <   5){ ymax1 = 5}
 
   # Determine the y-axis for the piner profile plots by each data type
-  ymax2 = max(max(profilesummary$likelihoods[8,  n]) - min(profilesummary$likelihoods[8, n]),
-		      max(profilesummary$likelihoods[9, n])  - min(profilesummary$likelihoods[9, n]),
-		      max(profilesummary$likelihoods[4, n])  - min(profilesummary$likelihoods[4, n]) )
-  if(ymax2 > 100){ ymax2 = 100}
+  lab.row = ncol(profilesummary$likelihoods)
+  ymax2 = max(apply(profilesummary$likelihoods[-1,-lab.row],1,max) - 
+              apply(profilesummary$likelihoods[-1,-lab.row],1,min))
+  if(ymax2 > 70){ ymax2 = 70}
   if(ymax2 <   5){ ymax2 = 5}
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h= 7, w = 7)
