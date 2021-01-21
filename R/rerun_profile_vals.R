@@ -33,7 +33,7 @@ rerun_profile_vals <- function(mydir,
 	temp_dir = file.path(profile_dir, "temp")
 	dir.create(temp_dir, showWarnings = FALSE)
 
-	file.copy(file.path(profile_dir, 'ss.exe'), temp_dir)
+	file.copy(file.path(profile_dir, 'ss.exe'), temp_dir, overwrite = TRUE)
 	file.copy(file.path(profile_dir, "control_modified.ss"), temp_dir)
 	file.copy(file.path(profile_dir, "control.ss_new"), temp_dir)
 	file.copy(file.path(profile_dir, data_file_nm), temp_dir)
@@ -72,7 +72,7 @@ rerun_profile_vals <- function(mydir,
 				ctlfile = "control_modified.ss", 
                 newctlfile = "control_modified.ss", 
                 strings = para, 
-                newvals = vec[run_num], 
+                newvals = vec[i], 
                 estimate = FALSE)
 		system("ss -nohess")
 
@@ -81,7 +81,7 @@ rerun_profile_vals <- function(mydir,
 
 		# See if likelihood is lower than the original - and rerun if not
 		add = 0.01
-		if(like > like_check[run_num]){
+		if(like > like_check[i]){
 			for(ii in 1:5){
 				starter <- r4ss::SS_readstarter(file.path(temp_dir, 'starter.ss'))
 				starter$jitter_fraction <- add + starter$jitter_fraction
@@ -89,19 +89,19 @@ rerun_profile_vals <- function(mydir,
 				system("ss -nohess")
 				mod = r4ss::SS_output(temp_dir, covar = FALSE,printstats = FALSE, verbose = FALSE)
 				like = mod$likelihoods_used[1,1]
-				if( like < like_check[run_num] ){ break() }
+				if( like < like_check[i] ){ break() }
 			}
 		}
 
 		files = c("CompReport", "covar", "Report", "warning")
 		for(j in 1:length(files)){
 			file.rename(paste0(files[j], ".sso"),
-						paste0(files[j], run_num, ".sso"))
-			file.copy(paste0(files[j], run_num, ".sso"),
+						paste0(files[j], i, ".sso"))
+			file.copy(paste0(files[j], i, ".sso"),
 					  profile_dir, overwrite = TRUE)
 		}
-		file.rename("ss.par", paste0("ss.par_", run_num, ".sso"))
-		file.copy(paste0("ss.par_", run_num, ".sso"), profile_dir, overwrite = TRUE)
+		file.rename("ss.par", paste0("ss.par_", i, ".sso"))
+		file.copy(paste0("ss.par_", i, ".sso"), profile_dir, overwrite = TRUE)
 
 	}
 
