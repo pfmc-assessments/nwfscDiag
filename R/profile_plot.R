@@ -38,12 +38,13 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   ii <- which(profilesummary$likelihoods_by_fleet$Label %in% like_comp)
   check <- aggregate(ALL~Label, profilesummary$likelihoods_by_fleet[ii,], FUN = sum)
   use <- check[which(check$ALL != 0),"Label"]
-  # Based on the length of use determine the panel number but adjust by 1 
-  # to account for the fact that "Catch_like" will be included but should not be plotted
-  tot_plot <- length(use) - 1 
+  # If present remove the likes that we don't typically show
+  use <- use[which(!use %in% c("Disc_like", "Catch_like", "mnwt_like"))]
+
+  tot_plot <- length(use) 
   if(tot_plot == 1) { panel <- c(2, 1) }
   if(tot_plot != 1 & tot_plot <= 3) { panel <- c(3, 1) }
-  if(tot_plot >  3) { panel <- c(2, 2) }
+  if(tot_plot >=  3) { panel <- c(2, 2) }
   if(tot_plot >=  4) { panel <- c(3, 2) }
 
   # Determine the y-axis for the profile plot for all data types together
