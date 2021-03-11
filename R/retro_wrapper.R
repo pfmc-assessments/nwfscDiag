@@ -54,6 +54,7 @@ retro_wrapper <- function(mydir,  model_settings){
   retro_output$plotdir <- retro_dir
   retro_output$endyrvec <- endyrvec
   retro_output$retroSummary <- retroSummary
+  retro_output$model_settings <- model_settings
   save(retro_output, file = file.path(retro_dir, "retro_output.Rdata"))
 
 	r4ss::SSplotComparisons(retroSummary, 
