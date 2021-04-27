@@ -54,7 +54,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 	est  <- base$likelihoods_used[1, 1]
 	like <- as.numeric(profilesummary$likelihoods[1, keys])
 	ymax <- as.numeric(quantile(profilesummary$likelihoods[1, keys], 0.80))
-	ymin <- 0 
+	ymin <- min(like - est) + 1 
 
 	jitter_output <- list()
 	jitter_output$plotdir <-jitter_dir
@@ -66,9 +66,17 @@ jitter_wrapper <- function(mydir,  model_settings){
 	save(jitter_output, file = file.path(jitter_dir, "jitter_output.Rdata"))
 
 	pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
-	plot(keys, like, ylim = c(ymin, ymax), ylab="-log-likelihood", xlab = "Iteration")
-	abline(h = est, col = 'red', lwd = 2)
-	abline(h =  min(like), col = 1, lty = 2)
+	plot(keys, like-est, ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
+		ylab="Change in -log-likelihood", xlab = "Iteration")
+	#abline(h = est, col = 'red', lwd = 2)
+	#abline(h =  min(like), col = 1, lty = 2)
+	abline(h = 0, col = 'darkgrey', lwd = 3)
+	if (sum(like - est < 0) > 0) {
+		find = like - est < 0
+		points(keys[find], (like-est)[find], col = 'red', pch = 16)
+		mtext(side = 3, cex = 1.5,
+			"Warning: A better fit was found. Update your base model.")
+	}
 	dev.off()
 
 	# get output
@@ -82,6 +90,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 	  					  "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
 	  					  "SBfinal" = sapply(quants, "[[", paste0("SSB_", profilesummary$endyrs[1]), "Value"),
 	  					  "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
+	  					  "Lowest NLL" = ifelse(min(like) == like, "Best Fit", 0),
 	  					  stringsAsFactors = FALSE)
 	
 
