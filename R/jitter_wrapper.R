@@ -58,6 +58,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 
 	jitter_output <- list()
 	jitter_output$plotdir <-jitter_dir
+	jitter_output$est  <- est
 	jitter_output$keys <- keys
 	jitter_output$like <- like
 	jitter_output$model_settings <- model_settings
@@ -67,17 +68,42 @@ jitter_wrapper <- function(mydir,  model_settings){
 
 	pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
 	plot(keys, like-est, ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
-		ylab="Change in -log-likelihood", xlab = "Iteration")
-	#abline(h = est, col = 'red', lwd = 2)
-	#abline(h =  min(like), col = 1, lty = 2)
-	abline(h = 0, col = 'darkgrey', lwd = 3)
+		ylab="Change in Negative Log-likelihood", xlab = "Iteration")
+	abline(h = 0, col = 'darkgrey', lwd = 2)
+	find = which(est == like)
+	points(keys[find], (like-est)[find], col = 'green3', pch = 16, cex = 1.1)
+	find = which(like - est > 0)
+	points(keys[find], (like-est)[find], col = 'blue', pch = 16)
 	if (sum(like - est < 0) > 0) {
 		find = like - est < 0
-		points(keys[find], (like-est)[find], col = 'red', pch = 16)
-		mtext(side = 3, cex = 1.5,
-			"Warning: A better fit was found. Update your base model.")
+		points(keys[find], (like-est)[find], col = 'red', pch = 16, cex = 1.1)
+		mtext(side = 3, cex = 1.25,
+			"Warning: A lower NLL was found. Update your base model.")
 	}
+	legend('topleft', legend = c("Base Model Likelihood", "Higher Likelihood", "Lower Likelihood"),
+		bty = 'n', pch = 16, col = c('green3', 'blue', 'red'))
 	dev.off()
+
+	if (ymax > 100){
+		pngfun(wd = jitter_dir, file = paste0("Jitter_Zoomed_SubPlot_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
+		plot(keys, like-est, ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
+			ylab="Change in Negative Log-likelihood", xlab = "Iteration")
+		abline(h = 0, col = 'darkgrey', lwd = 2)
+		find = which(est == like)
+		points(keys[find], (like-est)[find], col = 'green3', pch = 16, cex = 1.1)
+		find = which(like - est > 0)
+		points(keys[find], (like-est)[find], col = 'blue', pch = 16)
+		if (sum(like - est < 0) > 0) {
+			find = like - est < 0
+			points(keys[find], (like-est)[find], col = 'red', pch = 16, cex = 1.1)
+			mtext(side = 3, cex = 1.25,
+				"Warning: Only jitters near the base model shown")
+		}
+		legend('topleft', legend = c("Base Model Likelihood", "Higher Likelihood", "Lower Likelihood"),
+			bty = 'n', pch = 16, col = c('green3', 'blue', 'red'))
+		dev.off()
+
+	}
 
 	# get output
 	outputs <- profilemodels

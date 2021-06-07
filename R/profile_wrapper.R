@@ -18,7 +18,7 @@ profile_wrapper <- function(mydir, model_settings){
   # figure out name of executable based on 'model' input which may contain .exe
   if(length(grep(".exe", tolower(file.path(mydir, model_settings$base_name)))) == 1){
     # if input 'model' includes .exe then assume it's Windows and just use the name
-    exe <- model
+    exe <- model_settings$model
   }else{
     # if 'model' doesn't include .exe then append it (for Windows computers only)
     exe <- paste(model_settings$model, ifelse(OS == "Windows", ".exe", ""), sep="")
