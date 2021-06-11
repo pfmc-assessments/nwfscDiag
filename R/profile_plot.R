@@ -44,20 +44,20 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   tot_plot <- length(use) 
   if(tot_plot == 1) { panel <- c(2, 1) }
   if(tot_plot != 1 & tot_plot <= 3) { panel <- c(3, 1) }
-  if(tot_plot >=  3) { panel <- c(2, 2) }
-  if(tot_plot >=  4) { panel <- c(3, 2) }
+  if(tot_plot >= 3) { panel <- c(2, 2) }
+  if(tot_plot >= 4) { panel <- c(3, 2) }
 
   # Determine the y-axis for the profile plot for all data types together
   ymax1 = max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
-  if(ymax1 > 70){ ymax1 = 70}
-  if(ymax1 <   5){ ymax1 = 5}
+  if(ymax1 > 70) { ymax1 = 70}
+  if(ymax1 <  5) { ymax1 = 5}
 
   # Determine the y-axis for the piner profile plots by each data type
   lab.row = ncol(profilesummary$likelihoods)
   ymax2 = max(apply(profilesummary$likelihoods[-1,-lab.row],1,max) - 
               apply(profilesummary$likelihoods[-1,-lab.row],1,min))
-  if(ymax2 > 70){ ymax2 = 70}
-  if(ymax2 <   5){ ymax2 = 5}
+  if(ymax2 > 70) { ymax2 = 70}
+  if(ymax2 <  5) { ymax2 = 5}
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h= 7, w = 7)
   par(mfrow = panel)
@@ -105,7 +105,11 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   sb0  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
   sbf  <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
-  
+
+  # Get the relative management targets - only grab the first element since the targets should be the same 
+  btarg  <- as.numeric(profilesummary$btargs[, 1]) 
+  thresh <- iselse(btarg == 0.40, 0.25, 0.125)
+
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   par(mfrow = c(2,2), mar = c(4,4,2,2), oma = c(1,1,1,1))
   # parameter vs. likelihood
@@ -119,7 +123,9 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   # parameter vs. final depletion
   plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
   points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-  #abline(h = c(0.25,0.4), lty = c(2, 2), col = c("red", "darkgreen"))
+  abline(h = c(thresh, btarg), lty = c(2, 2), col = c("red", "darkgreen"))
+  legend("bottomright", legend = c("Management target", "Minimum stock size threshold"),
+    lty = 2, col = c('red', 'darkgreen'), bty = 'n')
 
   # parameter vs. SB0
   plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim=c(0, max(sb0)))
