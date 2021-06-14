@@ -107,8 +107,8 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
 
   # Get the relative management targets - only grab the first element since the targets should be the same 
-  btarg  <- as.numeric(profilesummary$btargs[, 1]) 
-  thresh <- iselse(btarg == 0.40, 0.25, 0.125)
+  btarg  <- as.numeric(profilesummary$btargs[1]) 
+  thresh <- ifelse(btarg == 0.40, 0.25, 0.125)
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   par(mfrow = c(2,2), mar = c(4,4,2,2), oma = c(1,1,1,1))
