@@ -66,9 +66,11 @@ jitter_wrapper <- function(mydir,  model_settings){
 	jitter_output$profilemodels  <- profilemodels
 	save(jitter_output, file = file.path(jitter_dir, "jitter_output.Rdata"))
 
+  ylab <- "Change in negative log-likelihood"
+  xlab <- "Iteration"
 	pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
 	plot(keys, like-est, ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
-		ylab="Change in Negative Log-likelihood", xlab = "Iteration")
+		ylab = ylab, xlab = xlab)
 	abline(h = 0, col = 'darkgrey', lwd = 2)
 	find = which(est == like)
 	points(keys[find], (like-est)[find], col = 'green3', pch = 16, cex = 1.1)
@@ -87,7 +89,7 @@ jitter_wrapper <- function(mydir,  model_settings){
 	if (ymax > 100){
 		pngfun(wd = jitter_dir, file = paste0("Jitter_Zoomed_SubPlot_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
 		plot(keys, like-est, ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
-			ylab="Change in Negative Log-likelihood", xlab = "Iteration")
+			ylab = ylab, xlab = xlab)
 		abline(h = 0, col = 'darkgrey', lwd = 2)
 		find = which(est == like)
 		points(keys[find], (like-est)[find], col = 'green3', pch = 16, cex = 1.1)
