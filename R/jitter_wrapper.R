@@ -53,7 +53,7 @@ jitter_wrapper <- function(mydir,  model_settings){
   							printstats = FALSE, verbose = FALSE)
 	est  <- base$likelihoods_used[1, 1]
 	like <- as.numeric(profilesummary$likelihoods[1, keys])
-	ymax <- as.numeric(quantile(profilesummary$likelihoods[1, keys], 0.80))
+	ymax <- as.numeric(quantile(unlist(profilesummary$likelihoods[1, keys]), 0.80))
 	ymin <- min(like - est) + 1 
 
 	jitter_output <- list()
