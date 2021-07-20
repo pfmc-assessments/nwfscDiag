@@ -9,9 +9,14 @@ the model settings using the get_settings function.}
 retro_wrapper(mydir, model_settings)
 }
 \arguments{
-\item{mydir}{Directory where model files are located.}
+\item{mydir}{Directory where model files are located.
+There is no default entry for `mydir`.
+An example of user input could be
+`mydir = file.path("C:/my_models", "base_model")`.}
 
-\item{model_settings}{input of all settings created using the get_settings function}
+\item{model_settings}{A list of all model settings.
+Typically, created using [get_settings] but users can create their own list,
+as long as it has all of the necessary components for the function at hand.}
 }
 \description{
 Retrospecitive runs

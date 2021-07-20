@@ -3,10 +3,7 @@
 #' the model settings using the get_settings function.
 #' 
 #'
-#' @param mydir Directory location and name of the base model.  The code takes this
-#' directory location and combined with the para_name function input locates the folder
-#' for the profile that is going to be modified. 
-#' Example - mydir = file.path("C:/my_models", "base_model")
+#' @template mydir
 #' @param para_name SS parameter name that the profile was run across. This is used to 
 #' located the correct folder combined with the mydir function input (e.g. paste0(mydir, "_profile_", para_name))
 #' @param run_num A single or vector of run numbers that you would like to rerun for convergence.

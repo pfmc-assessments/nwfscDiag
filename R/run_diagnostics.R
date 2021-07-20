@@ -4,8 +4,8 @@
 #' 3) Retrospectives
 #' 
 #'
-#' @param mydir Directory where model files are located.
-#' @param model_settings input of all settings created using the get_settings function
+#' @template mydir
+#' @template model_settings
 #' 
 #' @author Chantel Wetzel
 #' @return A vector of likelihoods for each jitter iteration.

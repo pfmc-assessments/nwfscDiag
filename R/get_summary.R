@@ -3,7 +3,7 @@
 #' the model settings using the get_settings function.
 #' 
 #'
-#' @param mydir Directory where model files are located.
+#' @template mydir
 #' @param name Identify if the csv file show jitter, retro, or profile results
 #' @param para SS parameter name that the profile was run across 
 #' @param vec vector of parameter values the profile covers

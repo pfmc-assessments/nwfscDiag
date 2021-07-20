@@ -3,8 +3,8 @@
 #' the model settings using the get_settings function.
 #' 
 #'
-#' @param mydir Directory where model files are located.
-#' @param model_settings input of all settings created using the get_settings function
+#' @template mydir
+#' @template model_settings
 #' @param rep base model outpus
 #' @param vec vector of value that were profiled over
 #' @param para parameter name SS control.ss_new expected parameter name
