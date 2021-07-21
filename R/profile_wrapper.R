@@ -36,10 +36,11 @@ profile_wrapper <- function(mydir, model_settings){
 
 	for (aa in 1:N){
   	
-    para = rownames(model_settings$profile_details)[aa]
-   
+    para = model_settings$profile_details$parameters[aa]
+    prior_used = model_settings$profile_details$use_prior_like[aa]
     # Create a profile folder with the same naming structure as the base model
-	  profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
+    # Add a label to show if prior was used or not
+	  profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para, "_prior_like_", prior_used))
      	dir.create(profile_dir, showWarnings = FALSE)
 
   	# Check for existing files and delete
@@ -81,7 +82,7 @@ profile_wrapper <- function(mydir, model_settings){
 	  starter$ctlfile <- "control_modified.ss"
 	  starter$init_values_src <- model_settings$profile_init_values_src
 	  # make sure the prior likelihood is calculated for non-estimated quantities
-	  starter$prior_like <- model_settings$prior_like
+	  starter$prior_like <- prior_used
 	  r4ss::SS_writestarter(starter, dir = profile_dir, overwrite=TRUE) 
 
     # Read in the base model

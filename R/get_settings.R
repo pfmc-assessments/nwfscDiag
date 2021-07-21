@@ -47,14 +47,10 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     RemoveBlocks = FALSE,
     
     # Profile Settings
-    #para_range_m = 'default',
-    #para_range_h = c(0.25, 1.0, 0.05), # Absolute parameter scale
-    #para_range_r0 = c(2, 2, 0.25), # Relative to R0 where this is R0 - 2 and R0 + 2
-    #para_custom_range = NULL, # needs to be seq( low, high, step size)
     remove_files = TRUE,
     newctlfile = "control_modified.ss", 
     profile_init_values_src = 0, 
-    prior_like = 0, # turn off the prior contribution to likelihood
+    #prior_like = 0, # turn off the prior contribution to likelihood
     linenum = NULL, 
     string = NULL, 
     profilevec = NULL,

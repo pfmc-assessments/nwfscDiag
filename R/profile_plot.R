@@ -16,8 +16,8 @@
 profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
 
   label = ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
-  	      ifelse(para == "NatM_p_1_Fem_GP_1", "Natural Mortality (female)",
-  	      ifelse(para == "NatM_p_1_Mal_GP_1", "Natural Mortality (male)",
+  	      ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
+  	      ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
   	      ifelse(para == "SR_BH_steep", "Steepness (h)",
   	      para))))
 
