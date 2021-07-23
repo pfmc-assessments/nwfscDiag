@@ -110,7 +110,8 @@ retro_wrapper <- function(mydir,  model_settings){
     dplyr::rename(type = "ind") %>%
     dplyr::select(type, Quantity, values)
   utils::write.csv(
-    x = rhos,
+    x = as.matrix(rhos),
+    row.names = FALSE,
     file = file.path(retro_dir, "mohnsrho.csv")
   )
 
@@ -137,6 +138,7 @@ retro_wrapper <- function(mydir,  model_settings){
     plotdir = retro_dir,
     legendloc = "topright",
     print = TRUE,
+    plot = FALSE,
     pdf = FALSE
   )
   savedplotinfo <- mapply(
