@@ -2,27 +2,61 @@
 % Please edit documentation in R/retro_wrapper.R
 \name{retro_wrapper}
 \alias{retro_wrapper}
-\title{Retrospecitive runs
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.}
+\title{Run \link[r4ss:SS_doRetro]{r4ss::SS_doRetro} based on \code{model_settings}}
 \usage{
 retro_wrapper(mydir, model_settings)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
-There is no default entry for `mydir`.
+There is no default entry for \code{mydir}.
 An example of user input could be
-`mydir = file.path("C:/my_models", "base_model")`.}
+\code{mydir = file.path("C:/my_models", "base_model")}.}
 
 \item{model_settings}{A list of all model settings.
-Typically, created using [get_settings] but users can create their own list,
+Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
 }
+\value{
+Nothing is explicitly returned from \code{retro_wrapper}.
+The following objects are saved to the disk.
+\itemize{
+\item \code{mohnsrho.csv} with the following columns:
+\itemize{
+\item type: the type of Mohn's rho
+\itemize{
+\item \href{https://doi.org/10.1093/icesjms/fsu198}{Hurtado-Ferro et al. (2015)},
+\item \href{https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center}{Northeast Fisheries Science Center (NEFSC)}, and
+\item \href{https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center}{Alaska Fisheries Science Center (AFSC)}
+}
+\item Quantity: the stock assessment quantity of interest
+\item values: the Mohn's rho values
+}
+\item A set of figures from \link[r4ss:SSplotComparisons]{r4ss::SSplotComparisons}
+\item \code{retrofigures4doc.csv} for use with \code{sa4ss::add_figure} to add retro peels of
+spawning stock biomass (\emph{SSB}) and fraction unfished,
+complete with captions and alternative text.
+
+\code{apply(utils::read.csv(file.path("..", paste0(mod_loc, "_retro"), "retrofigures4doc.csv")), 1, function(x) do.call(sa4ss::add_figure, as.list(x)))}
+\item \code{mohnsrho.tex} for use with \code{sa4ss::read_child()}
+inside of an environment with \code{results = "asis"}
+to include a table of Mohn's rho values in a document.
+
+\code{sa4ss::read_child(file.path(paste0(params$model, "_retro"), "mohnsrho.tex"))}
+\item \code{retro_output.Rdata} with a list of R objects.
+}
+}
 \description{
-Retrospecitive runs
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.
+Create a folder containing retrospective runs for a given base-model folder.
+Runs are created using settings specified in \code{model_settings} and
+is formatted for inclusion in a document.
+}
+\seealso{
+The following functions interact with \code{retro_wrapper}:
+\itemize{
+\item \link{run_diagnostics}: calls \code{retro_wrapper}
+\item \link[r4ss:SS_doRetro]{r4ss::SS_doRetro}: the workhorse of \code{retro_wrapper} that does the peels
+}
 }
 \author{
-Chantel Wetzel.
+Chantel Wetzel
 }
