@@ -3,20 +3,22 @@
 \name{run_diagnostics}
 \alias{run_diagnostics}
 \title{Wrapper to run each of the 3 standard diagnostic items:
-1) Jitter
-2) Profiles across female m, steepness, and R0
-3) Retrospectives}
+\enumerate{
+\item Jitter
+\item Profiles across female m, steepness, and R0
+\item Retrospectives
+}}
 \usage{
 run_diagnostics(mydir, model_settings)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
-There is no default entry for `mydir`.
+There is no default entry for \code{mydir}.
 An example of user input could be
-`mydir = file.path("C:/my_models", "base_model")`.}
+\code{mydir = file.path("C:/my_models", "base_model")}.}
 
 \item{model_settings}{A list of all model settings.
-Typically, created using [get_settings] but users can create their own list,
+Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
 }
 \value{
@@ -24,9 +26,11 @@ A vector of likelihoods for each jitter iteration.
 }
 \description{
 Wrapper to run each of the 3 standard diagnostic items:
-1) Jitter
-2) Profiles across female m, steepness, and R0
-3) Retrospectives
+\enumerate{
+\item Jitter
+\item Profiles across female m, steepness, and R0
+\item Retrospectives
+}
 }
 \author{
 Chantel Wetzel

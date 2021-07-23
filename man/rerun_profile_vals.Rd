@@ -10,12 +10,12 @@ rerun_profile_vals(mydir, para_name, run_num, data_file_nm)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
-There is no default entry for `mydir`.
+There is no default entry for \code{mydir}.
 An example of user input could be
-`mydir = file.path("C:/my_models", "base_model")`.}
+\code{mydir = file.path("C:/my_models", "base_model")}.}
 
-\item{para_name}{SS parameter name that the profile was run across. This is used to 
-located the correct folder combined with the mydir function input (e.g. paste0(mydir, "_profile_", para_name))}
+\item{para_name}{SS parameter name that the profile was run across. This is used to
+located the correct folder combined with the mydir function input (e.g. paste0(mydir, "\emph{profile}", para_name))}
 
 \item{run_num}{A single or vector of run numbers that you would like to rerun for convergence.
 This input needs to match the run number for the original profile (e.g., Report6.sso) that

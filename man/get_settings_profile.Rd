@@ -24,12 +24,12 @@ get_settings_profile(
 
 \item{param_space}{options: real, mulitplier, relative indicates how to interpret the low and high bound values.
 real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
-multiplier indicates that low and high bounds are set at x\% above and below the base parameter.}
+multiplier indicates that low and high bounds are set at x\\% above and below the base parameter.}
 
 \item{use_prior_like}{options: Option to include or exclude the prior likelihoods in the likelihood
-profiles. A value of 0 corresponds to the Stock Sythesis were this would exclude 
-and a value of 1 would include the prior likelihood contribution. Parameters with priors used for estimation 
-(e.g., natural mortality, steepness) are often profiled across and including or excluding the prior likelihood 
+profiles. A value of 0 corresponds to the Stock Sythesis were this would exclude
+and a value of 1 would include the prior likelihood contribution. Parameters with priors used for estimation
+(e.g., natural mortality, steepness) are often profiled across and including or excluding the prior likelihood
 contribution may be wanted in specific instances.  The default setting excludes the prior likelihood contributions.}
 }
 \value{
@@ -48,10 +48,10 @@ The column titled 'param_space' indicated where the range of of the profile para
 should be interpretted as relative to the base model estimate vs. across a pre-specified range.
 An example is for R0 where the default setting below indicates that the param_space is relative
 where the low bound for the profile is set = base model log(R0) - 2 and high = base model log(R0) + 2.
-The default range for M is set as a multiplier to explore a range of (M - 0.40 * M) - (M + 0.40 * M) 
+The default range for M is set as a multiplier to explore a range of (M - 0.40 * M) - (M + 0.40 * M)
 at a step size of 0.005. This range may be too large (or small) with a step size too large (or too small)
 and should be considered if the default settings are appropriate for your specific model. The default setting
-for steepness is in 'real' space which means that the low and high is in the same parameter space as the 
+for steepness is in 'real' space which means that the low and high is in the same parameter space as the
 parameter. A user can select any of the options for specifying a parameter range for any parameter.
 }
 \examples{

@@ -10,9 +10,9 @@ get_summary(mydir, para, vec, name, profilemodels, profilesummary)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
-There is no default entry for `mydir`.
+There is no default entry for \code{mydir}.
 An example of user input could be
-`mydir = file.path("C:/my_models", "base_model")`.}
+\code{mydir = file.path("C:/my_models", "base_model")}.}
 
 \item{para}{SS parameter name that the profile was run across}
 

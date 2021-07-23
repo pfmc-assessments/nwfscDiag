@@ -10,12 +10,12 @@ profile_plot(mydir, model_settings, rep, vec, para, profilesummary)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
-There is no default entry for `mydir`.
+There is no default entry for \code{mydir}.
 An example of user input could be
-`mydir = file.path("C:/my_models", "base_model")`.}
+\code{mydir = file.path("C:/my_models", "base_model")}.}
 
 \item{model_settings}{A list of all model settings.
-Typically, created using [get_settings] but users can create their own list,
+Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
 
 \item{rep}{base model outpus}
@@ -24,7 +24,7 @@ as long as it has all of the necessary components for the function at hand.}
 
 \item{para}{parameter name SS control.ss_new expected parameter name}
 
-\item{profilesummary}{output from [r4ss::SSsummarize()]}
+\item{profilesummary}{output from \code{\link[r4ss:SSsummarize]{r4ss::SSsummarize()}}}
 }
 \description{
 Generate likelihood profiles plots
