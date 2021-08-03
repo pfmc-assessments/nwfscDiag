@@ -147,11 +147,9 @@ rerun_profile_vals <- function(mydir,
 				profilemodels = profilemodels,
 				profilesummary = profilesummary)
 
-	profile_plot(mydir = profile_dir, 
-				model_settings = model_settings, 
+	profile_plot(mydir = profile_dir,
 				para = para, 
 				rep = rep,
-				vec = vec[num],
 				profilesummary = profilesummary)
 
 }

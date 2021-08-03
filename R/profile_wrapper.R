@@ -165,19 +165,20 @@ profile_wrapper <- function(mydir, model_settings){
 
   save(profile_output, file = file.path(profile_dir, paste0(para, "_profile_output.Rdat")))
 
-	get_summary(mydir = profile_dir, 
+	nwfscDiag::get_summary(mydir = profile_dir, 
 						  name = paste0("profile_", para),
 						  para = para,
-						  vec = vec[num],
+						  # vec = vec[num],
+               vec = profilesummary$pars%>%dplyr::filter(Label==para)%>%dplyr::select(dplyr::starts_with("rep"))%>%as.vector,
 						  profilemodels = profilemodels,
 						  profilesummary = profilesummary)
 
-	profile_plot(mydir = profile_dir, 
-				       model_settings = model_settings, 
-				       para = para, 
-				       rep = rep,
-				       vec = vec[num],
-				       profilesummary = profilesummary)
+  nwfscDiag::profile_plot(
+    mydir = profile_dir,
+    para = para,
+    rep = rep,
+    profilesummary = profilesummary
+  )
 
 	message("Finished profile of ", para, ".")
 

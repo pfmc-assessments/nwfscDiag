@@ -1,30 +1,34 @@
-#' Generate likelihood profiles plots
-#' To be called from the run_diagnostics function after creating
-#' the model settings using the get_settings function.
-#' 
+#' Generate likelihood profile plots
+#'
+#' Create plots to be included in presentations and documents that
+#' summarize a likelihood profile.
 #'
 #' @template mydir
-#' @template model_settings
-#' @param rep base model outpus
-#' @param vec vector of value that were profiled over
-#' @param para parameter name SS control.ss_new expected parameter name
-#' @param profilesummary output from [r4ss::SSsummarize()]
+#' @param rep A list of model output as returned by [r4ss::SS_output()].
+#' @param para A character value that matches a parameter name as used in the
+#' SS control.ss_new parameter names.
+#' The name will be cleaned up for plotting purposes internally within the function.
+#' For example, `SR_BH_steep` becomes "Steepness (_h_)".
+#' @param profilesummary Output from [r4ss::SSsummarize()].
+#' Ensure that the results are ordered according to the parameter of interest.
+#' Otherwise, the profile plots will not be smooth and lines will zig-zag back and forth.
 #'
 #' @author Chantel Wetzel.
 #' @export
+#' @seealso [profile_wrapper] and [rerun_profile_vals] call `profile_plot`.
 
-profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
+profile_plot <- function(mydir, rep, para, profilesummary){
 
-  label = ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
-  	      ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
-  	      ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
-  	      ifelse(para == "SR_BH_steep", "Steepness (h)",
-  	      para))))
+  label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
+          ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
+          ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
+          ifelse(para == "SR_BH_steep", expression(Steepness~(italic(h))),
+          para))))
 
   get = ifelse(para == "SR_LN(R0)", "R0", para)
 
   if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", "SR_BH_steep")){
-    exact = FALSE  
+    exact = FALSE
   } else {
     exact = TRUE
   }  
@@ -145,14 +149,17 @@ profile_plot <- function(mydir, model_settings, rep, vec, para, profilesummary){
   	    ifelse(para == "SR_BH_steep", "h",
   	    para))))
 
-  find <- which(est == vec)
-  modelnames <- paste(get, "=", vec)
-  modelnames[find] = paste("Base:", modelnames[find])
-  r4ss::SSplotComparisons(profilesummary, 
-  					legendlabels = modelnames, 
-            ylimAdj = 1.15,
-  					plotdir = mydir, subplots = c(1, 3), 
-  					pdf = FALSE, print = TRUE, 
-  					filenameprefix = paste0(para, "_trajectories_"))
+  r4ss::SSplotComparisons(profilesummary,
+    legendlabels = sprintf(
+      paste0("%s = %.", max(nchar(gsub("0+$|[0-9]+\\.", "", x[-which(est == x)]))), "f%s"),
+      get,
+      x,
+      ifelse(est == x, " (base)", "")
+    ),
+    ylimAdj = 1.15,
+    plotdir = mydir, subplots = c(1, 3),
+    pdf = FALSE, print = TRUE, plot = FALSE,
+    filenameprefix = paste0(para, "_trajectories_")
+  )
 
 }

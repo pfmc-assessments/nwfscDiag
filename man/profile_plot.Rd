@@ -2,11 +2,9 @@
 % Please edit documentation in R/profile_plot.R
 \name{profile_plot}
 \alias{profile_plot}
-\title{Generate likelihood profiles plots
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.}
+\title{Generate likelihood profile plots}
 \usage{
-profile_plot(mydir, model_settings, rep, vec, para, profilesummary)
+profile_plot(mydir, rep, para, profilesummary)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
@@ -14,22 +12,23 @@ There is no default entry for \code{mydir}.
 An example of user input could be
 \code{mydir = file.path("C:/my_models", "base_model")}.}
 
-\item{model_settings}{A list of all model settings.
-Typically, created using \link{get_settings} but users can create their own list,
-as long as it has all of the necessary components for the function at hand.}
+\item{rep}{A list of model output as returned by \code{\link[r4ss:SS_output]{r4ss::SS_output()}}.}
 
-\item{rep}{base model outpus}
+\item{para}{A character value that matches a parameter name as used in the
+SS control.ss_new parameter names.
+The name will be cleaned up for plotting purposes internally within the function.
+For example, \code{SR_BH_steep} becomes "Steepness (\emph{h})".}
 
-\item{vec}{vector of value that were profiled over}
-
-\item{para}{parameter name SS control.ss_new expected parameter name}
-
-\item{profilesummary}{output from \code{\link[r4ss:SSsummarize]{r4ss::SSsummarize()}}}
+\item{profilesummary}{Output from \code{\link[r4ss:SSsummarize]{r4ss::SSsummarize()}}.
+Ensure that the results are ordered according to the parameter of interest.
+Otherwise, the profile plots will not be smooth and lines will zig-zag back and forth.}
 }
 \description{
-Generate likelihood profiles plots
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.
+Create plots to be included in presentations and documents that
+summarize a likelihood profile.
+}
+\seealso{
+\link{profile_wrapper} and \link{rerun_profile_vals} call \code{profile_plot}.
 }
 \author{
 Chantel Wetzel.
