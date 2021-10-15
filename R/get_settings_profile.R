@@ -77,7 +77,7 @@ get_settings_profile <- function( parameters =  c("NatM_p_1_Fem_GP_1", "SR_BH_st
 					  step_size = step_size, 
 					  param_space = param_space,
 					  use_prior_like = use_prior_like)
-	#rownames(out) = parameters
+
   	return(out)
 }
 

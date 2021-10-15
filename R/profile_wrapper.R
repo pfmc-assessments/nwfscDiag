@@ -16,18 +16,18 @@ profile_wrapper <- function(mydir, model_settings){
   if(length(grep("mingw", version$os)) > 0) OS <- "Windows"
 	
   # figure out name of executable based on 'model' input which may contain .exe
-  if(length(grep(".exe", tolower(file.path(mydir, model_settings$base_name)))) == 1){
+  if(length(grep(".exe", tolower(file.path(mydir, model_settings$base_name)))) == 1) {
     # if input 'model' includes .exe then assume it's Windows and just use the name
     exe <- model_settings$model
-  }else{
+  } else {
     # if 'model' doesn't include .exe then append it (for Windows computers only)
     exe <- paste(model_settings$model, ifelse(OS == "Windows", ".exe", ""), sep="")
   }
   # check whether exe is in directory
-  if(OS == "Windows"){
+  if(OS == "Windows") {
     if(!exe %in% list.files(file.path(mydir, model_settings$base_name))) 
     		stop("Executable ", exe, " not found in ", file.path(mydir, model_settings$base_name))
-  }else{
+  } else {
     if(!exe %in% list.files(file.path(mydir, model_settings$base_name))) 
     	stop("Executable ", exe, " not found in ", file.path(mydir, model_settings$base_name))
   }
@@ -36,8 +36,8 @@ profile_wrapper <- function(mydir, model_settings){
 
 	for (aa in 1:N){
   	
-    para = model_settings$profile_details$parameters[aa]
-    prior_used = model_settings$profile_details$use_prior_like[aa]
+    para <- model_settings$profile_details$parameters[aa]
+    prior_used <- model_settings$profile_details$use_prior_like[aa]
     # Create a profile folder with the same naming structure as the base model
     # Add a label to show if prior was used or not
 	  profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para, "_prior_like_", prior_used))
@@ -55,35 +55,37 @@ profile_wrapper <- function(mydir, model_settings){
   	message(paste0( "Running profile for ", para, ".") )
 
 	  # Use the SS_parlines funtion to ensure that the input parameter can be found
-		check_para <- r4ss::SS_parlines(ctlfile="control.ss_new", 
+		check_para <- r4ss::SS_parlines(
+                    ctlfile = "control.ss_new", 
 							      dir = profile_dir, 
 							      verbose = FALSE, 
 							      active = FALSE)$Label == para
-		if( sum(check_para) == 0) {
+
+		if(sum(check_para) == 0) {
 			stop(paste0( "The input profile_custom does not match a parameter in the control.ss_new file."))
 		}
 	
   	# Copy the control file to run from the copy 
-  	if (!file.exists(file.path(profile_dir, "control.ss_new"))){
+  	if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
   		command <- paste(model_settings$model, model_settings$extras)
       	if(OS != "windows") command <- paste("./", command, sep="")
       	cat("Running model in directory:", getwd(), "\n")
       	cat("Using the command: '", command, "'\n", sep="")
       	if(OS == "windows" & !model_settings$systemcmd){
       	  shell(cmd = command)
-      	}else{
+      	} else {
       	  system(command)
       }
   	}
 
     file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
     # Change the control file name in the starter file
-	  starter <- r4ss::SS_readstarter(file.path(profile_dir, 'starter.ss'))
+	  starter <- r4ss::SS_readstarter(file = file.path(profile_dir, 'starter.ss'))
 	  starter$ctlfile <- "control_modified.ss"
 	  starter$init_values_src <- model_settings$profile_init_values_src
 	  # make sure the prior likelihood is calculated for non-estimated quantities
 	  starter$prior_like <- prior_used
-	  r4ss::SS_writestarter(starter, dir = profile_dir, overwrite=TRUE) 
+	  r4ss::SS_writestarter(mylist = starter, dir = profile_dir, overwrite = TRUE) 
 
     # Read in the base model
     rep <- r4ss::SS_output(file.path(mydir, model_settings$base_name), covar = FALSE,
@@ -91,11 +93,11 @@ profile_wrapper <- function(mydir, model_settings){
 	  est <- rep$parameters[rep$parameters$Label == para, "Value"]
 
 	  # Determine the parameter range
-	  if (model_settings$profile_details$param_space[aa] == 'relative'){
+	  if (model_settings$profile_details$param_space[aa] == 'relative') {
 	  		range <- c( est + model_settings$profile_details$low[aa],
                     est + model_settings$profile_details$high[aa] )
     } 
-    if (model_settings$profile_details$param_space[aa] == 'multiplier'){
+    if (model_settings$profile_details$param_space[aa] == 'multiplier') {
         range <- c( est - est * model_settings$profile_details$low[aa],
                     est + est * model_settings$profile_details$high[aa] )
     }
@@ -123,7 +125,8 @@ profile_wrapper <- function(mydir, model_settings){
 	  vec  <- c(low, high)
 	  num <- sort(vec, index.return = TRUE)$ix
 
-	  profile <- r4ss::SS_profile(dir = profile_dir,
+	  profile <- r4ss::SS_profile(
+                      dir = profile_dir,
           						masterctlfile = "control.ss_new",
           						newctlfile = model_settings$newctlfile, 
           						string = para, 
@@ -148,8 +151,12 @@ profile_wrapper <- function(mydir, model_settings){
 
 
   # Save the output and the summary
+  name <- paste0("profile_", para)
+  vec_unordered <- vec
+  vec <- vec[num]
+
 	profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
-	profilesummary <- r4ss::SSsummarize(profilemodels)
+	profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
 
   profile_output <- list()
   profile_output$mydir <- profile_dir
@@ -163,15 +170,32 @@ profile_wrapper <- function(mydir, model_settings){
   profile_output$vec_unordered <- vec
   profile_output$num <- num
 
-  save(profile_output, file = file.path(profile_dir, paste0(para, "_profile_output.Rdat")))
+  save(
+    profile_dir,
+    para,
+    name,
+    vec,
+    vec_unordered,
+    model_settings,
+    profilemodels,
+    profilesummary,
+    rep,
+    num,
+    file = file.path(profile_dir, paste0(para, "_profile_output.Rdat"))
+  )
 
-	nwfscDiag::get_summary(mydir = profile_dir, 
-						  name = paste0("profile_", para),
-						  para = para,
-						  # vec = vec[num],
-               vec = profilesummary$pars%>%dplyr::filter(Label==para)%>%dplyr::select(dplyr::starts_with("rep"))%>%as.vector,
-						  profilemodels = profilemodels,
-						  profilesummary = profilesummary)
+	nwfscDiag::get_summary(
+    mydir = profile_dir, 
+		name = paste0("profile_", para),
+		para = para,
+		# vec = vec[num],
+    vec = profilesummary$pars %>% 
+            dplyr::filter(Label == para) %>% 
+            dplyr::select(dplyr::starts_with("rep")) %>% 
+            as.vector,
+		profilemodels = profilemodels,
+		profilesummary = profilesummary
+  )
 
   nwfscDiag::profile_plot(
     mydir = profile_dir,

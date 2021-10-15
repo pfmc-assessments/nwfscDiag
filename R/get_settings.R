@@ -66,7 +66,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     SSversion = "3.30", 
     prior_check = FALSE,
     read_like = TRUE
-    )
+  )
 
   Settings_all$profile_details = get_settings_profile()
 

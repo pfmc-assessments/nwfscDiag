@@ -54,11 +54,8 @@ rerun_profile_vals <- function(mydir,
 	}
 
 	load(file.path(profile_dir, paste0(para_name, "_profile_output.Rdat")))
-	model_settings <- profile_output$model_settings
-	vec <- profile_output$vec_unordered 
-  	num <- profile_output$num
-  	rep <- profile_output$rep
-  	like_check = profile_output$profilesummary$likelihoods[1,]
+	vec <- vec_unordered 
+  	like_check <- profilesummary$likelihoods[1,]
 
 	# Change the control file name in the starter file
 	starter <- r4ss::SS_readstarter(file.path(temp_dir, 'starter.ss'))
@@ -69,29 +66,30 @@ rerun_profile_vals <- function(mydir,
 	r4ss::SS_writestarter(starter, dir = temp_dir, overwrite=TRUE) 
 	
 	
-	for(i in run_num){
+	for(i in run_num) {
 		setwd(temp_dir)
 		r4ss::SS_changepars(
 				ctlfile = "control_modified.ss", 
                 newctlfile = "control_modified.ss", 
                 strings = para, 
                 newvals = vec[i], 
-                estimate = FALSE)
+                estimate = FALSE
+        )
 		system("ss -nohess")
 
-		mod = r4ss::SS_output(temp_dir, covar = FALSE,printstats = FALSE, verbose = FALSE)
-		like = mod$likelihoods_used[1,1]
+		mod = r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
+		like = mod$likelihoods_used[1, 1]
 
 		# See if likelihood is lower than the original - and rerun if not
-		add = 0.01
-		if(like > like_check[i]){
-			for(ii in 1:5){
-				starter <- r4ss::SS_readstarter(file.path(temp_dir, 'starter.ss'))
+		add <- 0.01
+		if(like > like_check[i]) {
+			for(ii in 1:5) {
+				starter <- r4ss::SS_readstarter(file = file.path(temp_dir, 'starter.ss'))
 				starter$jitter_fraction <- add + starter$jitter_fraction
-				r4ss::SS_writestarter(starter, dir = temp_dir, overwrite=TRUE) 
+				r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE) 
 				system("ss -nohess")
-				mod = r4ss::SS_output(temp_dir, covar = FALSE,printstats = FALSE, verbose = FALSE)
-				like = mod$likelihoods_used[1,1]
+				mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
+				like <- mod$likelihoods_used[1, 1]
 				if( like < like_check[i] ){ break() }
 			}
 		}
@@ -109,7 +107,7 @@ rerun_profile_vals <- function(mydir,
 	}
 
 	profilemodels  <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
-	profilesummary <- r4ss::SSsummarize(profilemodels)
+	profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
 
 	protect = file.path(profile_dir, "protect")
   	dir.create(protect, showWarnings = FALSE)
@@ -121,10 +119,15 @@ rerun_profile_vals <- function(mydir,
   				   paste0("profile_", para, "_quant_table.csv"),
   				   paste0("profile_", para, "_results.csv"),
   				   paste0(para, "_profile_output.Rdat"))
-  	for(i in 1:length(save_files)){
+
+  	for(i in 1:length(save_files)) {
   		file.copy(file.path(profile_dir, save_files[i]), 
   				  file.path(profile_dir, "protect"))
   	}
+
+  	name <- paste0("profile_", para)
+  	vec_unordered <- vec
+  	vec <- vec[num]
 
   	profile_output <- list()
   	profile_output$mydir <- profile_dir
@@ -138,18 +141,34 @@ rerun_profile_vals <- function(mydir,
   	profile_output$vec_unordered <- vec
   	profile_output$num <- num
 
-  	save(profile_output, file = file.path(profile_dir, paste0(para, "_profile_output.Rdat")))
+  	save(
+  		profile_dir,
+  		para,
+  		name,
+  		vec,
+  		vec_unordered,
+  		model_settings,
+  		profilemodels,
+  		profilesummary,
+  		rep,
+  		num,
+  		file = file.path(profile_dir, paste0(para, "_profile_output.Rdat"))
+  	)
 
-	get_summary(mydir = profile_dir, 
-				name = paste0("profile_", para),
-				para = para,
-				vec = vec[num],
-				profilemodels = profilemodels,
-				profilesummary = profilesummary)
+	get_summary(
+		mydir = profile_dir, 
+		name = paste0("profile_", para),
+		para = para,
+		vec = vec[num],
+		profilemodels = profilemodels,
+		profilesummary = profilesummary
+	)
 
-	profile_plot(mydir = profile_dir,
-				para = para, 
-				rep = rep,
-				profilesummary = profilesummary)
+	profile_plot(
+		mydir = profile_dir,
+		para = para, 
+		rep = rep,
+		profilesummary = profilesummary
+	)
 
 }

@@ -20,14 +20,14 @@
 profile_plot <- function(mydir, rep, para, profilesummary){
 
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
-          ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
-          ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
-          ifelse(para == "SR_BH_steep", expression(Steepness~(italic(h))),
-          para))))
+           ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
+           ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
+           ifelse(para == "SR_BH_steep", expression(Steepness~(italic(h))),
+           para))))
 
   get = ifelse(para == "SR_LN(R0)", "R0", para)
 
-  if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", "SR_BH_steep")){
+  if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", "SR_BH_steep")) {
     exact = FALSE
   } else {
     exact = TRUE
@@ -52,14 +52,14 @@ profile_plot <- function(mydir, rep, para, profilesummary){
   if(tot_plot >= 4) { panel <- c(3, 2) }
 
   # Determine the y-axis for the profile plot for all data types together
-  ymax1 = max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
+  ymax1 <- max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
   if(ymax1 > 70) { ymax1 = 70}
   if(ymax1 <  5) { ymax1 = 5}
 
   # Determine the y-axis for the piner profile plots by each data type
-  lab.row = ncol(profilesummary$likelihoods)
-  ymax2 = max(apply(profilesummary$likelihoods[-1,-lab.row],1,max) - 
-              apply(profilesummary$likelihoods[-1,-lab.row],1,min))
+  lab.row <- ncol(profilesummary$likelihoods)
+  ymax2 <- max(apply(profilesummary$likelihoods[-1, -lab.row], 1, max) - 
+               apply(profilesummary$likelihoods[-1, -lab.row], 1, min))
   if(ymax2 > 70) { ymax2 = 70}
   if(ymax2 <  5) { ymax2 = 5}
 
@@ -117,7 +117,7 @@ profile_plot <- function(mydir, rep, para, profilesummary){
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   par(mfrow = c(2,2), mar = c(4,4,2,2), oma = c(1,1,1,1))
   # parameter vs. likelihood
-  plot(x, like, type = "l", lwd = 2, xlab =  label, ylab ="Change in -log-likelihood", ylim = ylike)
+  plot(x, like, type = "l", lwd = 2, xlab = label, ylab = "Change in -log-likelihood", ylim = ylike)
   abline(h = 0, lty = 2, col = 'black')
   if(max(ylike) < 40) { 
     abline(h =  1.92, lty = 3, col = 'red') 
@@ -132,11 +132,11 @@ profile_plot <- function(mydir, rep, para, profilesummary){
     lty = 2, col = c('red', 'darkgreen'), bty = 'n')
 
   # parameter vs. SB0
-  plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim=c(0, max(sb0)))
+  plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
-  plot(x, sbf, type = "l", lwd = 2, xlab = label, ylab = expression(SB[final]), ylim=c(0, max(sbf)))
+  plot(x, sbf, type = "l", lwd = 2, xlab = label, ylab = expression(SB[final]), ylim = c(0, max(sbf)))
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   dev.off()
@@ -149,7 +149,8 @@ profile_plot <- function(mydir, rep, para, profilesummary){
   	    ifelse(para == "SR_BH_steep", "h",
   	    para))))
 
-  r4ss::SSplotComparisons(profilesummary,
+  r4ss::SSplotComparisons(
+    summaryoutput = profilesummary,
     legendlabels = sprintf(
       paste0("%s = %.", max(nchar(gsub("0+$|[0-9]+\\.", "", x[-which(est == x)]))), "f%s"),
       get,

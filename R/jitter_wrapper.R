@@ -36,49 +36,66 @@ jitter_wrapper <- function(mydir,  model_settings){
                        jitter_fraction = model_settings$jitter_fraction,
                        init_values_src = model_settings$jitter_init_values_src )	
 
-  	#### Read in results using other r4ss functions
-  	#keys <- gsub("Report([0-9]+)\\.sso", "\\1", dir(jitter_dir, pattern = "^Report[0-9]"))
+  #### Read in results using other r4ss functions
+  #keys <- gsub("Report([0-9]+)\\.sso", "\\1", dir(jitter_dir, pattern = "^Report[0-9]"))
 	#keys <- type.convert(keys)[order(type.convert(keys))]
 	keys <- 1:model_settings$Njitter
-	profilemodels <- r4ss::SSgetoutput(dirvec = jitter_dir, keyvec = keys,
-									   getcovar = FALSE, forecast = FALSE,
-    								   verbose = FALSE, listlists = TRUE, underscore = FALSE,
-    								   save.lists = FALSE)
+	profilemodels <- r4ss::SSgetoutput(dirvec = jitter_dir, 
+																		 keyvec = keys,
+									   								 getcovar = FALSE, 
+									   								 forecast = FALSE,
+    								   							 verbose = FALSE, 
+    								   							 listlists = TRUE, 
+    								   							 underscore = FALSE,
+    								   							 save.lists = FALSE)
 
 	# summarize output
 	profilesummary <- r4ss::SSsummarize(profilemodels)
 
 	# Read in the base model
-  	base <- r4ss::SS_output(file.path(mydir, model_settings$base_name), covar = FALSE,
-  							printstats = FALSE, verbose = FALSE)
+  base <- r4ss::SS_output(dir = file.path(mydir, model_settings$base_name), 
+  												covar = FALSE,
+  												printstats = FALSE, 
+  												verbose = FALSE)
+
 	est  <- base$likelihoods_used[1, 1]
 	like <- as.numeric(profilesummary$likelihoods[1, keys])
 	ymax <- as.numeric(quantile(unlist(profilesummary$likelihoods[1, keys]), 0.80))
 	ymin <- min(like - est) + 1 
 
 	jitter_output <- list()
-	jitter_output$plotdir <-jitter_dir
+	jitter_output$plotdir <- jitter_dir
 	jitter_output$est  <- est
 	jitter_output$keys <- keys
 	jitter_output$like <- like
 	jitter_output$model_settings <- model_settings
 	jitter_output$profilesummary <- profilesummary 
 	jitter_output$profilemodels  <- profilemodels
-	save(jitter_output, file = file.path(jitter_dir, "jitter_output.Rdata"))
+
+	save(
+		jitter_dir,
+		est,
+		keys,
+		like, 
+		model_settings,
+		profilesummary,
+		profilemodels, 
+		file = file.path(jitter_dir, "jitter_output.Rdata")
+	)
 
   ylab <- "Change in negative log-likelihood"
   xlab <- "Iteration"
 	pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
-	plot(keys, like-est, ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
+	plot(keys, like - est, ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
 		ylab = ylab, xlab = xlab)
 	abline(h = 0, col = 'darkgrey', lwd = 2)
 	find = which(est == like)
-	points(keys[find], (like-est)[find], col = 'green3', pch = 16, cex = 1.1)
+	points(keys[find], (like - est)[find], col = 'green3', pch = 16, cex = 1.1)
 	find = which(like - est > 0)
-	points(keys[find], (like-est)[find], col = 'blue', pch = 16)
+	points(keys[find], (like - est)[find], col = 'blue', pch = 16)
 	if (sum(like - est < 0) > 0) {
 		find = like - est < 0
-		points(keys[find], (like-est)[find], col = 'red', pch = 16, cex = 1.1)
+		points(keys[find], (like - est)[find], col = 'red', pch = 16, cex = 1.1)
 		mtext(side = 3, cex = 1.25,
 			"Warning: A lower NLL was found. Update your base model.")
 	}
@@ -88,16 +105,16 @@ jitter_wrapper <- function(mydir,  model_settings){
 
 	if (ymax > 100){
 		pngfun(wd = jitter_dir, file = paste0("Jitter_Zoomed_SubPlot_", model_settings$jitter_fraction, '.png'), h = 12, w = 9)
-		plot(keys, like-est, ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
+		plot(keys, like - est, ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
 			ylab = ylab, xlab = xlab)
 		abline(h = 0, col = 'darkgrey', lwd = 2)
 		find = which(est == like)
-		points(keys[find], (like-est)[find], col = 'green3', pch = 16, cex = 1.1)
+		points(keys[find], (like - est)[find], col = 'green3', pch = 16, cex = 1.1)
 		find = which(like - est > 0)
-		points(keys[find], (like-est)[find], col = 'blue', pch = 16)
+		points(keys[find], (like - est)[find], col = 'blue', pch = 16)
 		if (sum(like - est < 0) > 0) {
 			find = like - est < 0
-			points(keys[find], (like-est)[find], col = 'red', pch = 16, cex = 1.1)
+			points(keys[find], (like - est)[find], col = 'red', pch = 16, cex = 1.1)
 			mtext(side = 3, cex = 1.25,
 				"Warning: Only jitters near the base model shown")
 		}
@@ -113,13 +130,13 @@ jitter_wrapper <- function(mydir,  model_settings){
 	status  <- sapply(sapply(outputs, "[[", "parameters", simplify = FALSE), "[[", "Status")
 	bounds  <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
 	out     <- data.frame("run" = gsub("replist", "", names(outputs)),
-	  					  "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
-	  					  "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
-	  					  "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
-	  					  "SBfinal" = sapply(quants, "[[", paste0("SSB_", profilesummary$endyrs[1]), "Value"),
-	  					  "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
-	  					  "Lowest NLL" = ifelse(min(like) == like, "Best Fit", 0),
-	  					  stringsAsFactors = FALSE)
+	  					          "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
+	  					          "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
+	  					          "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
+	  					          "SBfinal" = sapply(quants, "[[", paste0("SSB_", profilesummary$endyrs[1]), "Value"),
+	  					          "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
+	  					          "Lowest NLL" = ifelse(min(like) == like, "Best Fit", 0),
+	  					          stringsAsFactors = FALSE)
 
   # Write a md file to be included in a stock assessment document
   # Text was pirated from @chantelwetzel-noaa's 2021 dover assessment
