@@ -19,7 +19,7 @@
 #' * `mohnsrho.csv` with the following columns:
 #'   * type: the type of Mohn's rho
 #'     * [Mohn (1999)](https://academic.oup.com/icesjms/article/56/4/473/624639),
-#'     * Woods Hole Mohn's rho used by the [Northeast Fisheries Science Center (NEFSC)](https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center), and
+#'     * Woods Hole Mohn's rho [(Legault 2009)](https://archive.nefmc.org/tech/council_mtg_docs/Sept%202009/Herring/Doc%209_Retro%20Working%20Group%20Report.pdf) used by the [Northeast Fisheries Science Center (NEFSC)](https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center), and
 #'     * [Hurtado-Ferro et al. (2015)](https://doi.org/10.1093/icesjms/fsu198) used by the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center)
 #'   * Quantity: the stock assessment quantity of interest
 #'   * values: the Mohn's rho values
@@ -221,9 +221,9 @@ retro_wrapper <- function(mydir,  model_settings) {
         " recruitment, and",
         "spawning stock biomass (\\emph{SSB}; Figure \\ref{fig:RetroSsb}).",
         "Columns are",
-        "a derivation of Mohn's rho used by the Alaska Fisheries Science Center (AFSC) as suggested by Hurtado-Ferro et al. (2015),",
+        "a derivation of Mohn's rho (Hurtado-Ferro et al. 2015) used by the Alaska Fisheries Science Center (AFSC),",
         "as originally described in Mohn (1999),",
-        "and a derivation of Mohn's rho (Woods Hole Mohn's rho) used by the Northeast Fisheries Science Center (NEFSC)."
+        "and a derivation of Mohn's rho (Woods Hole Mohn's rho; Legault 2009) used by the Northeast Fisheries Science Center (NEFSC)."
       )
     ) %>%
     kableExtra::kable_classic(full_width = FALSE) %>%
