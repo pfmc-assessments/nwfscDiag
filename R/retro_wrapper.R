@@ -18,9 +18,9 @@
 #'
 #' * `mohnsrho.csv` with the following columns:
 #'   * type: the type of Mohn's rho
-#'     * [Hurtado-Ferro et al. (2015)](https://doi.org/10.1093/icesjms/fsu198),
-#'     * [Northeast Fisheries Science Center (NEFSC)](https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center), and
-#'     * [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center)
+#'     * [Mohn (1999)](https://academic.oup.com/icesjms/article/56/4/473/624639),
+#'     * Woods Hole Mohn's rho used by the [Northeast Fisheries Science Center (NEFSC)](https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center), and
+#'     * [Hurtado-Ferro et al. (2015)](https://doi.org/10.1093/icesjms/fsu198) used by the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center)
 #'   * Quantity: the stock assessment quantity of interest
 #'   * values: the Mohn's rho values
 #' * A set of figures from [r4ss::SSplotComparisons]
