@@ -220,12 +220,10 @@ retro_wrapper <- function(mydir,  model_settings) {
         "fraction unfished (Figure \\ref{fig:RetroFractionunfished}),",
         " recruitment, and",
         "spawning stock biomass (\\emph{SSB}; Figure \\ref{fig:RetroSsb}).",
-        "Columns are a derivation of Mohn's rho used by the",
-        "Alaska Fisheries Science Center (AFSC)",
-        "suggested by Hurtado-Ferro et al. (2015),",
+        "Columns are",
+        "a derivation of Mohn's rho used by the Alaska Fisheries Science Center (AFSC) as suggested by Hurtado-Ferro et al. (2015),",
         "as originally described in Mohn (1999),",
-        "and a derivation of Mohn's rho (Woods Hole Mohn's rho)",
-        "used by the Northeast Fisheries Science Center (NEFSC)."
+        "and a derivation of Mohn's rho (Woods Hole Mohn's rho) used by the Northeast Fisheries Science Center (NEFSC)."
       )
     ) %>%
     kableExtra::kable_classic(full_width = FALSE) %>%
