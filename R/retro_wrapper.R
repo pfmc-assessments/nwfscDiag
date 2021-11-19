@@ -93,8 +93,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       seq_along(runs)[-1],
       function(x) r4ss::SSsummarize(runs[1:x], verbose = FALSE)
     ),
-    endyrvec = mapply(seq,from=endyrvec[1], to= endyrvec[-1]),
-    startyr = endyrvec[-1]
+    endyrvec = mapply(seq,from=endyrvec[1], to= endyrvec[-1])
   )
 
   rhos <- rhosall %>%
@@ -107,7 +106,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       Quantity = gsub("Bratio", "Fraction unfished", Quantity),
       Quantity = gsub("Rec", "Recruitment", Quantity),
       ind = gsub("_[A-Za-z]+$|^[A-Za-z]+$", "", ind),
-      ind = gsub("^$", "Hurtado-Ferro", ind),
+      ind = gsub("^$", "Mohn", ind),
       ind = gsub("WoodHole", "NEFSC", ind),
       ind = gsub("_Hurtado", "", ind),
     ) %>%
@@ -185,7 +184,7 @@ retro_wrapper <- function(mydir,  model_settings) {
         c("spawning stock biomass (\\emph{SSB})", "fraction unfished"),
         "when up to", xfun::numbers_to_words(max(abs(model_settings$retro_yr))),
         "years of data were removed from the base model.",
-        "Mohn's rho (Mohn, 1999) values, as calculated in Hurtado-Ferro et al. (2015), were",
+        "Mohn's rho (Mohn, 1999) values were",
         "recalculated for each peel given the removal of another year of data.",
         "See Table \\ref{tab:RetroMohnsrho} for other derivations of Mohn's rho."
       ),
@@ -213,7 +212,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       label = "RetroMohnsrho",
       escape = FALSE,
       caption = paste(
-        "The average relative bias of retrospective estimates",
+        "The magnitude of retrospective pattern",
         "(Mohn's rho; Mohn, 1999) given the removal of",
         xfun::numbers_to_words(max(abs(model_settings$retro_yr))),
         "years of data for",
@@ -221,9 +220,11 @@ retro_wrapper <- function(mydir,  model_settings) {
         "fraction unfished (Figure \\ref{fig:RetroFractionunfished}),",
         " recruitment, and",
         "spawning stock biomass (\\emph{SSB}; Figure \\ref{fig:RetroSsb}).",
-        "Columns are derivations of Mohn's rho used by the",
-        "Alaska Fisheries Science Center (AFSC),",
-        "suggested by Hurtado-Ferro et al. (2015), and",
+        "Columns are a derivation of Mohn's rho used by the",
+        "Alaska Fisheries Science Center (AFSC)",
+        "suggested by Hurtado-Ferro et al. (2015),",
+        "as originally described in Mohn (1999),",
+        "and a derivation of Mohn's rho (Woods Hole Mohn's rho)",
         "used by the Northeast Fisheries Science Center (NEFSC)."
       )
     ) %>%
