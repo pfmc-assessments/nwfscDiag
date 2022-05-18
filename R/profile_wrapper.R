@@ -145,7 +145,7 @@ profile_wrapper <- function(mydir, model_settings){
       							  saveoutput = model_settings$saveoutput,
       							  overwrite = model_settings$overwrite, 
       							  whichruns = model_settings$whichruns, 
-      							  SSversion = model_settings$SSversion, 
+      							  version = model_settings$SSversion, 
       							  prior_check = model_settings$prior_check,
       							  read_like = model_settings$read_like)
 
