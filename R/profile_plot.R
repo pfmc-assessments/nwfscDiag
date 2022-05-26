@@ -27,7 +27,8 @@ profile_plot <- function(mydir, rep, para, profilesummary){
 
   get = ifelse(para == "SR_LN(R0)", "R0", para)
 
-  if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", "SR_BH_steep")) {
+  if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", 
+    "NatM_uniform_Fem_GP_1", "NatM_uniform_Mal_GP_1" "SR_BH_steep")) {
     exact = FALSE
   } else {
     exact = TRUE
@@ -144,8 +145,8 @@ profile_plot <- function(mydir, rep, para, profilesummary){
   # Create the sb and depl trajectories plot
   # Figure out what the base model parameter is in order to label that in the plot
   get = ifelse(para == "SR_LN(R0)", "log(R0)",
-  	    ifelse(para == "NatM_p_1_Fem_GP_1", "M (f)",
-  	    ifelse(para == "NatM_p_1_Mal_GP_1", "M (m)",
+  	    ifelse(para %in% c("NatM_uniform_Fem_GP_1", "NatM_p_1_Fem_GP_1"), "M (f)",
+  	    ifelse(para %in% c("NatM_uniform_Mal_GP_1", "NatM_p_1_Mal_GP_1"), "M (m)",
   	    ifelse(para == "SR_BH_steep", "h",
   	    para))))
 
