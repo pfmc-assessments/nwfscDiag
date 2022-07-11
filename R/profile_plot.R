@@ -28,7 +28,7 @@ profile_plot <- function(mydir, rep, para, profilesummary){
   get = ifelse(para == "SR_LN(R0)", "R0", para)
 
   if(para %in% c("SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", 
-    "NatM_uniform_Fem_GP_1", "NatM_uniform_Mal_GP_1" "SR_BH_steep")) {
+    "NatM_uniform_Fem_GP_1", "NatM_uniform_Mal_GP_1", "SR_BH_steep")) {
     exact = FALSE
   } else {
     exact = TRUE
