@@ -27,7 +27,7 @@ mydir = "Directory to Run Analysis"
 # (i.e., (base parameter - x) - (base parameter + x).
 # Here is an example call to the get_settings_profile function:
 
-get = get_settings_profile( parameters =  c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+get = get_settings_profile( parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
 							low =  c(0.40, 0.25, -2),
 							high = c(0.40, 1.0,  2),
 							step_size = c(0.005, 0.05, 0.25),
