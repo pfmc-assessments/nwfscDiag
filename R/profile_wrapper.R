@@ -11,6 +11,11 @@
 
 profile_wrapper <- function(mydir, model_settings){
 
+  # Add the round_any function from the plyr package to avoid conflicts between
+  # plyr and dplyr.
+  round_any <-  function(x, accuracy, f = round){
+    f(x / accuracy) * accuracy}
+
 	OS <- "Mac" # don't know the version$os info for Mac
   if(length(grep("linux", version$os)) > 0) OS <- "Linux"
   if(length(grep("mingw", version$os)) > 0) OS <- "Windows"
@@ -114,18 +119,18 @@ profile_wrapper <- function(mydir, model_settings){
     step_size <- model_settings$profile_details$step_size[aa]    
 
 	  # Create parameter vect from base down and the base up
-	  if (est != plyr::round_any(est, step_size, f = floor)) {
-      low  <- rev(seq(plyr::round_any(range[1], step_size, f = ceiling), 
-                      plyr::round_any(est, step_size, f = floor), step_size))
+	  if (est != round_any(est, step_size, f = floor)) {
+      low  <- rev(seq(round_any(range[1], step_size, f = ceiling), 
+                      round_any(est, step_size, f = floor), step_size))
     } else {
-      low  <- rev(seq(plyr::round_any(range[1], step_size, f = ceiling), 
-                  plyr::round_any(est, step_size, f = floor) - step_size, step_size))
+      low  <- rev(seq(round_any(range[1], step_size, f = ceiling), 
+                  round_any(est, step_size, f = floor) - step_size, step_size))
     }
 
-	  if (est != plyr::round_any(est, step_size, f = ceiling)) {
-      high <- c(est, seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size)) 
+	  if (est != round_any(est, step_size, f = ceiling)) {
+      high <- c(est, seq(round_any(est, step_size, f = ceiling), range[2], step_size)) 
     } else {
-      high <- c(seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size)) 
+      high <- c(seq(round_any(est, step_size, f = ceiling), range[2], step_size)) 
     }
 
 	  vec  <- c(low, high)
