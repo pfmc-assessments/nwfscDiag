@@ -54,6 +54,24 @@ profile_wrapper <- function(mydir, model_settings){
   			  to = profile_dir, overwrite = TRUE), file = "run_diag_warning.txt")
   	message(paste0( "Running profile for ", para, ".") )
 
+    # Copy the control file to run from the copy 
+    if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
+      orig_dir <- getwd()
+      setwd(profile_dir)
+      command <- paste(model_settings$model, model_settings$extras)
+      if(OS != "windows") {
+        command <- paste( "./", command, sep="")
+      }
+      cat("Running model in directory:", getwd(), "\n")
+      cat("Using the command: '", command, "'\n", sep="")
+      if(OS == "windows" & !model_settings$systemcmd){
+        shell(cmd = command)
+      } else {
+        system(command)
+      }
+      setwd(orig_dir)
+    }
+
 	  # Use the SS_parlines funtion to ensure that the input parameter can be found
 		check_para <- r4ss::SS_parlines(
                     ctlfile = "control.ss_new", 
@@ -62,22 +80,10 @@ profile_wrapper <- function(mydir, model_settings){
 							      active = FALSE)$Label == para
 
 		if(sum(check_para) == 0) {
+      print(para)
 			stop(paste0( "The input profile_custom does not match a parameter in the control.ss_new file."))
 		}
 	
-  	# Copy the control file to run from the copy 
-  	if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
-  		command <- paste(model_settings$model, model_settings$extras)
-      	if(OS != "windows") command <- paste("./", command, sep="")
-      	cat("Running model in directory:", getwd(), "\n")
-      	cat("Using the command: '", command, "'\n", sep="")
-      	if(OS == "windows" & !model_settings$systemcmd){
-      	  shell(cmd = command)
-      	} else {
-      	  system(command)
-      }
-  	}
-
     file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
     # Change the control file name in the starter file
 	  starter <- r4ss::SS_readstarter(file = file.path(profile_dir, 'starter.ss'))
