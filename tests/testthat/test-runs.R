@@ -1,25 +1,33 @@
 ### automated tests of nwfscDiag package
 
-# do runs in a temporary dir so that the state is not disrupted if tests
-# exit early.
-tmp_path <- file.path("tests", "test-runs-output")
-dir.create(tmp_path, showWarnings = FALSE)
+browser()
+tmp_path <- file.path("test-runs-output")
+dir.create(tmp_path, showWarnings = TRUE)
 example_path <- system.file("extdata", package = "nwfscDiag")
 file.copy(example_path, tmp_path, recursive = TRUE)
 # runs_path avoids repeated use of "extdata" that would have to be added
 # if using tmp_path directly
 runs_path <- file.path(tmp_path, "extdata")
-# clean up (Comment out this if  you want to keep the temp files)
+browser()
+
+# clean up (Comment out this if  you want to keep the files created by the tests)
 on.exit(unlink(tmp_path, recursive = TRUE))
 
+test_path <- file.path(runs_path, "simple")
+skip_test <- TRUE
+if(.Platform$OS.type == "windows") {
+	if (file.exists(file.path(test_path, "ss.exe"))) {
+		skip_test <- FALSE
+	}
+}
+	if(.Platform$OS.type == "unix") {
+	if (file.exists(file.path(test_path, "ss"))) {
+		skip_test <- FALSE
+	}
+}
 
 test_that("Do profile using the simple model", {
-
-	test_path <- file.path(runs_path, "simple")
-    skip_if((!file.exists(file.path(test_path, "ss"))) &
-      (!file.exists(file.path(test_path, "ss.exe"))),
-    message = "SS executable missing"
-    )
+    skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
 	get <- get_settings_profile(parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
@@ -51,12 +59,7 @@ test_that("Do profile using the simple model", {
 
 
 test_that("Do jitters using the simple model", {
-
-	test_path <- file.path(runs_path, "simple")
-    skip_if((!file.exists(file.path(test_path, "ss"))) &
-      (!file.exists(file.path(test_path, "ss.exe"))),
-    message = "SS executable missing"
-    )
+    skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
 	model_settings <- get_settings(settings = list(base_name = "simple",
@@ -74,12 +77,7 @@ test_that("Do jitters using the simple model", {
 
 
 test_that("Do retrospectives using the simple model", {
-
-	test_path <- file.path(runs_path, "simple")
-    skip_if((!file.exists(file.path(test_path, "ss"))) &
-      (!file.exists(file.path(test_path, "ss.exe"))),
-    message = "SS executable missing"
-    )
+	skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
 	model_settings <- get_settings(settings = list(base_name = "simple",
