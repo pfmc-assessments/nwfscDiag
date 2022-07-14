@@ -1,20 +1,15 @@
 ### automated tests of nwfscDiag package
-context("nwfscDiag functions that require executables to run")
 
 # do runs in a temporary dir so that the state is not disrupted if tests
 # exit early.
-library(testthat)
-runs_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs"
-devtools::load_all("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag")
-
-tmp_path <- file.path(tempdir(check = TRUE), "test-runs")
+tmp_path <- file.path("test", "test-runs")
 dir.create(tmp_path, showWarnings = FALSE)
 example_path <- system.file("extdata", package = "nwfscDiag")
 file.copy(example_path, tmp_path, recursive = TRUE)
 # runs_path avoids repeated use of "extdata" that would have to be added
 # if using tmp_path directly
 runs_path <- file.path(tmp_path, "extdata")
-# clean up
+# clean up (Comment out this if  you want to keep the temp files)
 on.exit(unlink(tmp_path, recursive = TRUE))
 
 
