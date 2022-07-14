@@ -1,31 +1,27 @@
 ### automated tests of nwfscDiag package
 context("nwfscDiag functions that require executables to run")
 
-# do runs in a temporary dir so that the state is not disrupted if tests
-# exit early.
-library(testthat)
-runs_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs"
-devtools::load_all("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag")
-
-tmp_path <- file.path(tempdir(check = TRUE), "test-runs")
-dir.create(tmp_path, showWarnings = FALSE)
-example_path <- system.file("extdata", package = "nwfscDiag")
-file.copy(example_path, tmp_path, recursive = TRUE)
-# runs_path avoids repeated use of "extdata" that would have to be added
-# if using tmp_path directly
-runs_path <- file.path(tmp_path, "extdata")
-# clean up
-on.exit(unlink(tmp_path, recursive = TRUE))
-
+# This is the directory where I want the tests to specifically run
+#runs_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs"
+runs_path <- "tests/test-runs"
+# Location where the simple model is saved in the package
+#simple_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
+simple_path <- "inst/extdata"
+# May want to revise this to the following command once the package is
+# built with the new example model
+# simple_path <- system.file("extdata", package = "nwfscDiag")
+dir.create(file.path(runs_path, "simple"), showWarnings = FALSE)
+file.copy(simple_path, file.path(runs_path, "simple"), recursive = TRUE)
+on.exit(unlink(runs_path, recursive = TRUE))
 
 test_that("Do profile using the simple model", {
 
 	test_path <- file.path(runs_path, "simple")
-    skip_if((!file.exists(file.path(test_path, "ss"))) &
-      (!file.exists(file.path(test_path, "ss.exe"))),
-    message = "SS executable missing"
-    )
-    path <- file.path(runs_path)
+  skip_if((!file.exists(file.path(test_path, "ss"))) &
+    (!file.exists(file.path(test_path, "ss.exe"))),
+  message = "SS executable missing"
+  )
+  path <- file.path(runs_path)
 
 	get <- get_settings_profile(parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
 								low =  c(0.20, 0.40, -1),
