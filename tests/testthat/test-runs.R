@@ -1,14 +1,16 @@
 ### automated tests of nwfscDiag package
 
-browser()
+# This is the directory where I want the tests to specifically run
+#tmp_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs-output"
 tmp_path <- file.path("test-runs-output")
 dir.create(tmp_path, showWarnings = TRUE)
+
+# Location where the simple model is saved in the package
 example_path <- system.file("extdata", package = "nwfscDiag")
 file.copy(example_path, tmp_path, recursive = TRUE)
 # runs_path avoids repeated use of "extdata" that would have to be added
 # if using tmp_path directly
 runs_path <- file.path(tmp_path, "extdata")
-browser()
 
 # clean up (Comment out this if  you want to keep the files created by the tests)
 on.exit(unlink(tmp_path, recursive = TRUE))
