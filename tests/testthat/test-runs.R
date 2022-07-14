@@ -22,7 +22,7 @@ if(.Platform$OS.type == "windows") {
 		skip_test <- FALSE
 	}
 }
-	if(.Platform$OS.type == "unix") {
+if(.Platform$OS.type == "unix") {
 	if (file.exists(file.path(test_path, "ss"))) {
 		skip_test <- FALSE
 	}
