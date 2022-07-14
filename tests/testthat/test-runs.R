@@ -2,7 +2,7 @@
 
 # do runs in a temporary dir so that the state is not disrupted if tests
 # exit early.
-tmp_path <- file.path("test", "test-runs")
+tmp_path <- file.path("tests", "test-runs-output")
 dir.create(tmp_path, showWarnings = FALSE)
 example_path <- system.file("extdata", package = "nwfscDiag")
 file.copy(example_path, tmp_path, recursive = TRUE)
