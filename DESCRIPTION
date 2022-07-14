@@ -20,6 +20,8 @@ Imports:
 	utils,
 	xfun,
 	testthat
+Suggests:
+  devtools
 Remotes: 
 	github::r4ss/r4ss
 RoxygenNote: 7.1.1
