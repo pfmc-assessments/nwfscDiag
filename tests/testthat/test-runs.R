@@ -2,6 +2,7 @@
 
 # This is the directory where I want the tests to specifically run
 #tmp_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs-output"
+#exe_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
 tmp_path <- file.path("test-runs-output")
 dir.create(tmp_path, showWarnings = TRUE)
 
@@ -11,6 +12,7 @@ file.copy(example_path, tmp_path, recursive = TRUE)
 # runs_path avoids repeated use of "extdata" that would have to be added
 # if using tmp_path directly
 runs_path <- file.path(tmp_path, "extdata")
+file.copy(file.path(runs_path, "ss.exe"), file.path(runs_path, "simple", "ss.exe"))
 
 # clean up (Comment out this if  you want to keep the files created by the tests)
 on.exit(unlink(tmp_path, recursive = TRUE))
@@ -29,6 +31,7 @@ if(.Platform$OS.type == "unix") {
 }
 
 test_that("Do profile using the simple model", {
+
     skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
@@ -61,6 +64,7 @@ test_that("Do profile using the simple model", {
 
 
 test_that("Do jitters using the simple model", {
+ 
     skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
@@ -79,6 +83,7 @@ test_that("Do jitters using the simple model", {
 
 
 test_that("Do retrospectives using the simple model", {
+
 	skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
