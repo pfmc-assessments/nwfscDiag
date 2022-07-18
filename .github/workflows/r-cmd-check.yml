@@ -7,7 +7,7 @@ on:
   # The schedule build trigger runs the workflow at a scheduled time.
   schedule:
     # This should run the default branch (typically main) weekly on sunday at 2:45am UTC
-    - cron: '45 2 * * 0'
+    - cron: '01 3 * * 2'
   # The workflow_dispatch build trigger adds a button so that you can start workflows manually.
   workflow_dispatch:
   # The push build trigger runs jobs when new commits are pushed up to github.
