@@ -42,7 +42,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     newsubdir = 'retro',
     retro_yrs = -1:-5,
     overwrite = TRUE,
-    intern = FALSE,
+    show_in_console = FALSE,
     CallType = "system",
     RemoveBlocks = FALSE,
     
