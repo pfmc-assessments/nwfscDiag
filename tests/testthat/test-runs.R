@@ -1,27 +1,39 @@
 ### automated tests of nwfscDiag package
-context("nwfscDiag functions that require executables to run")
 
 # This is the directory where I want the tests to specifically run
-#runs_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs"
-runs_path <- "tests/test-runs"
+#tmp_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs-output"
+#exe_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
+tmp_path <- file.path("test-runs-output")
+dir.create(tmp_path, showWarnings = TRUE)
+
 # Location where the simple model is saved in the package
-#simple_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
-simple_path <- "inst/extdata"
-# May want to revise this to the following command once the package is
-# built with the new example model
-# simple_path <- system.file("extdata", package = "nwfscDiag")
-dir.create(file.path(runs_path, "simple"), showWarnings = FALSE)
-file.copy(simple_path, file.path(runs_path, "simple"), recursive = TRUE)
-on.exit(unlink(runs_path, recursive = TRUE))
+example_path <- system.file("extdata", package = "nwfscDiag")
+file.copy(example_path, tmp_path, recursive = TRUE)
+# runs_path avoids repeated use of "extdata" that would have to be added
+# if using tmp_path directly
+runs_path <- file.path(tmp_path, "extdata")
+file.copy(file.path(runs_path, "ss.exe"), file.path(runs_path, "simple", "ss.exe"))
+
+# clean up (Comment out this if  you want to keep the files created by the tests)
+on.exit(unlink(tmp_path, recursive = TRUE))
+
+test_path <- file.path(runs_path, "simple")
+skip_test <- TRUE
+if(.Platform$OS.type == "windows") {
+	if (file.exists(file.path(test_path, "ss.exe"))) {
+		skip_test <- FALSE
+	}
+}
+if(.Platform$OS.type == "unix") {
+	if (file.exists(file.path(test_path, "ss"))) {
+		skip_test <- FALSE
+	}
+}
 
 test_that("Do profile using the simple model", {
 
-	test_path <- file.path(runs_path, "simple")
-  skip_if((!file.exists(file.path(test_path, "ss"))) &
-    (!file.exists(file.path(test_path, "ss.exe"))),
-  message = "SS executable missing"
-  )
-  path <- file.path(runs_path)
+    skip_if(skip_test == TRUE, message = "SS executable missing")
+    path <- file.path(runs_path)
 
 	get <- get_settings_profile(parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
 								low =  c(0.20, 0.40, -1),
@@ -52,12 +64,8 @@ test_that("Do profile using the simple model", {
 
 
 test_that("Do jitters using the simple model", {
-
-	test_path <- file.path(runs_path, "simple")
-    skip_if((!file.exists(file.path(test_path, "ss"))) &
-      (!file.exists(file.path(test_path, "ss.exe"))),
-    message = "SS executable missing"
-    )
+ 
+    skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
 	model_settings <- get_settings(settings = list(base_name = "simple",
@@ -76,11 +84,7 @@ test_that("Do jitters using the simple model", {
 
 test_that("Do retrospectives using the simple model", {
 
-	test_path <- file.path(runs_path, "simple")
-    skip_if((!file.exists(file.path(test_path, "ss"))) &
-      (!file.exists(file.path(test_path, "ss.exe"))),
-    message = "SS executable missing"
-    )
+	skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
 	model_settings <- get_settings(settings = list(base_name = "simple",
