@@ -30,7 +30,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     model = "ss",
     extras = "-nohess",
     Njitter = 100,
-    Intern = TRUE,
+    show_in_console = TRUE,
     systemcmd = FALSE,
     printlikes = FALSE,
     verbose = FALSE,

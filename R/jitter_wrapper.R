@@ -29,7 +29,7 @@ jitter_wrapper <- function(mydir,  model_settings){
                        model = model_settings$model,
                        extras = model_settings$extras,
                        Njitter = model_settings$Njitter,
-                       Intern = model_settings$Intern,
+                       show_in_console = model_settings$show_in_console,
                        systemcmd = model_settings$systemcmd,
                        printlikes = model_settings$printlikes,
                        verbose = model_settings$verbose,
