@@ -30,7 +30,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     model = "ss",
     extras = "-nohess",
     Njitter = 100,
-    Intern = TRUE,
+    show_in_console = TRUE,
     systemcmd = FALSE,
     printlikes = FALSE,
     verbose = FALSE,
@@ -42,7 +42,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     newsubdir = 'retro',
     retro_yrs = -1:-5,
     overwrite = TRUE,
-    intern = FALSE,
+    show_in_console = FALSE,
     CallType = "system",
     RemoveBlocks = FALSE,
     
