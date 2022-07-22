@@ -1,10 +1,12 @@
 ### automated tests of nwfscDiag package
-
 # This is the directory where I want the tests to specifically run
-#tmp_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests/test-runs-output"
+setwd("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests") #/test-runs-output"
 #exe_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
-tmp_path <- file.path("test-runs-output")
-dir.create(tmp_path, showWarnings = TRUE)
+# pak::pak() to make sure all dependencies are loaded <- did not work on my machine
+# devtools::test()
+
+dir.create(getwd(), "test-runs-output", showWarnings = TRUE)
+tmp_path <- file.path(getwd(), "test-runs-output")
 
 # Location where the simple model is saved in the package
 example_path <- system.file("extdata", package = "nwfscDiag")
@@ -12,10 +14,10 @@ file.copy(example_path, tmp_path, recursive = TRUE)
 # runs_path avoids repeated use of "extdata" that would have to be added
 # if using tmp_path directly
 runs_path <- file.path(tmp_path, "extdata")
-file.copy(file.path(runs_path, "ss.exe"), file.path(runs_path, "simple", "ss.exe"))
+#file.copy(file.path(runs_path, "ss.exe"), file.path(runs_path, "simple", "ss.exe"))
 
 # clean up (Comment out this if  you want to keep the files created by the tests)
-on.exit(unlink(tmp_path, recursive = TRUE))
+# on.exit(unlink(tmp_path, recursive = TRUE))
 
 test_path <- file.path(runs_path, "simple")
 skip_test <- TRUE
@@ -32,12 +34,12 @@ if(.Platform$OS.type == "unix") {
 
 test_that("Do profile using the simple model", {
 
-    skip_if(skip_test == TRUE, message = "SS executable missing")
-    path <- file.path(runs_path)
+   #skip_if(skip_test == TRUE, message = "SS executable missing")
+   path <- file.path(runs_path)
 
 	get <- get_settings_profile(parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
-								low =  c(0.20, 0.40, -1),
-								high = c(0.20, 1.0,  1),
+								low =  c(0.20, 0.40, -0.5),
+								high = c(0.20, 1.0,  0.5),
 								step_size = c(0.01, 0.1, 0.25),
 								param_space = c('multiplier', 'real', 'relative'))
 
@@ -65,12 +67,12 @@ test_that("Do profile using the simple model", {
 
 test_that("Do jitters using the simple model", {
  
-    skip_if(skip_test == TRUE, message = "SS executable missing")
+    #skip_if(skip_test == TRUE, message = "SS executable missing")
     path <- file.path(runs_path)
 
 	model_settings <- get_settings(settings = list(base_name = "simple",
 												   run = c("jitter"),
-												   Njitter = 10))
+												   Njitter = 3))
 
 	run_diagnostics(mydir = path, model_settings = model_settings)
 
@@ -84,8 +86,8 @@ test_that("Do jitters using the simple model", {
 
 test_that("Do retrospectives using the simple model", {
 
-	skip_if(skip_test == TRUE, message = "SS executable missing")
-    path <- file.path(runs_path)
+	#skip_if(skip_test == TRUE, message = "SS executable missing")
+   path <- file.path(runs_path)
 
 	model_settings <- get_settings(settings = list(base_name = "simple",
 											  run = c("retro"),
