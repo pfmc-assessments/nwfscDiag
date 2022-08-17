@@ -11,6 +11,11 @@
 
 profile_wrapper <- function(mydir, model_settings){
 
+  # Add the round_any function from the plyr package to avoid conflicts between
+  # plyr and dplyr.
+  round_any <-  function(x, accuracy, f = round){
+    f(x / accuracy) * accuracy}
+
 	OS <- "Mac" # don't know the version$os info for Mac
   if(length(grep("linux", version$os)) > 0) OS <- "Linux"
   if(length(grep("mingw", version$os)) > 0) OS <- "Windows"
@@ -54,6 +59,24 @@ profile_wrapper <- function(mydir, model_settings){
   			  to = profile_dir, overwrite = TRUE), file = "run_diag_warning.txt")
   	message(paste0( "Running profile for ", para, ".") )
 
+    # Copy the control file to run from the copy 
+    if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
+      orig_dir <- getwd()
+      setwd(profile_dir)
+      command <- paste(model_settings$model, model_settings$extras)
+      if(OS != "windows") {
+        command <- paste( "./", command, sep="")
+      }
+      cat("Running model in directory:", getwd(), "\n")
+      cat("Using the command: '", command, "'\n", sep="")
+      if(OS == "windows" & !model_settings$systemcmd){
+        shell(cmd = command)
+      } else {
+        system(command)
+      }
+      setwd(orig_dir)
+    }
+
 	  # Use the SS_parlines funtion to ensure that the input parameter can be found
 		check_para <- r4ss::SS_parlines(
                     ctlfile = "control.ss_new", 
@@ -62,22 +85,10 @@ profile_wrapper <- function(mydir, model_settings){
 							      active = FALSE)$Label == para
 
 		if(sum(check_para) == 0) {
+      print(para)
 			stop(paste0( "The input profile_custom does not match a parameter in the control.ss_new file."))
 		}
 	
-  	# Copy the control file to run from the copy 
-  	if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
-  		command <- paste(model_settings$model, model_settings$extras)
-      	if(OS != "windows") command <- paste("./", command, sep="")
-      	cat("Running model in directory:", getwd(), "\n")
-      	cat("Using the command: '", command, "'\n", sep="")
-      	if(OS == "windows" & !model_settings$systemcmd){
-      	  shell(cmd = command)
-      	} else {
-      	  system(command)
-      }
-  	}
-
     file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
     # Change the control file name in the starter file
 	  starter <- r4ss::SS_readstarter(file = file.path(profile_dir, 'starter.ss'))
@@ -108,18 +119,18 @@ profile_wrapper <- function(mydir, model_settings){
     step_size <- model_settings$profile_details$step_size[aa]    
 
 	  # Create parameter vect from base down and the base up
-	  if (est != plyr::round_any(est, step_size, f = floor)) {
-      low  <- rev(seq(plyr::round_any(range[1], step_size, f = ceiling), 
-                      plyr::round_any(est, step_size, f = floor), step_size))
+	  if (est != round_any(est, step_size, f = floor)) {
+      low  <- rev(seq(round_any(range[1], step_size, f = ceiling), 
+                      round_any(est, step_size, f = floor), step_size))
     } else {
-      low  <- rev(seq(plyr::round_any(range[1], step_size, f = ceiling), 
-                  plyr::round_any(est, step_size, f = floor) - step_size, step_size))
+      low  <- rev(seq(round_any(range[1], step_size, f = ceiling), 
+                  round_any(est, step_size, f = floor) - step_size, step_size))
     }
 
-	  if (est != plyr::round_any(est, step_size, f = ceiling)) {
-      high <- c(est, seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size)) 
+	  if (est != round_any(est, step_size, f = ceiling)) {
+      high <- c(est, seq(round_any(est, step_size, f = ceiling), range[2], step_size)) 
     } else {
-      high <- c(seq(plyr::round_any(est, step_size, f = ceiling), range[2], step_size)) 
+      high <- c(seq(round_any(est, step_size, f = ceiling), range[2], step_size)) 
     }
 
 	  vec  <- c(low, high)

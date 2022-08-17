@@ -60,13 +60,14 @@ retro_wrapper <- function(mydir,  model_settings) {
 
   r4ss::SS_doRetro(
     masterdir = retro_dir, 
-  	overwrite = model_settings$overwrite,
+    oldsubdir = model_settings$oldsubdir, 
+    newsubdir = model_settings$newsubdir,  	
+    subdirstart = "retro",
+    years = model_settings$retro_yrs,
+    overwrite = model_settings$overwrite,
     exefile = model_settings$model, 
     extras = model_settings$extras,
-  	oldsubdir = model_settings$oldsubdir, 
-  	newsubdir = model_settings$newsubdir, 
-  	years = model_settings$retro_yrs,
-    intern = model_settings$intern,
+    show_in_console = model_settings$show_in_console,
     CallType = model_settings$CallType,
     RemoveBlocks = model_settings$RemoveBlocks
   )

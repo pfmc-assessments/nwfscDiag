@@ -17,7 +17,7 @@ remotes::install_github("nwfsc-assess/nwfscDiag")
 ## Running the code
 The package depends upon a few other packages and they should be installed upon installation of the package. The dependant packages are:
 ```
-install.packages('plyr')
+install.packages('dplyr')
 remotes::install_github('r4ss/r4ss')
 ```
 
