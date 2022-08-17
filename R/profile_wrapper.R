@@ -136,7 +136,7 @@ profile_wrapper <- function(mydir, model_settings){
 	  vec  <- c(low, high)
 	  num <- sort(vec, index.return = TRUE)$ix
 
-	  profile <- r4ss::SS_profile(
+	  profile <- r4ss::profile(
                       dir = profile_dir,
           						masterctlfile = "control.ss_new",
           						newctlfile = model_settings$newctlfile, 
