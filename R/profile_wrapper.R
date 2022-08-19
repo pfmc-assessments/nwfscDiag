@@ -138,27 +138,30 @@ profile_wrapper <- function(mydir, model_settings){
 
 	  profile <- r4ss::profile(
                       dir = profile_dir,
-          						masterctlfile = "control.ss_new",
+          						oldctlfile = "control.ss_new",
           						newctlfile = model_settings$newctlfile, 
+          						linenum = model_settings$linenum, 
           						string = para, 
           						profilevec = vec,
-          						model = model_settings$model, 
-          						extras = model_settings$extras, 
-          						systemcmd = model_settings$systemcmd,
-          						linenum = model_settings$linenum, 
       							  usepar = model_settings$usepar, 
       							  globalpar = model_settings$globalpar, 
-      							  parfile = model_settings$parfile,
       							  parlinenum = model_settings$parlinenum, 
       							  parstring = model_settings$parstring,
-      							  dircopy = model_settings$dircopy, 
-      							  exe.delete = model_settings$exe.delete,
       							  saveoutput = model_settings$saveoutput,
       							  overwrite = model_settings$overwrite, 
       							  whichruns = model_settings$whichruns, 
-      							  version = model_settings$SSversion, 
       							  prior_check = model_settings$prior_check,
-      							  read_like = model_settings$read_like)
+      							  read_like = model_settings$read_like,
+										  exe = "ss",
+          						extras = model_settings$extras)
+
+
+#          						model = model_settings$model, 
+ #         						systemcmd = model_settings$systemcmd,
+#      							  parfile = model_settings$parfile,
+#      							  dircopy = model_settings$dircopy, 
+#      							  exe.delete = model_settings$exe.delete,
+#      							  version = model_settings$SSversion, 
 
 
   # Save the output and the summary
