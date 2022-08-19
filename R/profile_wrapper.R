@@ -155,15 +155,6 @@ profile_wrapper <- function(mydir, model_settings){
 										  exe = "ss",
           						extras = model_settings$extras)
 
-
-#          						model = model_settings$model, 
- #         						systemcmd = model_settings$systemcmd,
-#      							  parfile = model_settings$parfile,
-#      							  dircopy = model_settings$dircopy, 
-#      							  exe.delete = model_settings$exe.delete,
-#      							  version = model_settings$SSversion, 
-
-
   # Save the output and the summary
   name <- paste0("profile_", para)
   vec_unordered <- vec
