@@ -20,6 +20,7 @@ The package depends upon a few other packages and they should be installed upon 
 install.packages('dplyr')
 remotes::install_github('r4ss/r4ss')
 ```
+A new version of r4ss package was released on July 29, 2022. This release included some significant changes that included changes to function names and function inputs.  The current version of the nwfscDiag 1.1.0 package is designed to work with the latest release of r4ss. Please see release version 1.0.1 to use earlier versions of r4ss. 
 
 ## Reporting problems
 
