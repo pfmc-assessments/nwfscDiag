@@ -15,7 +15,7 @@ on:
     # specifying branches means the workflow will only run on pushes to the branches listed, in this case, only main
     branches: 
       - main
-      - gha
+      - r4ss_1.46.1
   # The pull_request build trigger runs jobs when a pull request is made or commits are pushed to the pull request.
   pull_request:
     # specifying branches means the workflow will only run when the pull request is to the merge into the branch listed, in this case, main.
