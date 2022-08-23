@@ -25,13 +25,13 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     para_offset = FALSE,
     run = c("jitter", "profile", "retro"),
     profile_details = NULL,
+    version = "3.30",
+    exe = "ss",
 
   	# Jitter Settings
-    model = "ss",
     extras = "-nohess",
     Njitter = 100,
     show_in_console = TRUE,
-    systemcmd = FALSE,
     printlikes = FALSE,
     verbose = FALSE,
     jitter_fraction = 0.05,
@@ -43,29 +43,25 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     retro_yrs = -1:-5,
     overwrite = TRUE,
     show_in_console = FALSE,
-    CallType = "system",
-    RemoveBlocks = FALSE,
     
     # Profile Settings
     remove_files = TRUE,
     newctlfile = "control_modified.ss", 
-    profile_init_values_src = 0, 
-    #prior_like = 0, # turn off the prior contribution to likelihood
     linenum = NULL, 
     string = NULL, 
     profilevec = NULL,
     usepar = FALSE, 
     globalpar = FALSE, 
-    parfile = "ss.par",
     parlinenum = NULL, 
     parstring = NULL,
-    dircopy = TRUE, 
-    exe.delete = FALSE,
     saveoutput = TRUE,
+    overwrite = TRUE,
     whichruns = NULL, 
-    SSversion = "3.30", 
     prior_check = FALSE,
-    read_like = TRUE
+    read_like = TRUE,
+    exe = "ss",
+    verbose = TRUE,
+    init_values_src = 0      
   )
 
   Settings_all$profile_details = get_settings_profile()

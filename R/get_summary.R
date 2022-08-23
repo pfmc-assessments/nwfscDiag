@@ -25,7 +25,7 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary){
 
 	out     <- data.frame("run" = gsub("replist", "", names(outputs)),
 						  "profile_parameter" = para,
-						  "parameter_value" = vec, 
+						  "parameter_value" = as.numeric(vec), 
 	  					  "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
 	  					  "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
 	  					  "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),

@@ -1,12 +1,21 @@
+#' Run [r4ss::jitter] based on `model_settings`
+#' 
 #' Code to run jitters for a model
 #' Output will be saved in an Rdata object called "jitter_output"
 #' Plots and tables generated to visualize results
+#' 
+#' @seealso The following functions interact with `jitter_wrapper`:
+#' * [run_diagnostics]: calls `jitter_wrapper`
+#' * [r4ss::jitter]: the workhorse of `jitter_wrapper` that does the jitters
 #'
 #' @template mydir
 #' @template model_settings
 #' 
 #' @author Chantel Wetzel
-#' @return A vector of likelihoods for each jitter iteration.
+#' @return
+#' Nothing is explicitly returned from `jitter_wrapper`.
+#' 
+#'
 #' @export
 
 jitter_wrapper <- function(mydir,  model_settings){
@@ -25,16 +34,15 @@ jitter_wrapper <- function(mydir,  model_settings){
   			  overwrite = TRUE), file = "run_diag_warning.txt")
   	message("Running jitters: temporarily changing working directory to: ", jitter_dir)
 
-  	r4ss::SS_RunJitter(mydir = jitter_dir,
-                       model = model_settings$model,
-                       extras = model_settings$extras,
-                       Njitter = model_settings$Njitter,
-                       show_in_console = model_settings$show_in_console,
-                       systemcmd = model_settings$systemcmd,
-                       printlikes = model_settings$printlikes,
-                       verbose = model_settings$verbose,
-                       jitter_fraction = model_settings$jitter_fraction,
-                       init_values_src = model_settings$jitter_init_values_src )	
+  	r4ss::jitter(dir = jitter_dir,
+  							 exe = model_settings$exe,              
+                 Njitter = model_settings$Njitter,            
+                 printlikes = model_settings$printlikes,
+                 verbose = model_settings$verbose,
+                 jitter_fraction = model_settings$jitter_fraction,
+                 init_values_src = model_settings$jitter_init_values_src,
+                 extras = model_settings$extras, 
+                 show_in_console = model_settings$show_in_console)	
 
   #### Read in results using other r4ss functions
   #keys <- gsub("Report([0-9]+)\\.sso", "\\1", dir(jitter_dir, pattern = "^Report[0-9]"))

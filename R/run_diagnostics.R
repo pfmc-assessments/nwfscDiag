@@ -22,7 +22,7 @@ run_diagnostics <- function(mydir, model_settings ){
   if (!file.exists(file.path(model_dir, "Report.sso"))) {
     orig_dir <- getwd()
     setwd(model_dir)
-    command <- paste(model_settings$model, model_settings$extras)
+    command <- paste(model_settings$exe, model_settings$extras)
     if(OS != "windows") {
       command <- paste( "./", command, sep="")
     }

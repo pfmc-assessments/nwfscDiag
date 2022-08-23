@@ -1,12 +1,22 @@
+#' Run [r4ss::profile] based on `model_settings`
+#'
 #' Generate likelihood profiles
 #' To be called from the run_diagnostics function after creating
 #' the model settings using the get_settings function.
 #' 
 #'
+#' @seealso The following functions interact with `profile_wrapper`:
+#' * [run_diagnostics]: calls `profile_wrapper`
+#' * [r4ss::profile]: the workhorse of `profile_wrapper` that does the parameter profiles
+#'
+#'
 #' @template mydir
 #' @template model_settings
 #' 
 #' @author Chantel Wetzel.
+#' @return
+#' Nothing is explicitly returned from `profile_wrapper`.
+#' The following objects are saved to the disk.
 #' @export
 
 profile_wrapper <- function(mydir, model_settings){
@@ -20,13 +30,13 @@ profile_wrapper <- function(mydir, model_settings){
   if(length(grep("linux", version$os)) > 0) OS <- "Linux"
   if(length(grep("mingw", version$os)) > 0) OS <- "Windows"
 	
-  # figure out name of executable based on 'model' input which may contain .exe
+  # figure out name of executable based on 'exe' input which may contain .exe
   if(length(grep(".exe", tolower(file.path(mydir, model_settings$base_name)))) == 1) {
-    # if input 'model' includes .exe then assume it's Windows and just use the name
-    exe <- model_settings$model
+    # if input 'exe' includes .exe then assume it's Windows and just use the name
+    exe <- model_settings$exe
   } else {
     # if 'model' doesn't include .exe then append it (for Windows computers only)
-    exe <- paste(model_settings$model, ifelse(OS == "Windows", ".exe", ""), sep="")
+    exe <- paste(model_settings$exe, ifelse(OS == "Windows", ".exe", ""), sep="")
   }
   # check whether exe is in directory
   if(OS == "Windows") {
@@ -82,6 +92,7 @@ profile_wrapper <- function(mydir, model_settings){
                     ctlfile = "control.ss_new", 
 							      dir = profile_dir, 
 							      verbose = FALSE, 
+                    version = model_settings$version,
 							      active = FALSE)$Label == para
 
 		if(sum(check_para) == 0) {
@@ -93,7 +104,7 @@ profile_wrapper <- function(mydir, model_settings){
     # Change the control file name in the starter file
 	  starter <- r4ss::SS_readstarter(file = file.path(profile_dir, 'starter.ss'))
 	  starter$ctlfile <- "control_modified.ss"
-	  starter$init_values_src <- model_settings$profile_init_values_src
+	  starter$init_values_src <- model_settings$init_values_src
 	  # make sure the prior likelihood is calculated for non-estimated quantities
 	  starter$prior_like <- prior_used
 	  r4ss::SS_writestarter(mylist = starter, dir = profile_dir, overwrite = TRUE) 
@@ -152,7 +163,8 @@ profile_wrapper <- function(mydir, model_settings){
       							  whichruns = model_settings$whichruns, 
       							  prior_check = model_settings$prior_check,
       							  read_like = model_settings$read_like,
-										  exe = "ss",
+										  exe = model_settings$exe,
+                      verbose = model_settings$verbose,
           						extras = model_settings$extras)
 
   # Save the output and the summary
