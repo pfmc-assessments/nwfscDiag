@@ -1,6 +1,7 @@
 ### automated tests of nwfscDiag package
 # This is the directory where I want the tests to specifically run
-setwd("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests") #/test-runs-output"
+#setwd("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests") 
+setwd("/test-runs-output")
 #exe_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
 # pak::pak() to make sure all dependencies are loaded <- did not work on my machine
 # devtools::test()
