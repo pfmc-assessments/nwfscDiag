@@ -1,24 +1,18 @@
 ### automated tests of nwfscDiag package
-# This is the directory where I want the tests to specifically run
-#setwd("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests") 
-setwd("/test-runs-output")
-#exe_path <- "C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/inst/extdata"
+#
 # pak::pak() to make sure all dependencies are loaded <- did not work on my machine
 # devtools::test()
-
-dir.create(getwd(), "test-runs-output", showWarnings = TRUE)
-tmp_path <- file.path(getwd(), "test-runs-output")
+#
+# This is the directory where I want the tests to specifically run
+#setwd("C:/Users/Chantel.Wetzel/Documents/GitHub/nwfscDiag/tests") 
+tmp_path <- file.path("/test-runs-output")
+dir.create(tmp_path, "test-runs-output", showWarnings = TRUE)
 
 # Location where the simple model is saved in the package
-example_path <- system.file("extdata", package = "nwfscDiag")
-file.copy(example_path, tmp_path, recursive = TRUE)
-# runs_path avoids repeated use of "extdata" that would have to be added
-# if using tmp_path directly
-runs_path <- file.path(tmp_path, "extdata")
-#file.copy(file.path(runs_path, "ss.exe"), file.path(runs_path, "simple", "ss.exe"))
+runs_path <- system.file("extdata", package = "nwfscDiag")
 
 # clean up (Comment out this if  you want to keep the files created by the tests)
-# on.exit(unlink(tmp_path, recursive = TRUE))
+on.exit(unlink(tmp_path, recursive = TRUE))
 
 test_path <- file.path(runs_path, "simple")
 skip_test <- TRUE
