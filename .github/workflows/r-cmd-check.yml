@@ -1,0 +1,102 @@
+# Download the stock synthesis executable, then Run r cmd check
+
+# Name of the workflow, which will be what it is called under the "actions" tab
+name: r-cmd-check
+# on specifies the build triggers. Learn more at https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+on:
+  # The schedule build trigger runs the workflow at a scheduled time.
+  schedule:
+    # This should run the default branch (typically main) weekly on sunday at 2:45am UTC
+    - cron: '01 3 * * 2'
+  # The workflow_dispatch build trigger adds a button so that you can start workflows manually.
+  workflow_dispatch:
+  # The push build trigger runs jobs when new commits are pushed up to github.
+  push:
+    # specifying branches means the workflow will only run on pushes to the branches listed, in this case, only main
+    branches: 
+      - main
+      - r4ss_1.46.1
+  # The pull_request build trigger runs jobs when a pull request is made or commits are pushed to the pull request.
+  pull_request:
+    # specifying branches means the workflow will only run when the pull request is to the merge into the branch listed, in this case, main.
+    branches:
+      -main
+# jobs specifies the jobs to run. you can have multiple jobs per github actions workflow, but in this case we have only one, which is
+# named run-R-CMD-check.
+jobs:
+  run-R-CMD-check:
+    # the operating system to run on
+    runs-on: 'ubuntu-latest'
+    strategy:
+      fail-fast: false
+    # environment settings, needed for running r (first 2 settings) and downloading from github (GITHUB_PAT)
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: 'https://packagemanager.rstudio.com/cran/__linux__/focal/latest'
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout github repository, in this case nwfscDiags
+        uses: actions/checkout@v2
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@master
+        with:
+          r-version: 'release'
+
+      - name: Setup pandoc, in case of vignettes in the R package
+        uses: r-lib/actions/setup-pandoc@master
+
+      - name: Query dependencies for the r package
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
+          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+        shell: Rscript {0}
+
+      - name: Cache R packages to speed up future runs
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+      - name: Install system dependencies for linux
+        run: |
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          
+      - name: Install r package dependencies
+        run: |
+          remotes::install_deps(dependencies = TRUE)
+          remotes::install_cran("devtools")
+          remotes::install_cran("covr") # needed if calcing codecoverage.
+        shell: Rscript {0}
+
+      - name: Get the latest release SS3 executable and move to expected location
+        run: |
+          curl https://api.github.com/repos/nmfs-stock-synthesis/stock-synthesis/releases/latest | grep "browser_download_url" | grep -Eo 'https://[^\"]*' | grep "ss_linux" | xargs wget
+          mv ss_linux ss
+          sudo chmod a+x ss
+          cp ss inst/extdata/simple/ss
+          rm ss
+          
+      - name: run r-cmd-check using R
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: 'linux-release-results'
+          path: check

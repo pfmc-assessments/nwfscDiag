@@ -1,10 +1,10 @@
 Package: nwfscDiag
 Type: Package
 Title: Generate standard NWFSC assessment diagnostics
-Version: 1.0
+Version: 1.1.0
 Author: Chantel Wetzel
 Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
-Description: Package that can create jitter runs, retrospective runs, and profiles over SS parameters.  
+Description: Package that can automates diagnositics for SS3 models by running jitters, retrospective, and profiles.  
 License: What license is it under?
 URL: https://github.com/nwfsc-assess/nwfscDiag
 BugReports: https://github.com/nwfsc-assess/nwfscDiag/issues
@@ -15,11 +15,13 @@ Imports:
   dplyr,
   kableExtra,
   knitr,
-	plyr,
 	r4ss (>= 1.38.0),
 	tidyr,
 	utils,
-	xfun
+	xfun,
+	testthat
+Suggests:
+  devtools
 Remotes: 
 	github::r4ss/r4ss
 RoxygenNote: 7.1.1

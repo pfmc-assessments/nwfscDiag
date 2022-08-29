@@ -1,19 +1,19 @@
 #' Get Default Settings For Profiles
-#' 
+#'
 #' Create a matrix of default values for profiling over
 #' the typical parameters given results will be presented to the
 #' Pacific Fisheries Management Council.
-#' 
+#'
 #' The column titled 'param_space' indicated where the range of of the profile parameter
 #' should be interpretted as relative to the base model estimate vs. across a pre-specified range.
 #' An example is for R0 where the default setting below indicates that the param_space is relative
 #' where the low bound for the profile is set = base model log(R0) - 2 and high = base model log(R0) + 2.
-#' The default range for M is set as a multiplier to explore a range of (M - 0.40 * M) - (M + 0.40 * M) 
+#' The default range for M is set as a multiplier to explore a range of (M - 0.40 * M) - (M + 0.40 * M)
 #' at a step size of 0.005. This range may be too large (or small) with a step size too large (or too small)
 #' and should be considered if the default settings are appropriate for your specific model. The default setting
-#' for steepness is in 'real' space which means that the low and high is in the same parameter space as the 
-#' parameter. A user can select any of the options for specifying a parameter range for any parameter. 
-#' 
+#' for steepness is in 'real' space which means that the low and high is in the same parameter space as the
+#' parameter. A user can select any of the options for specifying a parameter range for any parameter.
+#'
 #' @param parameters vector of SS parameter names to conduct a profile for
 #' @param low a vector of low paramater bounds for the profile
 #' @param high a vector of upper parameter bounds for the profile
@@ -22,9 +22,9 @@
 #' real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
 #' multiplier indicates that low and high bounds are set at x\% above and below the base parameter.
 #' @param use_prior_like options: Option to include or exclude the prior likelihoods in the likelihood
-#' profiles. A value of 0 corresponds to the Stock Sythesis were this would exclude 
-#' and a value of 1 would include the prior likelihood contribution. Parameters with priors used for estimation 
-#' (e.g., natural mortality, steepness) are often profiled across and including or excluding the prior likelihood 
+#' profiles. A value of 0 corresponds to the Stock Sythesis were this would exclude
+#' and a value of 1 would include the prior likelihood contribution. Parameters with priors used for estimation
+#' (e.g., natural mortality, steepness) are often profiled across and including or excluding the prior likelihood
 #' contribution may be wanted in specific instances.  The default setting excludes the prior likelihood contributions.
 #'
 #' @return A matrix of low, high, and step size values for the default parameters
@@ -34,53 +34,53 @@
 #'
 #' @author Chantel Wetzel & Kelli Johnson
 #' @export
-#' 
+#'
 #' @examples
 #' \dontrun{
-#' 
-#' # Define each parameter in real space
-#' get_settings_profile( parameters =  c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
-#						 low =  c(0.02, 0.25, 8),
-#						 high = c(0.07, 1.0,  11),
-#						 step_size = c(0.005, 0.05, 0.25),
-#						 param_space = c('real', 'real', 'real'),
-#'						 use_prior_like = c(1, 1, 0)) 
-#' 
-#' # Example 2: Run a profile for natural mortality one with the prior likelihood and one without
-#' get_settings_profile( parameters =  c("NatM_p_1_Fem_GP_1","NatM_p_1_Fem_GP_1"),
-#'						 low =  c(0.40, 0.40),
-#'						 high = c(0.40, 0.40),
-#'						 step_size = c(0.005, 0.005),
-#'						 param_space = c('multiplier', 'multiplier'),
-#'						 use_prior_like = c(0, 1)) 
-#'}
 #'
-get_settings_profile <- function( parameters =  c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
-								  low =  c(0.40, 0.25, -2),
-								  high = c(0.40, 1.0,  2),
-								  step_size = c(0.01, 0.05, 0.25),
-								  param_space = c('multiplier', 'real', 'relative'),
-								  use_prior_like = c(0, 0, 0)) 
-{
-	
-	if (length(parameters) != length(low) | 
-	    length(parameters) != length(high) |
-	    length(parameters) != length(step_size) |
-	    length(parameters) != length(param_space) |
-		length(parameters) != length(use_prior_like) ){
-	   	stop("Error: input vectors do match in length.")
-	}
+#' # Define each parameter in real space
+#' get_settings_profile(
+#'   parameters = c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+#'   # 						 low =  c(0.02, 0.25, 8),
+#'   # 						 high = c(0.07, 1.0,  11),
+#'   # 						 step_size = c(0.005, 0.05, 0.25),
+#'   # 						 param_space = c('real', 'real', 'real'),
+#'   use_prior_like = c(1, 1, 0)
+#' )
+#'
+#' # Example 2: Run a profile for natural mortality one with the prior likelihood and one without
+#' get_settings_profile(
+#'   parameters = c("NatM_p_1_Fem_GP_1", "NatM_p_1_Fem_GP_1"),
+#'   low = c(0.40, 0.40),
+#'   high = c(0.40, 0.40),
+#'   step_size = c(0.005, 0.005),
+#'   param_space = c("multiplier", "multiplier"),
+#'   use_prior_like = c(0, 1)
+#' )
+#' }
+#'
+get_settings_profile <- function(parameters = c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+                                 low = c(0.40, 0.25, -2),
+                                 high = c(0.40, 1.0, 2),
+                                 step_size = c(0.01, 0.05, 0.25),
+                                 param_space = c("multiplier", "real", "relative"),
+                                 use_prior_like = c(0, 0, 0)) {
+  if (length(parameters) != length(low) |
+    length(parameters) != length(high) |
+    length(parameters) != length(step_size) |
+    length(parameters) != length(param_space) |
+    length(parameters) != length(use_prior_like)) {
+    stop("Error: input vectors do match in length.")
+  }
 
-	out = data.frame( parameters = parameters,
-					  low = low, 
-					  high = high, 
-					  step_size = step_size, 
-					  param_space = param_space,
-					  use_prior_like = use_prior_like)
+  out <- data.frame(
+    parameters = parameters,
+    low = low,
+    high = high,
+    step_size = step_size,
+    param_space = param_space,
+    use_prior_like = use_prior_like
+  )
 
-  	return(out)
+  return(out)
 }
-
-
-
-
