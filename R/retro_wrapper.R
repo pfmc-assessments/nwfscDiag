@@ -62,7 +62,6 @@ retro_wrapper <- function(mydir,  model_settings) {
     dir = retro_dir, 
     oldsubdir = model_settings$oldsubdir, 
     newsubdir = model_settings$newsubdir,  	
-    subdirstart = "retro",
     years = model_settings$retro_yrs,
     overwrite = model_settings$overwrite,
     exe = model_settings$exe, 

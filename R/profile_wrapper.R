@@ -25,10 +25,6 @@ profile_wrapper <- function(mydir, model_settings){
   # plyr and dplyr.
   round_any <-  function(x, accuracy, f = round){
     f(x / accuracy) * accuracy}
-
-	OS <- "Mac" # don't know the version$os info for Mac
-  if(length(grep("linux", version$os)) > 0) OS <- "Linux"
-  if(length(grep("mingw", version$os)) > 0) OS <- "Windows"
 	
   # figure out name of executable based on 'exe' input which may contain .exe
   if(length(grep(".exe", tolower(file.path(mydir, model_settings$base_name)))) == 1) {
@@ -39,12 +35,8 @@ profile_wrapper <- function(mydir, model_settings){
     exe <- paste(model_settings$exe, ifelse(OS == "Windows", ".exe", ""), sep="")
   }
   # check whether exe is in directory
-  if(OS == "Windows") {
-    if(!exe %in% list.files(file.path(mydir, model_settings$base_name))) 
-    		stop("Executable ", exe, " not found in ", file.path(mydir, model_settings$base_name))
-  } else {
-    if(!exe %in% list.files(file.path(mydir, model_settings$base_name))) 
-    	stop("Executable ", exe, " not found in ", file.path(mydir, model_settings$base_name))
+  if(!exe %in% list.files(file.path(mydir, model_settings$base_name))) {
+    stop("Executable ", exe, " not found in ", file.path(mydir, model_settings$base_name))
   }
 
   N <- nrow(model_settings$profile_details)
@@ -73,17 +65,9 @@ profile_wrapper <- function(mydir, model_settings){
     if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
       orig_dir <- getwd()
       setwd(profile_dir)
-      command <- paste(model_settings$model, model_settings$extras)
-      if(OS != "windows") {
-        command <- paste( "./", command, sep="")
-      }
-      cat("Running model in directory:", getwd(), "\n")
-      cat("Using the command: '", command, "'\n", sep="")
-      if(OS == "windows" & !model_settings$systemcmd){
-        shell(cmd = command)
-      } else {
-        system(command)
-      }
+      r4ss::run(dir = profile_dir, 
+        exe = model_settings$exe, 
+        extras = model_settings$extras)
       setwd(orig_dir)
     }
 

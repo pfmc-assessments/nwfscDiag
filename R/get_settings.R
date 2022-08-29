@@ -27,13 +27,13 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     profile_details = NULL,
     version = "3.30",
     exe = "ss",
+    verbose = FALSE,
 
   	# Jitter Settings
     extras = "-nohess",
     Njitter = 100,
     show_in_console = TRUE,
     printlikes = FALSE,
-    verbose = FALSE,
     jitter_fraction = 0.05,
     jitter_init_values_src = NULL,
     
@@ -59,8 +59,6 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     whichruns = NULL, 
     prior_check = FALSE,
     read_like = TRUE,
-    exe = "ss",
-    verbose = TRUE,
     init_values_src = 0      
   )
 
