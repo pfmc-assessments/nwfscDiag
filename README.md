@@ -1,3 +1,5 @@
+[![r-cmd-check](https://github.com/nwfsc-assess/nwfscDiag/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/nwfsc-assess/nwfscDiag/actions/workflows/r-cmd-check.yml)
+
 # nwfscDiag: Diagnostic Package for West Coast Groundfish Assessments
 
 The package provides the functionality to conduct model diagnostics for SS models.  The standard diagnostic included in this package are standard required analysis for West Coast Groundfish stock assessments.  The package was designed to perform model diagnostics and create plots and tables in a standardized format. The standardized approach will facilitate the use of these outputs in the assessment template approach [sa4ss](https://github.com/nwfsc-assess/sa4ss).
