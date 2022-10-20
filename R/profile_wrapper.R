@@ -193,7 +193,7 @@ profile_wrapper <- function(mydir, model_settings) {
       profilesummary,
       rep,
       num,
-      file = file.path(profile_dir, paste0(para, "_profile_output.Rdat"))
+      file = file.path(profile_dir, paste0(para, "_profile_output.Rdata"))
     )
 
     nwfscDiag::get_summary(

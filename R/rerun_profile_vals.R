@@ -6,6 +6,7 @@
 #' @template mydir
 #' @param para_name SS parameter name that the profile was run across. This is used to
 #' located the correct folder combined with the mydir function input (e.g. paste0(mydir, "_profile_", para_name))
+#' @template model_settings
 #' @param run_num A single or vector of run numbers that you would like to rerun for convergence.
 #' This input needs to match the run number for the original profile (e.g., Report6.sso) that
 #' you would like to rerun.
@@ -15,6 +16,7 @@
 #' @export
 rerun_profile_vals <- function(mydir,
                                para_name,
+                               model_settings,
                                run_num,
                                data_file_nm) {
   if (missing(mydir)) {
@@ -30,7 +32,8 @@ rerun_profile_vals <- function(mydir,
   }
   para <- para_name
 
-  profile_dir <- paste0(mydir, "_profile_", para_name)
+  prior_used <- model_settings$profile_details[model_settings$profile_details$parameters == para_name, "use_prior_like"]
+  profile_dir <- paste0(mydir, "_profile_", para_name, "_prior_like_", prior_used)
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
 
@@ -49,6 +52,7 @@ rerun_profile_vals <- function(mydir,
     verbose = FALSE,
     active = FALSE
   )$Label == para
+
   if (sum(check_para) == 0) {
     stop(paste0("The input profile_custom does not match a parameter in the control.ss_new file."))
   }
@@ -60,11 +64,10 @@ rerun_profile_vals <- function(mydir,
   # Change the control file name in the starter file
   starter <- r4ss::SS_readstarter(file.path(temp_dir, "starter.ss"))
   starter$jitter_fraction <- 0.01
-  starter$init_values_src <- model_settings$profile_init_values_src
+  starter$init_values_src <- model_settings$init_values_src
   # make sure the prior likelihood is calculated for non-estimated quantities
-  starter$prior_like <- model_settings$prior_like
+  starter$prior_like <- prior_used
   r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
-
 
   for (i in run_num) {
     setwd(temp_dir)
@@ -82,10 +85,14 @@ rerun_profile_vals <- function(mydir,
 
     # See if likelihood is lower than the original - and rerun if not
     add <- 0.01
-    if (like > like_check[i]) {
+    if (like >= like_check[i]) {
       for (ii in 1:5) {
         starter <- r4ss::SS_readstarter(file = file.path(temp_dir, "starter.ss"))
-        starter$jitter_fraction <- add + starter$jitter_fraction
+        if (ii == 1){
+          starter$jitter_fraction <- 0.01
+        } else {
+          starter$jitter_fraction <- add + starter$jitter_fraction
+        }
         r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
         system("ss -nohess")
         mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
@@ -161,7 +168,7 @@ rerun_profile_vals <- function(mydir,
     profilesummary,
     rep,
     num,
-    file = file.path(profile_dir, paste0(para, "_profile_output.Rdat"))
+    file = file.path(profile_dir, paste0(para, "_profile_output.Rdata"))
   )
 
   get_summary(
