@@ -194,9 +194,11 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   r4ss::SSplotComparisons(
     summaryoutput = profilesummary,
     legendlabels = sprintf(
-      paste0("%s = %.", max(nchar(gsub("0+$|[0-9]+\\.", "", x[-which(est == x)]))), "f%s"),
+      fmt = "%s = %s%s",
+      # Paste the following three strings together element wise
+      # using the above format of string1 = string2string3 
       get,
-      x,
+      pretty_decimal(x),
       ifelse(est == x, " (base)", "")
     ),
     ylimAdj = 1.15,

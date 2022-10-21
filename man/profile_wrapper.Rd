@@ -2,9 +2,7 @@
 % Please edit documentation in R/profile_wrapper.R
 \name{profile_wrapper}
 \alias{profile_wrapper}
-\title{Generate likelihood profiles
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.}
+\title{Run \link[r4ss:profile]{r4ss::profile} based on \code{model_settings}}
 \usage{
 profile_wrapper(mydir, model_settings)
 }
@@ -18,10 +16,21 @@ An example of user input could be
 Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
 }
+\value{
+Nothing is explicitly returned from \code{profile_wrapper}.
+The following objects are saved to the disk.
+}
 \description{
 Generate likelihood profiles
 To be called from the run_diagnostics function after creating
 the model settings using the get_settings function.
+}
+\seealso{
+The following functions interact with \code{profile_wrapper}:
+\itemize{
+\item \link{run_diagnostics}: calls \code{profile_wrapper}
+\item \link[r4ss:profile]{r4ss::profile}: the workhorse of \code{profile_wrapper} that does the parameter profiles
+}
 }
 \author{
 Chantel Wetzel.

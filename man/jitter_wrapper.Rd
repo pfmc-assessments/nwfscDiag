@@ -2,9 +2,7 @@
 % Please edit documentation in R/jitter_wrapper.R
 \name{jitter_wrapper}
 \alias{jitter_wrapper}
-\title{Code to run jitters for a model
-Output will be saved in an Rdata object called "jitter_output"
-Plots and tables generated to visualize results}
+\title{Run \link[r4ss:jitter]{r4ss::jitter} based on \code{model_settings}}
 \usage{
 jitter_wrapper(mydir, model_settings)
 }
@@ -19,12 +17,19 @@ Typically, created using \link{get_settings} but users can create their own list
 as long as it has all of the necessary components for the function at hand.}
 }
 \value{
-A vector of likelihoods for each jitter iteration.
+Nothing is explicitly returned from \code{jitter_wrapper}.
 }
 \description{
 Code to run jitters for a model
 Output will be saved in an Rdata object called "jitter_output"
 Plots and tables generated to visualize results
+}
+\seealso{
+The following functions interact with \code{jitter_wrapper}:
+\itemize{
+\item \link{run_diagnostics}: calls \code{jitter_wrapper}
+\item \link[r4ss:jitter]{r4ss::jitter}: the workhorse of \code{jitter_wrapper} that does the jitters
+}
 }
 \author{
 Chantel Wetzel

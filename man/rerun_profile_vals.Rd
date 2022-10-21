@@ -6,7 +6,7 @@
 To be called from the run_diagnostics function after creating
 the model settings using the get_settings function.}
 \usage{
-rerun_profile_vals(mydir, para_name, run_num, data_file_nm)
+rerun_profile_vals(mydir, para_name, model_settings, run_num, data_file_nm)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
@@ -16,6 +16,10 @@ An example of user input could be
 
 \item{para_name}{SS parameter name that the profile was run across. This is used to
 located the correct folder combined with the mydir function input (e.g. paste0(mydir, "\emph{profile}", para_name))}
+
+\item{model_settings}{A list of all model settings.
+Typically, created using \link{get_settings} but users can create their own list,
+as long as it has all of the necessary components for the function at hand.}
 
 \item{run_num}{A single or vector of run numbers that you would like to rerun for convergence.
 This input needs to match the run number for the original profile (e.g., Report6.sso) that
