@@ -2,7 +2,7 @@
 % Please edit documentation in R/retro_wrapper.R
 \name{retro_wrapper}
 \alias{retro_wrapper}
-\title{Run \link[r4ss:SS_doRetro]{r4ss::SS_doRetro} based on \code{model_settings}}
+\title{Run \link[r4ss:retro]{r4ss::retro} based on \code{model_settings}}
 \usage{
 retro_wrapper(mydir, model_settings)
 }
@@ -24,9 +24,9 @@ The following objects are saved to the disk.
 \itemize{
 \item type: the type of Mohn's rho
 \itemize{
-\item \href{https://doi.org/10.1093/icesjms/fsu198}{Hurtado-Ferro et al. (2015)},
-\item \href{https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center}{Northeast Fisheries Science Center (NEFSC)}, and
-\item \href{https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center}{Alaska Fisheries Science Center (AFSC)}
+\item \href{https://academic.oup.com/icesjms/article/56/4/473/624639}{Mohn (1999)},
+\item Woods Hole Mohn's rho \href{https://archive.nefmc.org/tech/council_mtg_docs/Sept\%202009/Herring/Doc\%209_Retro\%20Working\%20Group\%20Report.pdf}{(Legault 2009)} used by the \href{https://www.fisheries.noaa.gov/about/northeast-fisheries-science-center}{Northeast Fisheries Science Center (NEFSC)}, and
+\item \href{https://doi.org/10.1093/icesjms/fsu198}{Hurtado-Ferro et al. (2015)} used by the \href{https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center}{Alaska Fisheries Science Center (AFSC)}
 }
 \item Quantity: the stock assessment quantity of interest
 \item values: the Mohn's rho values
@@ -54,7 +54,7 @@ is formatted for inclusion in a document.
 The following functions interact with \code{retro_wrapper}:
 \itemize{
 \item \link{run_diagnostics}: calls \code{retro_wrapper}
-\item \link[r4ss:SS_doRetro]{r4ss::SS_doRetro}: the workhorse of \code{retro_wrapper} that does the peels
+\item \link[r4ss:retro]{r4ss::retro}: the workhorse of \code{retro_wrapper} that does the peels
 }
 }
 \author{

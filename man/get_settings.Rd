@@ -24,6 +24,7 @@ Check that all of the settings are in the list
 get_settings(list("Njitter" = 10))
 
 settings <- list()
+
 }
 \author{
 Chantel Wetzel & Kelli Faye Johnson
