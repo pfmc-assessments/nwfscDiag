@@ -6,8 +6,8 @@ Author: Chantel Wetzel
 Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
 Description: Package that can automates diagnositics for SS3 models by running jitters, retrospective, and profiles.  
 License: What license is it under?
-URL: https://github.com/nwfsc-assess/nwfscDiag
-BugReports: https://github.com/nwfsc-assess/nwfscDiag/issues
+URL: https://github.com/pfmc-assessments/nwfscDiag
+BugReports: https://github.com/pfmc-assessments/nwfscDiag/issues
 LazyData: true
 Depends:
 	R (>= 3.5)
