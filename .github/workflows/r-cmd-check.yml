@@ -47,12 +47,11 @@ jobs:
       - name: Setup pandoc, in case of vignettes in the R package
         uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Query dependencies for the r package
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
+      - name: Setup R packages
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
 
       - name: Cache R packages to speed up future runs
         uses: actions/cache@v2
