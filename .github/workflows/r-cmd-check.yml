@@ -32,7 +32,6 @@ jobs:
     # environment settings, needed for running r (first 2 settings) and downloading from github (GITHUB_PAT)
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: 'https://packagemanager.rstudio.com/cran/__linux__/focal/latest'
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -52,27 +51,6 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-
-      - name: Cache R packages to speed up future runs
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
-      - name: Install system dependencies for linux
-        run: |
-          while read -r cmd
-          do
-            eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-          
-      - name: Install r package dependencies
-        run: |
-          remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran("devtools")
-          remotes::install_cran("covr") # needed if calcing codecoverage.
-        shell: Rscript {0}
 
       - name: Get the latest release SS3 executable and move to expected location
         run: |
