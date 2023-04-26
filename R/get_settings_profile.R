@@ -40,7 +40,7 @@
 #'
 #' # Define each parameter in real space
 #' get_settings_profile(
-#'   parameters = c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+#'   parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
 #'   # 						 low =  c(0.02, 0.25, 8),
 #'   # 						 high = c(0.07, 1.0,  11),
 #'   # 						 step_size = c(0.005, 0.05, 0.25),
@@ -50,7 +50,7 @@
 #'
 #' # Example 2: Run a profile for natural mortality one with the prior likelihood and one without
 #' get_settings_profile(
-#'   parameters = c("NatM_p_1_Fem_GP_1", "NatM_p_1_Fem_GP_1"),
+#'   parameters = c("NatM_uniform_Fem_GP_1", "NatM_uniform_Fem_GP_1"),
 #'   low = c(0.40, 0.40),
 #'   high = c(0.40, 0.40),
 #'   step_size = c(0.005, 0.005),
@@ -59,7 +59,7 @@
 #' )
 #' }
 #'
-get_settings_profile <- function(parameters = c("NatM_p_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+get_settings_profile <- function(parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
                                  low = c(0.40, 0.25, -2),
                                  high = c(0.40, 1.0, 2),
                                  step_size = c(0.01, 0.05, 0.25),
