@@ -18,7 +18,7 @@
 #' @example
 #' rerun_profile_vals(mydir = file.path(directory, "base_model"),
 #'           model_settings = model_settings,
-#'           para_name =  "NatM_p_1_Fem_GP_1",
+#'           para_name =  "NatM_uniform_Fem_GP_1",
 #'           run_num = c(3, 4),
 #'           data_file_nm = "data.ss")
 #'
@@ -65,7 +65,7 @@ rerun_profile_vals <- function(mydir,
     stop(paste0("The input profile_custom does not match a parameter in the control.ss_new file."))
   }
 
-  load(file.path(profile_dir, paste0(para_name, "_profile_output.Rdat")))
+  load(file.path(profile_dir, paste0(para_name, "_profile_output.Rdata")))
   vec <- vec_unordered
   like_check <- profilesummary$likelihoods[1, ]
 
