@@ -42,6 +42,10 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     retro_yrs = -1:-5,
     overwrite = TRUE,
     show_in_console = FALSE,
+    
+    # Plot target lines
+    btarg = NULL, 
+    minbthresh = NULL,
 
     # Profile Settings
     remove_files = TRUE,

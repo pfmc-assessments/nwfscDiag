@@ -18,6 +18,7 @@
 #' @seealso [profile_wrapper] and [rerun_profile_vals] call `profile_plot`.
 
 profile_plot <- function(mydir, rep, para, profilesummary) {
+  
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
     ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
       ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
@@ -147,7 +148,8 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
 
   # Get the relative management targets - only grab the first element since the targets should be the same
   btarg <- as.numeric(profilesummary$btargs[1])
-  thresh <- ifelse(btarg == 0.40, 0.25, 0.125)
+  #thresh <- as.numeric(profilesummary$minbthreshs[1])
+  thresh <- ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
@@ -163,11 +165,14 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   # parameter vs. final depletion
   plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
   points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-  abline(h = c(thresh, btarg), lty = c(2, 2), col = c("red", "darkgreen"))
-  legend("bottomright",
-    legend = c("Management target", "Minimum stock size threshold"),
-    lty = 2, col = c("red", "darkgreen"), bty = "n"
-  )
+  abline(h = c(btarg, thresh), lty = c(2, 2), col = c("red", "darkgreen"))
+  if(btarg > 0){
+    legend("bottomright",
+           legend = c("Management target", "Minimum stock size threshold"),
+           lty = 2, col = c("red", "darkgreen"), bty = "n"
+    )    
+  }
+
 
   # parameter vs. SB0
   plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
@@ -202,7 +207,10 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
       ifelse(est == x, " (base)", "")
     ),
     ylimAdj = 1.15,
-    plotdir = mydir, subplots = c(1, 3),
+    btarg = btarg,
+    minbthresh = thresh,
+    plotdir = mydir, 
+    subplots = c(1, 3),
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")
   )

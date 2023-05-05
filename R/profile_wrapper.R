@@ -169,6 +169,10 @@ profile_wrapper <- function(mydir, model_settings) {
 
     profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
     profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
+    if(!is.null(model_settings$btarg)){
+      profilesummary$btargs <- model_settings$btarg
+      profilesummary$minbthreshs <- model_settings$minbthresh
+    }
 
     profile_output <- list()
     profile_output$mydir <- profile_dir
