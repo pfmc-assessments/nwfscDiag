@@ -173,7 +173,6 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     )    
   }
 
-
   # parameter vs. SB0
   plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
