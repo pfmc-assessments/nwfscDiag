@@ -131,7 +131,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
 
   dev.off()
 
-  maxyr <- min(profilesummary$endyrs)
+  maxyr <- min(profilesummary$endyrs + 1)
   minyr <- max(profilesummary$startyrs)
 
   est <- rep$parameters[rep$parameters$Label == para, "Value", 2]
@@ -210,7 +210,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     btarg = btarg,
     minbthresh = thresh,
     plotdir = mydir, 
-    subplots = c(1, 3),
+    subplots = c(1, 3, 9, 10, 11, 12),
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")
   )
