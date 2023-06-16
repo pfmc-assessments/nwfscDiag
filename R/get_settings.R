@@ -45,6 +45,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
 
     # Profile Settings
     remove_files = TRUE,
+    oldctlfile = "control.ss_new",
     newctlfile = "control_modified.ss",
     linenum = NULL,
     string = NULL,

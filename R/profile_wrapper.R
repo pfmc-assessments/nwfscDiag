@@ -143,7 +143,7 @@ profile_wrapper <- function(mydir, model_settings) {
 
     profile <- r4ss::profile(
       dir = profile_dir,
-      oldctlfile = "control.ss_new",
+      oldctlfile = model_settings$oldctlfile,
       newctlfile = model_settings$newctlfile,
       linenum = model_settings$linenum,
       string = para,
