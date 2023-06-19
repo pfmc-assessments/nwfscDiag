@@ -56,21 +56,31 @@ profile_wrapper <- function(mydir, model_settings) {
     ), file = "run_diag_warning.txt")
     message(paste0("Running profile for ", para, "."))
 
-    # Copy the control file to run from the copy
-    if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
-      orig_dir <- getwd()
-      setwd(profile_dir)
-      r4ss::run(
-        dir = profile_dir,
-        exe = model_settings$exe,
-        extras = model_settings$extras
-      )
-      setwd(orig_dir)
+    # check for whether oldctlfile exists
+    if (!file.exists(file.path(profile_dir, model_settings$oldctlfile))) {
+      # if the oldctlfile is control.ss_new, and doesn't exist,
+      # run the model to create it
+      if (model_settings$oldctlfile == "control.ss_new") {
+        if (model_settings$verbose) {
+          "running model to get control.ss_new file"
+        }
+        orig_dir <- getwd()
+        setwd(profile_dir)
+        r4ss::run(
+          dir = profile_dir,
+          exe = model_settings$exe,
+          extras = model_settings$extras
+        )
+        setwd(orig_dir)
+      } else {
+        # stop if the file isn't control.ss_new and doesn't exist
+        stop("File not found ", model_settings$oldctlfile)
+      }
     }
 
     # Use the SS_parlines funtion to ensure that the input parameter can be found
     check_para <- r4ss::SS_parlines(
-      ctlfile = "control.ss_new",
+      ctlfile =  model_settings$oldctlfile,
       dir = profile_dir,
       verbose = FALSE,
       version = model_settings$version,
@@ -79,13 +89,17 @@ profile_wrapper <- function(mydir, model_settings) {
 
     if (sum(check_para) == 0) {
       print(para)
-      stop(paste0("The input profile_custom does not match a parameter in the control.ss_new file."))
+      stop("The input profile_custom does not match a parameter in the file ",  
+        model_settings$oldctlfile)
     }
 
-    file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
+    # Copy oldctlfile to newctlfile before modifying it
+    file.copy(file.path(profile_dir, model_settings$oldctlfile), 
+      file.path(profile_dir, model_settings$newctlfile))
+
     # Change the control file name in the starter file
     starter <- r4ss::SS_readstarter(file = file.path(profile_dir, "starter.ss"))
-    starter$ctlfile <- "control_modified.ss"
+    starter$ctlfile <- model_settings$newctlfile
     starter$init_values_src <- model_settings$init_values_src
     # make sure the prior likelihood is calculated for non-estimated quantities
     starter$prior_like <- prior_used
@@ -137,30 +151,55 @@ profile_wrapper <- function(mydir, model_settings) {
     } else {
       high <- c(seq(round_any(est, step_size, f = ceiling), range[2], step_size))
     }
-
+browser()
     vec <- c(low, high)
     num <- sort(vec, index.return = TRUE)$ix
 
-    profile <- r4ss::profile(
-      dir = profile_dir,
-      oldctlfile = model_settings$oldctlfile,
-      newctlfile = model_settings$newctlfile,
-      linenum = model_settings$linenum,
-      string = para,
-      profilevec = vec,
-      usepar = model_settings$usepar,
-      globalpar = model_settings$globalpar,
-      parlinenum = model_settings$parlinenum,
-      parstring = model_settings$parstring,
-      saveoutput = model_settings$saveoutput,
-      overwrite = model_settings$overwrite,
-      whichruns = model_settings$whichruns,
-      prior_check = model_settings$prior_check,
-      read_like = model_settings$read_like,
-      exe = model_settings$exe,
-      verbose = model_settings$verbose,
-      extras = model_settings$extras
-    )
+    # loop over down, then up
+    for (iprofile in 1:2) {
+      if (iprofile == 1) {
+        # subset of requested runs which are in the "low" vector
+        whichruns <- which(vec %in% low)
+        if (!is.null(model_settings$whichruns)) {
+          whichruns <- intersect(model_settings$whichruns, whichruns)
+        } 
+        if (model_settings$verbose) {
+          message("Running profiles down from estimated value:",
+            paste(whichruns, sep = " "))
+        }
+      } else {
+        # subset of requested runs which are in the "low" vector
+        whichruns <- which(vec %in% high)
+        if (!is.null(model_settings$whichruns)) {
+          whichruns <- intersect(model_settings$whichruns, whichruns)
+        } 
+        if (model_settings$verbose) {
+          message("Running profiles down from estimated value:",
+            paste(whichruns, sep = " "))
+        }
+      }
+      
+      profile <- r4ss::profile(
+        dir = profile_dir,
+        oldctlfile = model_settings$oldctlfile,
+        newctlfile = model_settings$newctlfile,
+        linenum = model_settings$linenum,
+        string = para,
+        profilevec = vec,
+        usepar = model_settings$usepar,
+        globalpar = model_settings$globalpar,
+        parlinenum = model_settings$parlinenum,
+        parstring = model_settings$parstring,
+        saveoutput = model_settings$saveoutput,
+        overwrite = model_settings$overwrite,
+        whichruns = whichruns, # values set above
+        prior_check = model_settings$prior_check,
+        read_like = model_settings$read_like,
+        exe = model_settings$exe,
+        verbose = model_settings$verbose,
+        extras = model_settings$extras
+      )
+    }
 
     # Save the output and the summary
     name <- paste0("profile_", para)
