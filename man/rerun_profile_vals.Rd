@@ -32,6 +32,14 @@ Generate likelihood profiles
 To be called from the run_diagnostics function after creating
 the model settings using the get_settings function.
 }
+\examples{
+rerun_profile_vals(mydir = file.path(directory, "base_model"),
+          model_settings = model_settings,
+          para_name =  "NatM_uniform_Fem_GP_1",
+          run_num = c(3, 4),
+          data_file_nm = "data.ss")
+
+}
 \author{
 Chantel Wetzel.
 }
