@@ -78,7 +78,7 @@ profile_wrapper <- function(mydir, model_settings) {
       }
     }
 
-    # Use the SS_parlines funtion to ensure that the input parameter can be found
+    # Use the SS_parlines function to ensure that the input parameter can be found
     check_para <- r4ss::SS_parlines(
       ctlfile =  model_settings$oldctlfile,
       dir = profile_dir,
@@ -151,7 +151,7 @@ profile_wrapper <- function(mydir, model_settings) {
     } else {
       high <- c(seq(round_any(est, step_size, f = ceiling), range[2], step_size))
     }
-browser()
+
     vec <- c(low, high)
     num <- sort(vec, index.return = TRUE)$ix
 

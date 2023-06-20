@@ -54,7 +54,7 @@ rerun_profile_vals <- function(mydir,
   file.rename(file.path(temp_dir, "starter.ss_new"), file.path(temp_dir, "starter.ss"))
   file.rename(file.path(temp_dir, "forecast.ss_new"), file.path(temp_dir, "forecast.ss"))
 
-  # Use the SS_parlines funtion to ensure that the input parameter can be found
+  # Use the SS_parlines function to ensure that the input parameter can be found
   check_para <- r4ss::SS_parlines(
     ctlfile =  model_settings$oldctlfile,
     dir = temp_dir,
