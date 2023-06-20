@@ -155,6 +155,10 @@ profile_wrapper <- function(mydir, model_settings) {
     vec <- c(low, high)
     num <- sort(vec, index.return = TRUE)$ix
 
+    # backup original control.ss_new file for use in second half of profile
+    file.copy(file.path(profile_dir, model_settings$oldctlfile), 
+      file.path(profile_dir, "backup_oldctlfile.ss"))
+
     # loop over down, then up
     for (iprofile in 1:2) {
       if (iprofile == 1) {
@@ -177,6 +181,9 @@ profile_wrapper <- function(mydir, model_settings) {
           message("Running profiles down from estimated value:",
             paste(whichruns, sep = " "))
         }
+        # copy backup back to use in second half of profile
+        file.copy(file.path(profile_dir, "backup_oldctlfile.ss"), 
+          file.path(profile_dir, model_settings$oldctlfile))
       }
       
       profile <- r4ss::profile(
