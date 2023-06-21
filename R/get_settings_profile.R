@@ -68,8 +68,7 @@ get_settings_profile <- function(parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_
   if (length(parameters) != length(low) |
     length(parameters) != length(high) |
     length(parameters) != length(step_size) |
-    length(parameters) != length(param_space) |
-    length(parameters) != length(use_prior_like)) {
+    length(parameters) != length(param_space)) {
     stop("Error: input vectors do match in length.")
   }
 
