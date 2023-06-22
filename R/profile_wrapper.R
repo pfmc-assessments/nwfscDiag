@@ -177,7 +177,7 @@ profile_wrapper <- function(mydir, model_settings) {
           message("Running profiles down from estimated value:",
             paste(whichruns, collapse = " "),
             "out of ", 
-            length(vec)
+            length(vec))
         }
       }
       if (iprofile == 2) {
