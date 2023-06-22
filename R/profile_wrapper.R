@@ -157,7 +157,13 @@ profile_wrapper <- function(mydir, model_settings) {
 
     # backup original control.ss_new file for use in second half of profile
     file.copy(file.path(profile_dir, model_settings$oldctlfile), 
-      file.path(profile_dir, "backup_oldctlfile.ss"))
+      file.path(profile_dir, "backup_oldctlfile.ss"),
+      overwrite = model_settings$overwrite)
+    # backup original par file for use in second half of profile
+    # if usepar = TRUE
+    file.copy(file.path(profile_dir, "ss.par"), 
+      file.path(profile_dir, "backup_ss.par"),
+      overwrite = model_settings$overwrite)
 
     # loop over down, then up
     for (iprofile in 1:2) {
@@ -169,23 +175,31 @@ profile_wrapper <- function(mydir, model_settings) {
         } 
         if (model_settings$verbose) {
           message("Running profiles down from estimated value:",
-            paste(whichruns, sep = " "))
+            paste(whichruns, collapse = " "),
+            "out of ", 
+            length(vec)
         }
-      } else {
+      }
+      if (iprofile == 2) {
         # subset of requested runs which are in the "low" vector
         whichruns <- which(vec %in% high)
         if (!is.null(model_settings$whichruns)) {
           whichruns <- intersect(model_settings$whichruns, whichruns)
         } 
         if (model_settings$verbose) {
-          message("Running profiles down from estimated value:",
-            paste(whichruns, sep = " "))
+          message("Running profiles up from estimated value:",
+            paste(whichruns, collapse = " "),
+            "out of ", 
+            length(vec))
         }
         # copy backup back to use in second half of profile
         file.copy(file.path(profile_dir, "backup_oldctlfile.ss"), 
           file.path(profile_dir, model_settings$oldctlfile))
+        # copy backup back to use in second half of profile
+        file.copy(file.path(profile_dir, "backup_ss.par"), 
+          file.path(profile_dir, "ss.par"), 
+          overwrite = model_settings$overwrite)
       }
-      
       profile <- r4ss::profile(
         dir = profile_dir,
         oldctlfile = model_settings$oldctlfile,
