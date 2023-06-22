@@ -170,7 +170,8 @@ profile_wrapper <- function(mydir, model_settings) {
       profilesummary$btargs <- model_settings$btarg
       profilesummary$minbthreshs <- model_settings$minbthresh
     }
-
+    profilesummary$subplots <- model_settings$subplots
+    
     profile_output <- list()
     profile_output$mydir <- profile_dir
     profile_output$para <- para
