@@ -37,10 +37,9 @@ profile_wrapper <- function(mydir, model_settings) {
 
   for (aa in 1:N) {
     para <- model_settings$profile_details$parameters[aa]
-    prior_used <- model_settings$profile_details$use_prior_like[aa]
     # Create a profile folder with the same naming structure as the base model
     # Add a label to show if prior was used or not
-    profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para, "_prior_like_", prior_used))
+    profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
     dir.create(profile_dir, showWarnings = FALSE)
 
     # Check for existing files and delete
@@ -101,8 +100,6 @@ profile_wrapper <- function(mydir, model_settings) {
     starter <- r4ss::SS_readstarter(file = file.path(profile_dir, "starter.ss"))
     starter$ctlfile <- model_settings$newctlfile
     starter$init_values_src <- model_settings$init_values_src
-    # make sure the prior likelihood is calculated for non-estimated quantities
-    starter$prior_like <- prior_used
     r4ss::SS_writestarter(mylist = starter, dir = profile_dir, overwrite = TRUE)
 
     # Read in the base model
@@ -229,7 +226,12 @@ profile_wrapper <- function(mydir, model_settings) {
 
     profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
     profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
-
+    if(!is.null(model_settings$btarg)){
+      profilesummary$btargs <- model_settings$btarg
+      profilesummary$minbthreshs <- model_settings$minbthresh
+    }
+    profilesummary$subplots <- model_settings$subplots
+    
     profile_output <- list()
     profile_output$mydir <- profile_dir
     profile_output$para <- para

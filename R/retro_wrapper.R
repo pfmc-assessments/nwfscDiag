@@ -145,6 +145,8 @@ retro_wrapper <- function(mydir,  model_settings) {
         ifelse(abs(model_settings$retro_yrs) == 1, "", "s")
       )
     ),
+    btarg = model_settings$btarg, 
+    minbthresh = model_settings$minbthresh,
     plotdir = retro_dir,
     legendloc = "topright",
     print = TRUE,
@@ -158,6 +160,8 @@ retro_wrapper <- function(mydir,  model_settings) {
       endyrvec = endyrvec,
       legendloc = "topleft",
       plotdir = retro_dir,
+      btarg = model_settings$btarg, 
+      minbthresh = model_settings$minbthresh,
       print = TRUE, plot = FALSE, pdf = FALSE
     ),
     subplot = c(2, 4),
