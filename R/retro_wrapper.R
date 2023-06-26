@@ -1,4 +1,4 @@
-#' Run [r4ss::retro] based on `model_settings`
+#' Run `r4ss::retro` based on `model_settings`
 #'
 #' Create a folder containing retrospective runs for a given base-model folder.
 #' Runs are created using settings specified in `model_settings` and
@@ -6,11 +6,13 @@
 #'
 #' @seealso The following functions interact with `retro_wrapper`:
 #' * [run_diagnostics]: calls `retro_wrapper`
-#' * [r4ss::retro]: the workhorse of `retro_wrapper` that does the peels
+#' * `r4ss::retro`: the workhorse of `retro_wrapper` that does the peels
 #'
 #' @template mydir
 #' @template model_settings
-#' 
+#' @param skipruns Skip the steps where models are run and files are renamed.
+#' This facilitates reloading the results and makeing plots after manually 
+#' replacing some of the model output.
 #' @author Chantel Wetzel
 #' @return
 #' Nothing is explicitly returned from `retro_wrapper`.
@@ -23,7 +25,7 @@
 #'     * [Hurtado-Ferro et al. (2015)](https://doi.org/10.1093/icesjms/fsu198) used by the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center)
 #'   * Quantity: the stock assessment quantity of interest
 #'   * values: the Mohn's rho values
-#' * A set of figures from [r4ss::SSplotComparisons]
+#' * A set of figures from `r4ss::SSplotComparisons`
 #' * `retrofigures4doc.csv` for use with `sa4ss::add_figure` to add retro peels of
 #'   spawning stock biomass (_SSB_) and fraction unfished,
 #'   complete with captions and alternative text.
@@ -40,37 +42,44 @@
 #'
 #' @export
 
-retro_wrapper <- function(mydir,  model_settings) {
+retro_wrapper <- function(mydir,  model_settings, skipruns = FALSE) {
 
   if(!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
     message("There is no Report.sso file in the base model directory", file.path(mydir, model_settings$base_name))
     stop()
   }
-
 	# Create a jitter folder with the same naming structure as the base model
 	retro_dir <- file.path(mydir, paste0(model_settings$base_name, "_retro"))
-  dir.create(retro_dir, showWarnings = FALSE)
-  all_files = list.files(file.path(mydir, model_settings$base_name)) 
-  ignore <- file.copy(
-    from = file.path(mydir, model_settings$base_name, all_files),
-    to = retro_dir,
-    overwrite = TRUE
-  )
-  message("Running retrospectives.")
+  if (skipruns) {
+    message("Skipping running retrospectives")
+  } else {
+    dir.create(retro_dir, showWarnings = FALSE)
+    all_files = list.files(file.path(mydir, model_settings$base_name)) 
+    ignore <- file.copy(
+      from = file.path(mydir, model_settings$base_name, all_files),
+      to = retro_dir,
+      overwrite = TRUE
+    )
+    message("Running retrospectives.")
+  
+    r4ss::retro(
+      dir = retro_dir, 
+      oldsubdir = model_settings$oldsubdir, 
+      newsubdir = model_settings$newsubdir,  	
+      years = model_settings$retro_yrs,
+      overwrite = model_settings$overwrite,
+      exe = model_settings$exe, 
+      extras = model_settings$extras,
+      show_in_console = model_settings$show_in_console,
+      verbose = model_settings$verbose
+    )
+  
+    ignore <- file.remove(from = file.path(retro_dir, all_files))
+  } # end of skipping runs
 
-  r4ss::retro(
-    dir = retro_dir, 
-    oldsubdir = model_settings$oldsubdir, 
-    newsubdir = model_settings$newsubdir,  	
-    years = model_settings$retro_yrs,
-    overwrite = model_settings$overwrite,
-    exe = model_settings$exe, 
-    extras = model_settings$extras,
-    show_in_console = model_settings$show_in_console
-  )
-
-  ignore <- file.remove(from = file.path(retro_dir, all_files))
-
+  if (model_settings$verbose) {
+    message("Reading model output")
+  }
   runs <- list()
   for(aa in 1:(length(model_settings$retro_yrs) + 1)) {
   	if (aa == 1) { 
@@ -81,7 +90,7 @@ retro_wrapper <- function(mydir,  model_settings) {
   	}
   }
 
-  retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = FALSE)
+  retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = model_settings$verbose)
 	endyrvec <- c(retroSummary$endyrs[1], retroSummary$endyrs[1] + model_settings$retro_yrs)
 
   # Calculate Mohn's rho
@@ -89,7 +98,7 @@ retro_wrapper <- function(mydir,  model_settings) {
     r4ss::SSmohnsrho,
     summaryoutput = lapply(
       seq_along(runs)[-1],
-      function(x) r4ss::SSsummarize(runs[1:x], verbose = FALSE)
+      function(x) r4ss::SSsummarize(runs[1:x], verbose = model_settings$verbose)
     ),
     endyrvec = mapply(seq,from=endyrvec[1], to= endyrvec[-1])
   )
@@ -158,7 +167,7 @@ retro_wrapper <- function(mydir,  model_settings) {
     MoreArgs = list(
       summaryoutput = retroSummary,
       endyrvec = endyrvec,
-      legendloc = "topleft",
+      legendloc = "topright",
       plotdir = retro_dir,
       btarg = model_settings$btarg, 
       minbthresh = model_settings$minbthresh,

@@ -2,9 +2,9 @@
 % Please edit documentation in R/retro_wrapper.R
 \name{retro_wrapper}
 \alias{retro_wrapper}
-\title{Run \link[r4ss:retro]{r4ss::retro} based on \code{model_settings}}
+\title{Run \code{r4ss::retro} based on \code{model_settings}}
 \usage{
-retro_wrapper(mydir, model_settings)
+retro_wrapper(mydir, model_settings, skipruns = FALSE)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
@@ -15,6 +15,10 @@ An example of user input could be
 \item{model_settings}{A list of all model settings.
 Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
+
+\item{skipruns}{Skip the steps where models are run and files are renamed.
+This facilitates reloading the results and makeing plots after manually
+replacing some of the model output.}
 }
 \value{
 Nothing is explicitly returned from \code{retro_wrapper}.
@@ -31,7 +35,7 @@ The following objects are saved to the disk.
 \item Quantity: the stock assessment quantity of interest
 \item values: the Mohn's rho values
 }
-\item A set of figures from \link[r4ss:SSplotComparisons]{r4ss::SSplotComparisons}
+\item A set of figures from \code{r4ss::SSplotComparisons}
 \item \code{retrofigures4doc.csv} for use with \code{sa4ss::add_figure} to add retro peels of
 spawning stock biomass (\emph{SSB}) and fraction unfished,
 complete with captions and alternative text.
@@ -54,7 +58,7 @@ is formatted for inclusion in a document.
 The following functions interact with \code{retro_wrapper}:
 \itemize{
 \item \link{run_diagnostics}: calls \code{retro_wrapper}
-\item \link[r4ss:retro]{r4ss::retro}: the workhorse of \code{retro_wrapper} that does the peels
+\item \code{r4ss::retro}: the workhorse of \code{retro_wrapper} that does the peels
 }
 }
 \author{
