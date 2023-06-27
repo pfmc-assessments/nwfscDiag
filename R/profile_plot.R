@@ -133,7 +133,6 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
 
   maxyr <- min(profilesummary$endyrs + 1)
   minyr <- max(profilesummary$startyrs)
-  
   est <- rep$parameters[rep$parameters$Label == para, "Value", 2]
   sb0_est <- rep$derived_quants[rep$derived_quants$Label == "SSB_Virgin", "Value"]
   sbf_est <- rep$derived_quants[rep$derived_quants$Label == paste0("SSB_", maxyr), "Value"]
