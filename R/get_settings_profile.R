@@ -21,11 +21,9 @@
 #' @param param_space options: real, mulitplier, relative indicates how to interpret the low and high bound values.
 #' real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
 #' multiplier indicates that low and high bounds are set at x\% above and below the base parameter.
-#' @param use_prior_like Deprecated Option to include or exclude the prior likelihoods in the likelihood
-#' profiles. A value of 0 corresponds to the Stock Sythesis were this would exclude
-#' and a value of 1 would include the prior likelihood contribution. Parameters with priors used for estimation
-#' (e.g., natural mortality, steepness) are often profiled across and including or excluding the prior likelihood
-#' contribution may be wanted in specific instances.  The default setting excludes the prior likelihood contributions.
+#' @param use_prior_like Deprecated: The use_prior_like input is no longer needed since r4ss now 
+#' automatically plots the likelihood profile with and without any parameter prior likelihood contributions
+#' regardless of the setting in the user starter file. 
 #'
 #' @return A matrix of low, high, and step size values for the default parameters
 #' that should be profiled. The goal is to provide users with a template
@@ -74,9 +72,8 @@ get_settings_profile <- function(parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_
 
   if (lifecycle::is_present(use_prior_like)) {
     lifecycle::deprecate_warn(
-      #when = "1.46.0",
-      what = "get_settings_profile(use_prior_like)",
-      details = "Input 'use_prior_like' no longer needed."
+      when = "1.1.2",
+      what = "get_settings_profile(use_prior_like)"
     )
   }
 
