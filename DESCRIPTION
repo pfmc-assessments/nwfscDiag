@@ -1,7 +1,7 @@
 Package: nwfscDiag
 Type: Package
 Title: Generate standard NWFSC assessment diagnostics
-Version: 1.1.1
+Version: 1.1.2
 Author: Chantel Wetzel
 Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
 Description: Package that can automates diagnositics for SS3 models by running jitters, retrospective, and profiles.  
