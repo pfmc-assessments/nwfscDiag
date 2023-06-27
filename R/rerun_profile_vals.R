@@ -63,7 +63,7 @@ rerun_profile_vals <- function(mydir,
   )$Label == para
 
   if (sum(check_para) == 0) {
-    stop("The input profile_custom does not match a parameter in the file",
+    stop("The input profile_custom does not match a parameter in the ",
       model_settings$oldctlfile)
   }
 

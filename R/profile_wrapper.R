@@ -72,8 +72,7 @@ profile_wrapper <- function(mydir, model_settings) {
         )
         setwd(orig_dir)
       } else {
-        # stop if the file isn't control.ss_new and doesn't exist
-        stop("File not found ", model_settings$oldctlfile)
+        stop("Can not find ", model_settings$oldctlfile)
       }
     }
 
