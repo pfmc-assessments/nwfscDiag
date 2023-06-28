@@ -81,10 +81,10 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
   if (para == "SR_LN(R0)") {
     colnames(new_out) <- paste0("R0 ", vec)
   }
-  if (para == "NatM_p_1_Fem_GP_1") {
+  if (para == "NatM_uniform_Fem_GP_1") {
     colnames(new_out) <- paste0("M_f ", vec)
   }
-  if (para == "NatM_p_1_Mal_GP_1") {
+  if (para == "NatM_uniform_Mal_GP_1") {
     colnames(new_out) <- paste0("M_m ", vec)
   }
   if (para == "SR_BH_steep") {
