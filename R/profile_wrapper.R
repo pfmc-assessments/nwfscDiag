@@ -61,16 +61,13 @@ profile_wrapper <- function(mydir, model_settings) {
       # run the model to create it
       if (model_settings$oldctlfile == "control.ss_new") {
         if (model_settings$verbose) {
-          "running model to get control.ss_new file"
+          message("running model to get control.ss_new file")
         }
-        orig_dir <- getwd()
-        setwd(profile_dir)
         r4ss::run(
           dir = profile_dir,
           exe = model_settings$exe,
           extras = model_settings$extras
         )
-        setwd(orig_dir)
       } else {
         stop("Can not find ", model_settings$oldctlfile)
       }
@@ -226,8 +223,8 @@ profile_wrapper <- function(mydir, model_settings) {
     profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
     profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
     if(!is.null(model_settings$btarg)){
-      profilesummary$btargs <- model_settings$btarg
-      profilesummary$minbthreshs <- model_settings$minbthresh
+      profilesummary$btarg <- model_settings$btarg
+      profilesummary$minbthresh <- model_settings$minbthresh
     }
     profilesummary$subplots <- model_settings$subplots
     

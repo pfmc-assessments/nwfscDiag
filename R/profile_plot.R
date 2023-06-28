@@ -141,20 +141,20 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n])
   # determine whether to include the prior likelihood component in the likelihood profile
   starter <- r4ss::SS_readstarter(file = file.path(mydir, "starter.ss"))
-  if (starter$prior_like == 0) {
-    like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - 
-       profilesummary$likelihoods[profilesummary$likelihoods$Label == "Parm_priors", n] - rep$likelihoods_used[1, 1])
-  } else {
-    like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - rep$likelihoods_used[1, 1])
-  }
+  like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] -
+    ifelse(starter$prior_like == 0, 
+      profilesummary$likelihoods[profilesummary$likelihoods$Label == "Parm_priors", n],
+      0) - 
+    rep$likelihoods_used[1, 1])
+
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
   sb0 <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
   sbf <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
 
   # Get the relative management targets - only grab the first element since the targets should be the same
-  btarg <- as.numeric(profilesummary$btargs[1])
-  thresh <- ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
+  btarg <- as.numeric(profilesummary$btarg[1])
+  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
