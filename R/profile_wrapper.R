@@ -173,14 +173,6 @@ profile_wrapper <- function(mydir, model_settings) {
     # loop over down, then up
     for (iprofile in 1:2) {
       whichruns <- which(vec %in% if(iprofile == 1){low} else {high})
-      #if (iprofile == 1) {
-      #  whichruns <- which(vec %in% low)
-      #  if (!is.null(model_settings$whichruns)) {
-      #    whichruns <- intersect(model_settings$whichruns, whichruns)
-      #  } 
-      #}
-      #if (iprofile == 2) {
-      #  whichruns <- which(vec %in% high)
       if (!is.null(model_settings$whichruns)) {
         whichruns <- intersect(model_settings$whichruns, whichruns)
       } 
