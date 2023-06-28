@@ -170,11 +170,11 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   # parameter vs. final depletion
   plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
   points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-  abline(h = c(btarg, thresh), lty = c(2, 2), col = c("red", "darkgreen"))
+  abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
   if(btarg > 0){
     legend("bottomright",
            legend = c("Management target", "Minimum stock size threshold"),
-           lty = 2, col = c("red", "darkgreen"), bty = "n"
+           lty = 2, col = c("darkgreen", "red"), bty = "n"
     )    
   }
 
@@ -199,8 +199,6 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
       )
     )
   )
-  
-  subplots <- profilesummary$subplots
 
   r4ss::SSplotComparisons(
     summaryoutput = profilesummary,
@@ -216,7 +214,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     btarg = btarg,
     minbthresh = thresh,
     plotdir = mydir, 
-    subplots = subplots,
+    subplots = profilesummary$subplots,
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")
   )
