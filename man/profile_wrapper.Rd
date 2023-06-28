@@ -2,7 +2,7 @@
 % Please edit documentation in R/profile_wrapper.R
 \name{profile_wrapper}
 \alias{profile_wrapper}
-\title{Run \link[r4ss:profile]{r4ss::profile} based on \code{model_settings}}
+\title{Run \code{\link[r4ss:profile]{r4ss::profile()}} based on \code{model_settings}}
 \usage{
 profile_wrapper(mydir, model_settings)
 }
@@ -17,21 +17,36 @@ Typically, created using \link{get_settings} but users can create their own list
 as long as it has all of the necessary components for the function at hand.}
 }
 \value{
-Nothing is explicitly returned from \code{profile_wrapper}.
-The following objects are saved to the disk.
+Nothing is explicitly returned from \code{profile_wrapper()}.
+The following objects are saved to the disk:
+\itemize{
+\item \verb{*_profile_output.Rdata}
+\item \verb{*_trajectories_*} from \code{\link[r4ss:SSplotComparisons]{r4ss::SSplotComparisons()}}
+\item \code{piner_panel_*.png}
+\item \code{parameter_panel_*.png}
+\item \code{run_diag_warning.txt}
+\item a copy of the control file saved to \code{model_settings$newctlfile}
+\item \code{backup_oldctlfile.ss}
+\item \code{backup_ss.par}
+}
 }
 \description{
-Generate likelihood profiles
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.
+Setting up the specifications, running the profile using \code{\link[r4ss:profile]{r4ss::profile()}},
+and generating figures and tables can be tedious, error prone, and time
+consuming. Thus, \code{profile_wrapper()} aims to further decrease the work
+needed to generate a profile that is easily included in a assessment report
+for the Pacific Fisheries Management Council. See the See Also section for
+information on a workflow to use this function.
 }
 \seealso{
-The following functions interact with \code{profile_wrapper}:
+The following functions interact with \code{profile_wrapper()}:
 \itemize{
-\item \link{run_diagnostics}: calls \code{profile_wrapper}
-\item \link[r4ss:profile]{r4ss::profile}: the workhorse of \code{profile_wrapper} that does the parameter profiles
+\item \code{\link[=get_settings]{get_settings()}}: populates a list of settings for \code{model_settings}
+\item \code{\link[=run_diagnostics]{run_diagnostics()}}: calls \code{profile_wrapper()}
+\item \code{\link[r4ss:profile]{r4ss::profile()}}: the workhorse of \code{profile_wrapper()} that does the
+parameter profiles
 }
 }
 \author{
-Chantel Wetzel.
+Chantel Wetzel and Ian Taylor.
 }

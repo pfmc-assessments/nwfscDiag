@@ -1,22 +1,34 @@
-#' Run [r4ss::profile] based on `model_settings`
+#' Run [r4ss::profile()] based on `model_settings`
 #'
-#' Generate likelihood profiles
-#' To be called from the run_diagnostics function after creating
-#' the model settings using the get_settings function.
+#' Setting up the specifications, running the profile using [r4ss::profile()],
+#' and generating figures and tables can be tedious, error prone, and time
+#' consuming. Thus, `profile_wrapper()` aims to further decrease the work
+#' needed to generate a profile that is easily included in a assessment report
+#' for the Pacific Fisheries Management Council. See the See Also section for
+#' information on a workflow to use this function.
 #'
-#'
-#' @seealso The following functions interact with `profile_wrapper`:
-#' * [run_diagnostics]: calls `profile_wrapper`
-#' * [r4ss::profile]: the workhorse of `profile_wrapper` that does the parameter profiles
-#'
+#' @seealso
+#' The following functions interact with `profile_wrapper()`:
+#' * [get_settings()]: populates a list of settings for `model_settings`
+#' * [run_diagnostics()]: calls `profile_wrapper()`
+#' * [r4ss::profile()]: the workhorse of `profile_wrapper()` that does the
+#'   parameter profiles
 #'
 #' @template mydir
 #' @template model_settings
 #'
-#' @author Chantel Wetzel.
+#' @author Chantel Wetzel and Ian Taylor.
 #' @return
-#' Nothing is explicitly returned from `profile_wrapper`.
-#' The following objects are saved to the disk.
+#' Nothing is explicitly returned from `profile_wrapper()`.
+#' The following objects are saved to the disk:
+#' * `*_profile_output.Rdata`
+#' * `*_trajectories_*` from [r4ss::SSplotComparisons()]
+#' * `piner_panel_*.png`
+#' * `parameter_panel_*.png`
+#' * `run_diag_warning.txt`
+#' * a copy of the control file saved to `model_settings$newctlfile`
+#' * `backup_oldctlfile.ss`
+#' * `backup_ss.par`
 #' @export
 
 profile_wrapper <- function(mydir, model_settings) {
@@ -160,31 +172,19 @@ profile_wrapper <- function(mydir, model_settings) {
 
     # loop over down, then up
     for (iprofile in 1:2) {
-      if (iprofile == 1) {
-        # subset of requested runs which are in the "low" vector
-        whichruns <- which(vec %in% low)
-        if (!is.null(model_settings$whichruns)) {
-          whichruns <- intersect(model_settings$whichruns, whichruns)
-        } 
-        if (model_settings$verbose) {
-          message("Running profiles down from estimated value:",
-            paste(whichruns, collapse = " "),
-            "out of ", 
-            length(vec))
-        }
-      }
+      whichruns <- which(vec %in% if(iprofile == 1){low} else {high})
+      #if (iprofile == 1) {
+      #  whichruns <- which(vec %in% low)
+      #  if (!is.null(model_settings$whichruns)) {
+      #    whichruns <- intersect(model_settings$whichruns, whichruns)
+      #  } 
+      #}
+      #if (iprofile == 2) {
+      #  whichruns <- which(vec %in% high)
+      if (!is.null(model_settings$whichruns)) {
+        whichruns <- intersect(model_settings$whichruns, whichruns)
+      } 
       if (iprofile == 2) {
-        # subset of requested runs which are in the "low" vector
-        whichruns <- which(vec %in% high)
-        if (!is.null(model_settings$whichruns)) {
-          whichruns <- intersect(model_settings$whichruns, whichruns)
-        } 
-        if (model_settings$verbose) {
-          message("Running profiles up from estimated value:",
-            paste(whichruns, collapse = " "),
-            "out of ", 
-            length(vec))
-        }
         # copy backup back to use in second half of profile
         file.copy(file.path(profile_dir, "backup_oldctlfile.ss"), 
           file.path(profile_dir, model_settings$oldctlfile))
