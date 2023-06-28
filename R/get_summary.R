@@ -15,7 +15,7 @@
 
 get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
 
-  # Need to identify a way to determine if a model estmates male growth parameters as offsets from females
+  # Need to identify a way to determine if a model estimates male growth parameters as offsets from females
 
   # get output
   outputs <- profilemodels
@@ -30,8 +30,8 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
     "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
     "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
     "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
-    "SBfinal" = sapply(quants, "[[", paste0("SSB_", outputs[[1]]$endyr), "Value"),
-    "Deplfinal" = sapply(quants, "[[", paste0("Bratio_", outputs[[1]]$endyr), "Value"),
+    "SBfinal" = sapply(quants, "[[", paste0("SSB_", outputs[[1]]$endyr + 1), "Value"),
+    "Deplfinal" = sapply(quants, "[[", paste0("Bratio_", outputs[[1]]$endyr + 1), "Value"),
     # "Fmsy" = sapply(quants, "[[", "annF_MSY", "Value"),
     "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
     stringsAsFactors = FALSE
@@ -57,17 +57,17 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
     parmlike = as.numeric(x$likelihoods[x$likelihoods$Label == "Parm_devs", 1:n]),
     R0 = as.numeric(x$pars[x$pars$Label == "SR_LN(R0)", 1:n]),
     SB0 = as.numeric(x$SpawnBio[x$SpawnBio$Label == "SSB_Virgin", 1:n]),
-    SBfinal = as.numeric(x$SpawnBio[x$SpawnBio$Label == paste0("SSB_", endyr), 1:n]),
-    deplfinal = as.numeric(x$Bratio[x$Bratio$Label == paste0("Bratio_", endyr), 1:n]),
+    SBfinal = as.numeric(x$SpawnBio[x$SpawnBio$Label == paste0("SSB_", endyr + 1), 1:n]),
+    deplfinal = as.numeric(x$Bratio[x$Bratio$Label == paste0("Bratio_", endyr + 1), 1:n]),
     yieldspr = as.numeric(x$quants[x$quants$Label == "Dead_Catch_SPR", 1:n]),
     steep = as.numeric(x$pars[x$pars$Label == "SR_BH_steep", 1:n]),
-    mfem = as.numeric(x$pars[x$pars$Label == "NatM_p_1_Fem_GP_1", 1:n]),
+    mfem = as.numeric(x$pars[x$pars$Label == "NatM_uniform_Fem_GP_1", 1:n]),
     lminfem = as.numeric(x$pars[x$pars$Label == "L_at_Amin_Fem_GP_1", 1:n]),
     lmaxfem = as.numeric(x$pars[x$pars$Label == "L_at_Amax_Fem_GP_1", 1:n]),
     kfem = as.numeric(x$pars[x$pars$Label == "VonBert_K_Fem_GP_1", 1:n]),
     cv1fem = as.numeric(x$pars[grep("young_Fem_GP_1", x$pars$Label), 1:n]),
     cv2fem = as.numeric(x$pars[grep("old_Fem_GP_1", x$pars$Label), 1:n]),
-    mmale = as.numeric(x$pars[x$pars$Label == "NatM_p_1_Mal_GP_1", 1:n]),
+    mmale = as.numeric(x$pars[x$pars$Label == "NatM_uniform_Mal_GP_1", 1:n]),
     lminmale = as.numeric(x$pars[x$pars$Label == "L_at_Amin_Mal_GP_1", 1:n]),
     lmaxmale = as.numeric(x$pars[x$pars$Label == "L_at_Amax_Mal_GP_1", 1:n]),
     kmale = as.numeric(x$pars[x$pars$Label == "VonBert_K_Mal_GP_1", 1:n]),
@@ -81,10 +81,10 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
   if (para == "SR_LN(R0)") {
     colnames(new_out) <- paste0("R0 ", vec)
   }
-  if (para == "NatM_p_1_Fem_GP_1") {
+  if (para == "NatM_uniform_Fem_GP_1") {
     colnames(new_out) <- paste0("M_f ", vec)
   }
-  if (para == "NatM_p_1_Mal_GP_1") {
+  if (para == "NatM_uniform_Mal_GP_1") {
     colnames(new_out) <- paste0("M_m ", vec)
   }
   if (para == "SR_BH_steep") {

@@ -17,6 +17,7 @@
 #' settings <- list()
 #'
 get_settings <- function(settings = NULL, verbose = FALSE) {
+  
   if (is.vector(settings)) settings <- as.list(settings)
 
   Settings_all <- list(
@@ -42,9 +43,14 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     retro_yrs = -1:-5,
     overwrite = TRUE,
     show_in_console = FALSE,
+    
+    # Plot target lines
+    btarg = NULL, 
+    minbthresh = NULL,
 
     # Profile Settings
     remove_files = TRUE,
+    oldctlfile = "control.ss_new",
     newctlfile = "control_modified.ss",
     linenum = NULL,
     string = NULL,
@@ -58,7 +64,8 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     whichruns = NULL,
     prior_check = FALSE,
     read_like = TRUE,
-    init_values_src = 0
+    init_values_src = 0,
+    subplots = c(1, 3)
   )
 
   Settings_all$profile_details <- get_settings_profile()
@@ -80,7 +87,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     if (!is.numeric(Settings_all$profile_details$low) &
       !is.numeric(Settings_all$profile_details$high) &
       !is.numeric(Settings_all$profile_details$step_size)) {
-      stop("There is a non-numeric value in the low, high, or step size fiedl of the get_settings_profile data frame.")
+      stop("There is a non-numeric value in the low, high, or step size field of the get_settings_profile data frame.")
     }
     if (sum(!Settings_all$profile_details$param_space %in% c("real", "relative", "multiplier")) > 0) {
       stop("The param_space column should be either real or relative in the get_settings_profile data frame.")

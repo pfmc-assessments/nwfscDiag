@@ -15,7 +15,7 @@
 #' @author Chantel Wetzel.
 #' @export
 #' 
-#' @example
+#' @examples
 #' rerun_profile_vals(mydir = file.path(directory, "base_model"),
 #'           model_settings = model_settings,
 #'           para_name =  "NatM_uniform_Fem_GP_1",
@@ -46,23 +46,25 @@ rerun_profile_vals <- function(mydir,
   dir.create(temp_dir, showWarnings = FALSE)
 
   file.copy(file.path(profile_dir, "ss.exe"), temp_dir, overwrite = TRUE)
-  file.copy(file.path(profile_dir, "control_modified.ss"), temp_dir)
-  file.copy(file.path(profile_dir, "control.ss_new"), temp_dir)
+  file.copy(file.path(profile_dir, model_settings$newctlfile), temp_dir)
+  file.copy(file.path(profile_dir, model_settings$oldctlfile), temp_dir)
   file.copy(file.path(profile_dir, data_file_nm), temp_dir)
   file.copy(file.path(profile_dir, "starter.ss_new"), temp_dir)
   file.copy(file.path(profile_dir, "forecast.ss_new"), temp_dir)
   file.rename(file.path(temp_dir, "starter.ss_new"), file.path(temp_dir, "starter.ss"))
   file.rename(file.path(temp_dir, "forecast.ss_new"), file.path(temp_dir, "forecast.ss"))
 
-  # Use the SS_parlines funtion to ensure that the input parameter can be found
+  # Use the SS_parlines function to ensure that the input parameter can be found
   check_para <- r4ss::SS_parlines(
+    ctlfile =  model_settings$oldctlfile,
     dir = temp_dir,
     verbose = FALSE,
     active = FALSE
   )$Label == para
 
   if (sum(check_para) == 0) {
-    stop(paste0("The input profile_custom does not match a parameter in the control.ss_new file."))
+    stop("The input profile_custom does not match a parameter in the ",
+      model_settings$oldctlfile)
   }
 
   load(file.path(profile_dir, paste0(para_name, "_profile_output.Rdata")))
@@ -80,8 +82,8 @@ rerun_profile_vals <- function(mydir,
   for (i in run_num) {
     setwd(temp_dir)
     r4ss::SS_changepars(
-      ctlfile = "control_modified.ss",
-      newctlfile = "control_modified.ss",
+      ctlfile = model_settings$newctlfile,
+      newctlfile = model_settings$newctlfile,
       strings = para,
       newvals = vec[i],
       estimate = FALSE

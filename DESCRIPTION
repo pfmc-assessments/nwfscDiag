@@ -1,7 +1,7 @@
 Package: nwfscDiag
 Type: Package
 Title: Generate standard NWFSC assessment diagnostics
-Version: 1.1.1
+Version: 1.1.2
 Author: Chantel Wetzel
 Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
 Description: Package that can automates diagnositics for SS3 models by running jitters, retrospective, and profiles.  
@@ -24,6 +24,6 @@ Suggests:
     devtools
 Remotes: 
     github::r4ss/r4ss
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

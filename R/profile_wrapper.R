@@ -1,22 +1,34 @@
-#' Run [r4ss::profile] based on `model_settings`
+#' Run [r4ss::profile()] based on `model_settings`
 #'
-#' Generate likelihood profiles
-#' To be called from the run_diagnostics function after creating
-#' the model settings using the get_settings function.
+#' Setting up the specifications, running the profile using [r4ss::profile()],
+#' and generating figures and tables can be tedious, error prone, and time
+#' consuming. Thus, `profile_wrapper()` aims to further decrease the work
+#' needed to generate a profile that is easily included in a assessment report
+#' for the Pacific Fisheries Management Council. See the See Also section for
+#' information on a workflow to use this function.
 #'
-#'
-#' @seealso The following functions interact with `profile_wrapper`:
-#' * [run_diagnostics]: calls `profile_wrapper`
-#' * [r4ss::profile]: the workhorse of `profile_wrapper` that does the parameter profiles
-#'
+#' @seealso
+#' The following functions interact with `profile_wrapper()`:
+#' * [get_settings()]: populates a list of settings for `model_settings`
+#' * [run_diagnostics()]: calls `profile_wrapper()`
+#' * [r4ss::profile()]: the workhorse of `profile_wrapper()` that does the
+#'   parameter profiles
 #'
 #' @template mydir
 #' @template model_settings
 #'
-#' @author Chantel Wetzel.
+#' @author Chantel Wetzel and Ian Taylor.
 #' @return
-#' Nothing is explicitly returned from `profile_wrapper`.
-#' The following objects are saved to the disk.
+#' Nothing is explicitly returned from `profile_wrapper()`.
+#' The following objects are saved to the disk:
+#' * `*_profile_output.Rdata`
+#' * `*_trajectories_*` from [r4ss::SSplotComparisons()]
+#' * `piner_panel_*.png`
+#' * `parameter_panel_*.png`
+#' * `run_diag_warning.txt`
+#' * a copy of the control file saved to `model_settings$newctlfile`
+#' * `backup_oldctlfile.ss`
+#' * `backup_ss.par`
 #' @export
 
 profile_wrapper <- function(mydir, model_settings) {
@@ -37,10 +49,9 @@ profile_wrapper <- function(mydir, model_settings) {
 
   for (aa in 1:N) {
     para <- model_settings$profile_details$parameters[aa]
-    prior_used <- model_settings$profile_details$use_prior_like[aa]
     # Create a profile folder with the same naming structure as the base model
     # Add a label to show if prior was used or not
-    profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para, "_prior_like_", prior_used))
+    profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
     dir.create(profile_dir, showWarnings = FALSE)
 
     # Check for existing files and delete
@@ -56,21 +67,27 @@ profile_wrapper <- function(mydir, model_settings) {
     ), file = "run_diag_warning.txt")
     message(paste0("Running profile for ", para, "."))
 
-    # Copy the control file to run from the copy
-    if (!file.exists(file.path(profile_dir, "control.ss_new"))) {
-      orig_dir <- getwd()
-      setwd(profile_dir)
-      r4ss::run(
-        dir = profile_dir,
-        exe = model_settings$exe,
-        extras = model_settings$extras
-      )
-      setwd(orig_dir)
+    # check for whether oldctlfile exists
+    if (!file.exists(file.path(profile_dir, model_settings$oldctlfile))) {
+      # if the oldctlfile is control.ss_new, and doesn't exist,
+      # run the model to create it
+      if (model_settings$oldctlfile == "control.ss_new") {
+        if (model_settings$verbose) {
+          message("running model to get control.ss_new file")
+        }
+        r4ss::run(
+          dir = profile_dir,
+          exe = model_settings$exe,
+          extras = model_settings$extras
+        )
+      } else {
+        stop("Can not find ", model_settings$oldctlfile)
+      }
     }
 
-    # Use the SS_parlines funtion to ensure that the input parameter can be found
+    # Use the SS_parlines function to ensure that the input parameter can be found
     check_para <- r4ss::SS_parlines(
-      ctlfile = "control.ss_new",
+      ctlfile =  model_settings$oldctlfile,
       dir = profile_dir,
       verbose = FALSE,
       version = model_settings$version,
@@ -79,16 +96,18 @@ profile_wrapper <- function(mydir, model_settings) {
 
     if (sum(check_para) == 0) {
       print(para)
-      stop(paste0("The input profile_custom does not match a parameter in the control.ss_new file."))
+      stop("The input profile_custom does not match a parameter in the file ",  
+        model_settings$oldctlfile)
     }
 
-    file.copy(file.path(profile_dir, "control.ss_new"), file.path(profile_dir, model_settings$newctlfile))
+    # Copy oldctlfile to newctlfile before modifying it
+    file.copy(file.path(profile_dir, model_settings$oldctlfile), 
+      file.path(profile_dir, model_settings$newctlfile))
+
     # Change the control file name in the starter file
     starter <- r4ss::SS_readstarter(file = file.path(profile_dir, "starter.ss"))
-    starter$ctlfile <- "control_modified.ss"
+    starter$ctlfile <- model_settings$newctlfile
     starter$init_values_src <- model_settings$init_values_src
-    # make sure the prior likelihood is calculated for non-estimated quantities
-    starter$prior_like <- prior_used
     r4ss::SS_writestarter(mylist = starter, dir = profile_dir, overwrite = TRUE)
 
     # Read in the base model
@@ -141,26 +160,60 @@ profile_wrapper <- function(mydir, model_settings) {
     vec <- c(low, high)
     num <- sort(vec, index.return = TRUE)$ix
 
-    profile <- r4ss::profile(
-      dir = profile_dir,
-      oldctlfile = "control.ss_new",
-      newctlfile = model_settings$newctlfile,
-      linenum = model_settings$linenum,
-      string = para,
-      profilevec = vec,
-      usepar = model_settings$usepar,
-      globalpar = model_settings$globalpar,
-      parlinenum = model_settings$parlinenum,
-      parstring = model_settings$parstring,
-      saveoutput = model_settings$saveoutput,
-      overwrite = model_settings$overwrite,
-      whichruns = model_settings$whichruns,
-      prior_check = model_settings$prior_check,
-      read_like = model_settings$read_like,
-      exe = model_settings$exe,
-      verbose = model_settings$verbose,
-      extras = model_settings$extras
-    )
+    # backup original control.ss_new file for use in second half of profile
+    file.copy(file.path(profile_dir, model_settings$oldctlfile), 
+      file.path(profile_dir, "backup_oldctlfile.ss"),
+      overwrite = model_settings$overwrite)
+    # backup original par file for use in second half of profile
+    # if usepar = TRUE
+    file.copy(file.path(profile_dir, "ss.par"), 
+      file.path(profile_dir, "backup_ss.par"),
+      overwrite = model_settings$overwrite)
+
+    # loop over down, then up
+    for (iprofile in 1:2) {
+      whichruns <- which(vec %in% if(iprofile == 1){low} else {high})
+      #if (iprofile == 1) {
+      #  whichruns <- which(vec %in% low)
+      #  if (!is.null(model_settings$whichruns)) {
+      #    whichruns <- intersect(model_settings$whichruns, whichruns)
+      #  } 
+      #}
+      #if (iprofile == 2) {
+      #  whichruns <- which(vec %in% high)
+      if (!is.null(model_settings$whichruns)) {
+        whichruns <- intersect(model_settings$whichruns, whichruns)
+      } 
+      if (iprofile == 2) {
+        # copy backup back to use in second half of profile
+        file.copy(file.path(profile_dir, "backup_oldctlfile.ss"), 
+          file.path(profile_dir, model_settings$oldctlfile))
+        # copy backup back to use in second half of profile
+        file.copy(file.path(profile_dir, "backup_ss.par"), 
+          file.path(profile_dir, "ss.par"), 
+          overwrite = model_settings$overwrite)
+      }
+      profile <- r4ss::profile(
+        dir = profile_dir,
+        oldctlfile = model_settings$oldctlfile,
+        newctlfile = model_settings$newctlfile,
+        linenum = model_settings$linenum,
+        string = para,
+        profilevec = vec,
+        usepar = model_settings$usepar,
+        globalpar = model_settings$globalpar,
+        parlinenum = model_settings$parlinenum,
+        parstring = model_settings$parstring,
+        saveoutput = model_settings$saveoutput,
+        overwrite = model_settings$overwrite,
+        whichruns = whichruns, # values set above
+        prior_check = model_settings$prior_check,
+        read_like = model_settings$read_like,
+        exe = model_settings$exe,
+        verbose = model_settings$verbose,
+        extras = model_settings$extras
+      )
+    }
 
     # Save the output and the summary
     name <- paste0("profile_", para)
@@ -169,7 +222,12 @@ profile_wrapper <- function(mydir, model_settings) {
 
     profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
     profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
-
+    if(!is.null(model_settings$btarg)){
+      profilesummary$btarg <- model_settings$btarg
+      profilesummary$minbthresh <- model_settings$minbthresh
+    }
+    profilesummary$subplots <- model_settings$subplots
+    
     profile_output <- list()
     profile_output$mydir <- profile_dir
     profile_output$para <- para

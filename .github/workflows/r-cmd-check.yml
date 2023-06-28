@@ -20,7 +20,7 @@ on:
   pull_request:
     # specifying branches means the workflow will only run when the pull request is to the merge into the branch listed, in this case, main.
     branches:
-      -main
+      - main
 # jobs specifies the jobs to run. you can have multiple jobs per github actions workflow, but in this case we have only one, which is
 # named run-R-CMD-check.
 jobs:

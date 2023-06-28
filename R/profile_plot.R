@@ -18,6 +18,7 @@
 #' @seealso [profile_wrapper] and [rerun_profile_vals] call `profile_plot`.
 
 profile_plot <- function(mydir, rep, para, profilesummary) {
+  
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
     ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
       ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
@@ -130,24 +131,30 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
 
   dev.off()
 
-  maxyr <- min(profilesummary$endyrs)
+  maxyr <- min(profilesummary$endyrs + 1)
   minyr <- max(profilesummary$startyrs)
-
   est <- rep$parameters[rep$parameters$Label == para, "Value", 2]
   sb0_est <- rep$derived_quants[rep$derived_quants$Label == "SSB_Virgin", "Value"]
   sbf_est <- rep$derived_quants[rep$derived_quants$Label == paste0("SSB_", maxyr), "Value"]
   depl_est <- rep$derived_quants[rep$derived_quants$Label == paste0("Bratio_", maxyr), "Value"]
 
   x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n])
-  like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] - rep$likelihoods_used[1, 1])
+  # determine whether to include the prior likelihood component in the likelihood profile
+  starter <- r4ss::SS_readstarter(file = file.path(mydir, "starter.ss"))
+  like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] -
+    ifelse(starter$prior_like == 0, 
+      profilesummary$likelihoods[profilesummary$likelihoods$Label == "Parm_priors", n],
+      0) - 
+    rep$likelihoods_used[1, 1])
+
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
   sb0 <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
   sbf <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
   depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
 
   # Get the relative management targets - only grab the first element since the targets should be the same
-  btarg <- as.numeric(profilesummary$btargs[1])
-  thresh <- ifelse(btarg == 0.40, 0.25, 0.125)
+  btarg <- as.numeric(profilesummary$btarg[1])
+  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
@@ -163,11 +170,13 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   # parameter vs. final depletion
   plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
   points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-  abline(h = c(thresh, btarg), lty = c(2, 2), col = c("red", "darkgreen"))
-  legend("bottomright",
-    legend = c("Management target", "Minimum stock size threshold"),
-    lty = 2, col = c("red", "darkgreen"), bty = "n"
-  )
+  abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
+  if(btarg > 0){
+    legend("bottomright",
+           legend = c("Management target", "Minimum stock size threshold"),
+           lty = 2, col = c("darkgreen", "red"), bty = "n"
+    )    
+  }
 
   # parameter vs. SB0
   plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
@@ -202,7 +211,10 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
       ifelse(est == x, " (base)", "")
     ),
     ylimAdj = 1.15,
-    plotdir = mydir, subplots = c(1, 3),
+    btarg = btarg,
+    minbthresh = thresh,
+    plotdir = mydir, 
+    subplots = profilesummary$subplots,
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")
   )

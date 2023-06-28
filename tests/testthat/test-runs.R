@@ -52,7 +52,7 @@ test_that("Do profile using the simple model", {
 				file.exists(
 					file.path(path, 
 						paste0(model_settings$base_name, "_profile_", 
-						profile_para[a], "_prior_like_", get[a, "use_prior_like"]),
+						profile_para[a]),
 						paste0("profile_", profile_para[a], "_quant_table.csv")))
 			)
 	}
