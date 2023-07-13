@@ -147,6 +147,7 @@ retro_wrapper <- function(mydir,  model_settings) {
     ),
     btarg = model_settings$btarg, 
     minbthresh = model_settings$minbthresh,
+    ylimAdj = 1.2,
     plotdir = retro_dir,
     legendloc = "topright",
     print = TRUE,
@@ -160,11 +161,59 @@ retro_wrapper <- function(mydir,  model_settings) {
       endyrvec = endyrvec,
       legendloc = "topleft",
       plotdir = retro_dir,
+      ylimAdj = 1.2,
       btarg = model_settings$btarg, 
       minbthresh = model_settings$minbthresh,
       print = TRUE, plot = FALSE, pdf = FALSE
     ),
-    subplot = c(2, 4, 8, 10),
+    subplot = c(8, 10),
+    legendlabels = lapply(
+      c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio", "AFSC_Hurtado_F", "AFSC_Hurtado_Rec"),
+      function(x) {
+      c(
+        "Base Model",
+        sprintf("Data %.0f year%s (Mohn's rho %.2f)",
+          model_settings$retro_yrs,
+          ifelse(abs(model_settings$retro_yrs) == 1, "", "s"),
+          rhosall[rownames(rhosall) == x, ]
+        )
+      )
+    })
+  )
+
+  r4ss::SSplotComparisons(
+    summaryoutput = retroSummary,
+    endyrvec = endyrvec,
+    legendlabels = c(
+      "Base Model",
+      sprintf("Data %.0f year%s",
+        model_settings$retro_yrs,
+        ifelse(abs(model_settings$retro_yrs) == 1, "", "s")
+      )
+    ),
+    btarg = model_settings$btarg, 
+    minbthresh = model_settings$minbthresh,
+    subplot = c(2, 4),
+    ylimAdj = 1.2,
+    plotdir = retro_dir,
+    legendloc = "topright",
+    print = TRUE,
+    plot = FALSE,
+    pdf = FALSE
+  )
+  savedplotinfo <- mapply(
+    FUN = r4ss::SSplotComparisons,
+    MoreArgs = list(
+      summaryoutput = retroSummary,
+      endyrvec = endyrvec,
+      legendloc = "topright",
+      ylimAdj = 1.2,
+      subplot = c(2, 4),
+      plotdir = retro_dir,
+      btarg = model_settings$btarg, 
+      minbthresh = model_settings$minbthresh,
+      print = TRUE, plot = FALSE, pdf = FALSE
+    ),  
     legendlabels = lapply(
       c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio", "AFSC_Hurtado_F", "AFSC_Hurtado_Rec"),
       function(x) {
@@ -230,7 +279,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       scale_colour_viridis_d() +
       theme_bw(base_size = 15) + 
       facet_wrap("Reference_Point", nrow = 3, ncol = 1)
-  ggsave(filename = retro_dir, width = 7, height = 12)
+  ggsave(filename = file.path(retro_dir, "retro_percent_difference.png"), width = 10, height = 12)
   
   utils::write.csv(
     x = data.frame(
