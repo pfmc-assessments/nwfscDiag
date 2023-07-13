@@ -164,9 +164,9 @@ retro_wrapper <- function(mydir,  model_settings) {
       minbthresh = model_settings$minbthresh,
       print = TRUE, plot = FALSE, pdf = FALSE
     ),
-    subplot = c(2, 4),
+    subplot = c(2, 4, 8, 10),
     legendlabels = lapply(
-      c("SSB", "Bratio"),
+      c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio", "AFSC_Hurtado_F", "AFSC_Hurtado_Rec"),
       function(x) {
       c(
         "Base Model",
@@ -178,6 +178,58 @@ retro_wrapper <- function(mydir,  model_settings) {
       )
     })
   )
+
+  label <- ifelse(retroSummary$SpawnOutputUnits[1] == "biomass", 
+    "Spawning Biomass", "Spawning Output")
+  n <- ncol(retroSummary$SpawnBio) - 2
+  years <- retroSummary$startyr[1]:retroSummary$endyr[1] + 1
+  denom <- paste0("model", 1:n)
+  base <- as.symbol("model1")
+  sb <- retroSummary$SpawnBio %>%
+      subset(Yr %in% years) %>%
+      mutate_at(vars(denom), list(per_diff = ~100*./model1 - 100)) 
+  sb$Reference_Point <- label
+  bratio <- retroSummary$Bratio %>%
+      subset(Yr %in% years) %>%
+      mutate_at(vars(denom), list(per_diff = ~100*./model1 - 100)) 
+  bratio$Reference_Point <- "Fraction Unfished"
+  f <- retroSummary$Fvalue %>%
+      subset(Yr %in% years) %>%
+      mutate_at(vars(denom), list(per_diff = ~100*./model1 - 100)) 
+  f$Reference_Point <- "F"
+
+  col_names <- c("Yr", "Reference_Point", paste0("model", 1:n, "_per_diff"))
+  df <- rbind(sb[ , colnames(sb) %in% col_names], 
+              bratio[, colnames(bratio) %in% col_names],
+              f[ , colnames(f) %in% col_names]) %>%
+      tidyr::pivot_longer(cols = starts_with("model"), names_to = "model", values_to = "diff")
+
+  df_out <- NULL
+  y <- years
+  for (a in 1:n){
+    col_name <- paste0("model", a, "_per_diff")
+    df_out <- rbind(df_out, df[df$Yr %in% y & df$model %in% col_name, ])
+    if (a == 1){
+      df_out$model[df_out$model == col_name] <- "Base Model"
+    } else {
+      df_out$model[df_out$model == col_name] <- paste0("Retro -", a-1)
+    }
+    y <- y - 1
+  } 
+  colnames(df_out)[colnames(df_out) == "model"] <- "Run"
+  xrange <- c(ifelse(min(df_out$Yr) < 1980, 1980, min(df_out$Yr)), max(df_out$Yr))
+  yrange <- c(-1 * max(abs(df_out$diff)) - 5, max(abs(df_out$diff)) + 5)
+
+  ggplot() +
+      geom_line(data = df_out, aes(x = Yr, y = diff, col = Run), linewidth = 2) +
+      ylim(yrange) + 
+      scale_x_continuous(limits = xrange, expand = c(0,0)) + 
+      ylab("% Differece from Base Model") +
+      xlab("Year") +
+      scale_colour_viridis_d() +
+      theme_bw(base_size = 15) + 
+      facet_wrap("Reference_Point", nrow = 3, ncol = 1)
+  ggsave(filename = retro_dir, width = 7, height = 12)
   
   utils::write.csv(
     x = data.frame(
