@@ -220,8 +220,9 @@ retro_wrapper <- function(mydir,  model_settings) {
   xrange <- c(ifelse(min(df_out$Yr) < 1980, 1980, min(df_out$Yr)), max(df_out$Yr))
   yrange <- c(-1 * max(abs(df_out$diff)) - 5, max(abs(df_out$diff)) + 5)
 
-  ggplot() +
-      geom_line(data = df_out, aes(x = Yr, y = diff, col = Run), linewidth = 2) +
+  ggplot(df_out, aes(x = Yr, y = diff, col = Run)) +
+      geom_line() +
+      geom_point() +
       ylim(yrange) + 
       scale_x_continuous(limits = xrange, expand = c(0,0)) + 
       ylab("% Differece from Base Model") +
