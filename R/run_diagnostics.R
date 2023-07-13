@@ -1,6 +1,6 @@
 #' Wrapper to run each of the 3 standard diagnostic items:
 #' 1) Jitter
-#' 2) Profiles across female m, steepness, and R0
+#' 2) Profiles across requested SS3 parameters
 #' 3) Retrospectives
 #'
 #'
@@ -13,7 +13,8 @@
 
 run_diagnostics <- function(mydir, model_settings) {
 
-  library(dplyr)
+  '%>%' <- magrittr::'%>%'
+  
   # Check for Report file
   model_dir <- file.path(mydir, paste0(model_settings$base_name))
 
