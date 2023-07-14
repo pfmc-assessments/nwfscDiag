@@ -48,7 +48,7 @@ retro_wrapper <- function(mydir,  model_settings) {
   }
 
 	# Create a jitter folder with the same naming structure as the base model
-	retro_dir <- file.path(mydir, paste0(model_settings$base_name, "_retro"))
+	retro_dir <- file.path(mydir, paste0(model_settings$base_name, "_retro_", length(model_settings$retro_yrs), "_yr_peel"))
   dir.create(retro_dir, showWarnings = FALSE)
   all_files = list.files(file.path(mydir, model_settings$base_name)) 
   ignore <- file.copy(
@@ -168,7 +168,7 @@ retro_wrapper <- function(mydir,  model_settings) {
     ),
     subplot = c(8, 10),
     legendlabels = lapply(
-      c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio", "AFSC_Hurtado_F", "AFSC_Hurtado_Rec"),
+      c("AFSC_Hurtado_F", "AFSC_Hurtado_Rec"),
       function(x) {
       c(
         "Base Model",
@@ -208,14 +208,14 @@ retro_wrapper <- function(mydir,  model_settings) {
       endyrvec = endyrvec,
       legendloc = "topright",
       ylimAdj = 1.2,
-      subplot = c(2, 4),
       plotdir = retro_dir,
       btarg = model_settings$btarg, 
       minbthresh = model_settings$minbthresh,
       print = TRUE, plot = FALSE, pdf = FALSE
     ),  
+    subplot = c(2, 4),
     legendlabels = lapply(
-      c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio", "AFSC_Hurtado_F", "AFSC_Hurtado_Rec"),
+      c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio"),
       function(x) {
       c(
         "Base Model",
@@ -246,11 +246,16 @@ retro_wrapper <- function(mydir,  model_settings) {
       subset(Yr %in% years) %>%
       mutate_at(vars(denom), list(per_diff = ~100*./model1 - 100)) 
   f$Reference_Point <- "F"
+  rec <- retroSummary$recruits %>%
+      subset(Yr %in% years) %>%
+      mutate_at(vars(denom), list(per_diff = ~100*./model1 - 100)) 
+  rec$Reference_Point <- "Recruits"
 
   col_names <- c("Yr", "Reference_Point", paste0("model", 1:n, "_per_diff"))
   df <- rbind(sb[ , colnames(sb) %in% col_names], 
               bratio[, colnames(bratio) %in% col_names],
-              f[ , colnames(f) %in% col_names]) %>%
+              f[ , colnames(f) %in% col_names],
+              rec[, colnames(rec) %in% col_names]) %>%
       tidyr::pivot_longer(cols = starts_with("model"), names_to = "model", values_to = "diff")
 
   df_out <- NULL
@@ -266,8 +271,13 @@ retro_wrapper <- function(mydir,  model_settings) {
     y <- y - 1
   } 
   colnames(df_out)[colnames(df_out) == "model"] <- "Run"
+  leg_order <- c("Base Model", paste0("Retro -", 1:(length(endyrvec) -1)))
+  df_out$Run <- factor(df_out$Run, levels = leg_order)
   xrange <- c(ifelse(min(df_out$Yr) < 1980, 1980, min(df_out$Yr)), max(df_out$Yr))
-  yrange <- c(-1 * max(abs(df_out$diff)) - 5, max(abs(df_out$diff)) + 5)
+  find <- df_out %>% subset(Yr >= xrange[1]) %>% 
+    summarize(
+      bound = abs(max(diff)))
+  yrange <- c(-1 * find$bound - 5, find$bound + 5)
 
   ggplot(df_out, aes(x = Yr, y = diff, col = Run)) +
       geom_line() +
@@ -278,9 +288,44 @@ retro_wrapper <- function(mydir,  model_settings) {
       xlab("Year") +
       scale_colour_viridis_d() +
       theme_bw(base_size = 15) + 
-      facet_wrap("Reference_Point", nrow = 3, ncol = 1)
-  ggsave(filename = file.path(retro_dir, "retro_percent_difference.png"), width = 10, height = 12)
+      facet_wrap("Reference_Point")
+  ggsave(filename = file.path(retro_dir, "retro_percent_difference_4_panel.png"), width = 10, height = 12)
+
+  sub_out <- df_out[df_out$Reference_Point != "Recruits",]
+  find <- sub_out %>% subset(Yr >= xrange[1]) %>% 
+    summarize(
+      bound = abs(max(diff)))
+  yrange <- c(-1 * find$bound - 5, find$bound + 5)
   
+  ggplot(sub_out, aes(x = Yr, y = diff, col = Run)) +
+      geom_line() +
+      geom_point() +
+      ylim(yrange) + 
+      scale_x_continuous(limits = xrange, expand = c(0,0)) + 
+      ylab("% Differece from Base Model") +
+      xlab("Year") +
+      scale_colour_viridis_d() +
+      theme_bw(base_size = 15) + 
+      facet_wrap("Reference_Point", ncol = 1, nrow = 3)
+  ggsave(filename = file.path(retro_dir, "retro_percent_difference_3_panel.png"), width = 10, height = 12)
+  
+  endyrvec_long <- rev((min(endyrvec)-2):(max(endyrvec)))
+  pngfun(wd = retro_dir, file = "recruitment_retrospective_squid.png", h = 7, w = 7)
+  r4ss::SSplotRetroRecruits(
+    retroSummary = retroSummary,
+    endyrvec = endyrvec, 
+    cohorts = endyrvec_long,
+    main = ""
+  )
+  dev.off()
+
+  nwfscDiag::get_param_values(
+    mydir = retro_dir, 
+    name = "retro",
+    vec = c("Base Model", paste0("Retro -", 1:(length(endyrvec)-1))), 
+    summary = retroSummary
+  )
+
   utils::write.csv(
     x = data.frame(
       caption = paste(
