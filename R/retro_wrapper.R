@@ -309,7 +309,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       ggplot2::facet_wrap("Reference_Point", ncol = 1, nrow = 3)
   ggplot2::ggsave(filename = file.path(retro_dir, "retro_percent_difference_3_panel.png"), width = 10, height = 12)
   
-  endyrvec_long <- rev((min(endyrvec)-2):(max(endyrvec)))
+  endyrvec_long <- (min(endyrvec)-5):max(endyrvec)
   pngfun(wd = retro_dir, file = "recruitment_retrospective_squid.png", h = 7, w = 7)
   r4ss::SSplotRetroRecruits(
     retroSummary = retroSummary,
