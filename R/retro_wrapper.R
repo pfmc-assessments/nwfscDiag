@@ -172,7 +172,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       function(x) {
       c(
         "Base Model",
-        sprintf("Data %.0f year%s (Mohn's rho %.2f)",
+        sprintf("Data %.0f year%s (Revised Mohn's rho %.2f)",
           model_settings$retro_yrs,
           ifelse(abs(model_settings$retro_yrs) == 1, "", "s"),
           rhosall[rownames(rhosall) == x, ]
@@ -219,7 +219,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       function(x) {
       c(
         "Base Model",
-        sprintf("Data %.0f year%s (Mohn's rho %.2f)",
+        sprintf("Data %.0f year%s (Revised Mohn's rho %.2f)",
           model_settings$retro_yrs,
           ifelse(abs(model_settings$retro_yrs) == 1, "", "s"),
           rhosall[rownames(rhosall) == x, ]
