@@ -168,7 +168,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   points(est, 0, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. final depletion
-  plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
+  plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = expression("Fraction Unfished"[final]), ylim = c(0, 1.2))
   points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
   abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
   if(btarg > 0){
@@ -179,11 +179,15 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   }
 
   # parameter vs. SB0
-  plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
+  plot(x, sb0, type = "l", lwd = 2, xlab = label, 
+    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers", 
+      expression(SO[0]), expression(SB[0])), ylim = c(0, max(sb0)))
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
-  plot(x, sbf, type = "l", lwd = 2, xlab = label, ylab = expression(SB[final]), ylim = c(0, max(sbf)))
+  plot(x, sbf, type = "l", lwd = 2, xlab = label, 
+    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers", 
+      expression(SO[final]), expression(SB[final])), ylim = c(0, max(sbf)))
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   dev.off()
