@@ -43,7 +43,7 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
   utils::write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
 
   get_param_values(
-    mydir = profile_dir, 
+    mydir = mydir, 
     para = para, 
     vec = vec, 
     summary = profilesummary)
