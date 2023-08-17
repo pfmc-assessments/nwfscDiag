@@ -15,6 +15,7 @@ Imports:
     dplyr,
     kableExtra,
     knitr,
+    magrittr,
     r4ss (>= 1.38.0),
     tidyr,
     utils,
