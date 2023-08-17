@@ -1,27 +1,66 @@
-#' Generate likelihood profiles
-#' To be called from the run_diagnostics function after creating
-#' the model settings using the get_settings function.
+#' Rerun some of the models in a likelihood profile
 #'
+#' To be called after [run_diagnostics()] in the instance when a model within a
+#' profile has bad dynamics and could benefit from attempting the run with
+#' different starting values. The jitter fraction will be turned on and the
+#' model will be reran in hopes that a better likelihood can be found. The
+#' summary diagnostics will be recreated as well.
 #'
 #' @template mydir
-#' @param para_name SS parameter name that the profile was run across. This is used to
-#' located the correct folder combined with the mydir function input (e.g. paste0(mydir, "_profile_", para_name))
+#' @param para_name SS parameter name that the profile was run across. This is
+#'   used to located the correct folder combined with the mydir function input
+#'   (e.g., `paste0(mydir, "/", model_settings[["base_name"]], "_profile_",
+#'   para_name)`).
 #' @template model_settings
-#' @param run_num A single or vector of run numbers that you would like to rerun for convergence.
-#' This input needs to match the run number for the original profile (e.g., Report6.sso) that
-#' you would like to rerun.
-#' @param data_file_nm SS data file name
+#' @param run_num An integer vector specifying the run numbers that you would
+#'   like to rerun for convergence. This input needs to match the run number for
+#'   the original profile (e.g., Report6.sso) that you would like to rerun.
+#' @param data_file_nm A character string specifying the name of the SS3 data
+#'   file. This is more than likely `"data.ss"`.
 #'
-#' @author Chantel Wetzel.
+#' @author Chantel Wetzel
 #' @export
 #' 
 #' @examples
-#' rerun_profile_vals(mydir = file.path(directory, "base_model"),
-#'           model_settings = model_settings,
-#'           para_name =  "NatM_uniform_Fem_GP_1",
-#'           run_num = c(3, 4),
-#'           data_file_nm = "data.ss")
-#'
+#' \dontrun{
+#' model_settings <- get_settings()
+#' temp_profile_dir <- file.path(tempdir(), "profile")
+#' r4ss::copy_SS_inputs(
+#'   recursive = TRUE,
+#'   verbose = FALSE,
+#'   dir.old = system.file(package = "r4ss", "extdata", "simple_small"),
+#'   dir.new = file.path(temp_profile_dir, "simple_small"),
+#'   overwrite = TRUE
+#' )
+#' ss3_path <- r4ss::get_ss3_exe(
+#'   dir = file.path(temp_profile_dir, "simple_small")
+#' )
+#' model_settings <- get_settings(
+#'   settings = list(
+#'     base_name = "simple_small",
+#'     exe = gsub("\\.exe", "", basename(ss3_path)),
+#'     run = c("profile"),
+#'     profile_details = get_settings_profile(
+#'       parameters = c("NatM_uniform_Fem_GP_1"),
+#'       low =  c(0.20),
+#'       high = c(0.25),
+#'       step_size = c(0.02),
+#'       param_space = c("multiplier")
+#'     )
+#'   )
+#' )
+#' run_diagnostics(
+#'   mydir = temp_profile_dir,
+#'   model_settings = model_settings
+#' )
+#' rerun_profile_vals(
+#'   mydir = temp_profile_dir,
+#'   model_settings = model_settings,
+#'   para_name =  "NatM_uniform_Fem_GP_1",
+#'   run_num = c(1),
+#'   data_file_nm = "data.ss"
+#' )
+#'}
 rerun_profile_vals <- function(mydir,
                                para_name,
                                model_settings,
