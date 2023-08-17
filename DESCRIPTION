@@ -15,14 +15,16 @@ Imports:
     dplyr,
     kableExtra,
     knitr,
+    lifecycle,
     magrittr,
     r4ss (>= 1.38.0),
+    tibble,
     tidyr,
     utils,
-    xfun,
-    testthat
+    xfun
 Suggests:
-    devtools
+    devtools,
+    testthat
 Remotes: 
     github::r4ss/r4ss
 RoxygenNote: 7.2.3
