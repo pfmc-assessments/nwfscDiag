@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_settings_profile.R
 \name{get_settings_profile}
 \alias{get_settings_profile}
-\title{Get Default Settings For Profiles}
+\title{Get default settings for profiles}
 \usage{
 get_settings_profile(
   parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
@@ -14,27 +14,44 @@ get_settings_profile(
 )
 }
 \arguments{
-\item{parameters}{vector of SS parameter names to conduct a profile for}
+\item{parameters}{A vector of character strings that specify the SS3
+parameter names that you want to conduct profiles for.}
 
-\item{low}{a vector of low paramater bounds for the profile}
+\item{low, high}{A numeric vector specifying the low or high parameter bounds
+you want to use for the profile of each parameter in \code{parameters}.}
 
-\item{high}{a vector of upper parameter bounds for the profile}
+\item{step_size}{A numeric vector specifying the increments between the low
+and high bounds for each parameter in \code{parameters}. These values will be
+passed to \code{seq(from = low, to = high, by = step_size)}.}
 
-\item{step_size}{increments to run the profile between the low and high bounds}
+\item{param_space}{A vector of character strings that specify the way in
+which you want the parameter bounds to be translated. The available options
+are, \code{"real"}, \code{"mulitplier"}, and \code{"relative"}.
+\itemize{
+\item \code{"real"} indicates bounds in the parameter space,
+\item \code{"relative"} indicates how far to go from the base parameter, and
+\item \code{"multiplier"} indicates that low and high bounds are set at x\\% above
+and below the base parameter.
+}}
 
-\item{param_space}{options: real, mulitplier, relative indicates how to interpret the low and high bound values.
-real indicates bounds in the parameter space, relative indicates how far to go from the base parameter, and
-multiplier indicates that low and high bounds are set at x\\% above and below the base parameter.}
-
-\item{use_prior_like}{Deprecated: The use_prior_like input is no longer needed since r4ss now
-automatically plots the likelihood profile with and without any parameter prior likelihood contributions
-regardless of the setting in the user starter file.}
+\item{use_prior_like}{Deprecated: The use_prior_like input is no longer
+needed because r4ss now automatically plots the likelihood profile with and
+without any parameter prior likelihood contributions regardless of the
+setting in the user starter file.}
 }
 \value{
-A matrix of low, high, and step size values for the default parameters
-that should be profiled. The goal is to provide users with a template
-to add additional rows for parameters that they want to profile beyond
-the default ones.
+A data frame with five columns,
+\itemize{
+\item parameters,
+\item low,
+\item high,
+\item step_size, and
+\item param_space.
+Where, there is one row for each parameter that will be profiled.
+The default settings provide users with a good template that they can add
+to or modify by giving some reasonable inputs for the default parameters
+that are requested in the Terms of Reference.
+}
 }
 \description{
 Create a matrix of default values for profiling over
@@ -42,15 +59,18 @@ the typical parameters given results will be presented to the
 Pacific Fisheries Management Council.
 }
 \details{
-The column titled 'param_space' indicated where the range of of the profile parameter
-should be interpretted as relative to the base model estimate vs. across a pre-specified range.
-An example is for R0 where the default setting below indicates that the param_space is relative
-where the low bound for the profile is set = base model log(R0) - 2 and high = base model log(R0) + 2.
-The default range for M is set as a multiplier to explore a range of (M - 0.40 * M) - (M + 0.40 * M)
-at a step size of 0.005. This range may be too large (or small) with a step size too large (or too small)
-and should be considered if the default settings are appropriate for your specific model. The default setting
-for steepness is in 'real' space which means that the low and high is in the same parameter space as the
-parameter. A user can select any of the options for specifying a parameter range for any parameter.
+The \code{param_space} argument indicates where the range of of the profile
+parameter should be interpreted as relative to the base model estimate vs.
+across a pre-specified range. An example is for R0 where the default setting
+below indicates that the param_space is relative where the low bound for the
+profile is set = base model log(R0) - 2 and high = base model log(R0) + 2.
+The default range for M is set as a multiplier to explore a range of (M -
+0.40 * M) - (M + 0.40 * M) at a step size of 0.005. This range may be too
+large (or small) with a step size too large (or too small) and should be
+considered if the default settings are appropriate for your specific model.
+The default setting for steepness is in 'real' space which means that the low
+and high is in the same parameter space as the parameter. A user can select
+any of the options for specifying a parameter range for any parameter.
 }
 \examples{
 \dontrun{

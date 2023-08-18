@@ -2,9 +2,7 @@
 % Please edit documentation in R/get_summary.R
 \name{get_summary}
 \alias{get_summary}
-\title{Generate likelihood profiles
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.}
+\title{Generate results from likelihood profiles}
 \usage{
 get_summary(mydir, para, vec, name, profilemodels, profilesummary)
 }
@@ -14,20 +12,20 @@ There is no default entry for \code{mydir}.
 An example of user input could be
 \code{mydir = file.path("C:/my_models", "base_model")}.}
 
-\item{para}{SS parameter name that the profile was run across}
+\item{para}{A character string specifying the SS3 parameter name that the
+profile pertains to.}
 
-\item{vec}{vector of parameter values the profile covers}
+\item{vec}{A numeric vector specifying the parameter values that the
+profile covers.}
 
-\item{name}{Identify if the csv file show jitter, retro, or profile results}
+\item{name}{Identify if the csv file show jitter, retro, or profile results.}
 
-\item{profilemodels}{object created by the SSgetoutput funciton}
+\item{profilemodels}{An object returned from \code{\link[r4ss:SSgetoutput]{r4ss::SSgetoutput()}}.}
 
-\item{profilesummary}{object created by the SSsummarize funciton}
+\item{profilesummary}{An object returned from \code{\link[r4ss:SSsummarize]{r4ss::SSsummarize()}}.}
 }
 \description{
-Generate likelihood profiles
-To be called from the run_diagnostics function after creating
-the model settings using the get_settings function.
+Used by \code{\link[=profile_wrapper]{profile_wrapper()}} to write summary statistics to the disk.
 }
 \author{
 Chantel Wetzel & Kelli Johnson

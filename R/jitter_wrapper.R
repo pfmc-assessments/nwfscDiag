@@ -28,7 +28,7 @@ jitter_wrapper <- function(mydir, model_settings) {
   jitter_dir <- file.path(mydir, paste0(model_settings$base_name, "_jitter_", model_settings$jitter_fraction))
   dir.create(jitter_dir, showWarnings = FALSE)
   all_files <- list.files(file.path(mydir, model_settings$base_name))
-  capture.output(file.copy(
+  utils::capture.output(file.copy(
     from = file.path(mydir, model_settings$base_name, all_files),
     to = jitter_dir,
     overwrite = TRUE
@@ -75,7 +75,7 @@ jitter_wrapper <- function(mydir, model_settings) {
 
   est <- base$likelihoods_used[1, 1]
   like <- as.numeric(profilesummary$likelihoods[1, keys])
-  ymax <- as.numeric(quantile(unlist(profilesummary$likelihoods[1, keys]), 0.80))
+  ymax <- as.numeric(stats::quantile(unlist(profilesummary$likelihoods[1, keys]), 0.80))
   ymin <- min(like - est) + 1
 
   jitter_output <- list()
@@ -105,20 +105,20 @@ jitter_wrapper <- function(mydir, model_settings) {
     ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
     ylab = ylab, xlab = xlab
   )
-  abline(h = 0, col = "darkgrey", lwd = 2)
+  graphics::abline(h = 0, col = "darkgrey", lwd = 2)
   find <- which(est == like)
-  points(keys[find], (like - est)[find], col = "green3", pch = 16, cex = 1.1)
+  graphics::points(keys[find], (like - est)[find], col = "green3", pch = 16, cex = 1.1)
   find <- which(like - est > 0)
-  points(keys[find], (like - est)[find], col = "blue", pch = 16)
+  graphics::points(keys[find], (like - est)[find], col = "blue", pch = 16)
   if (sum(like - est < 0) > 0) {
     find <- like - est < 0
-    points(keys[find], (like - est)[find], col = "red", pch = 16, cex = 1.1)
-    mtext(
+    graphics::points(keys[find], (like - est)[find], col = "red", pch = 16, cex = 1.1)
+    graphics::mtext(
       side = 3, cex = 1.25,
       "Warning: A lower NLL was found. Update your base model."
     )
   }
-  legend("topleft",
+  graphics::legend("topleft",
     legend = c("Base Model Likelihood", "Higher Likelihood", "Lower Likelihood"),
     bty = "n", pch = 16, col = c("green3", "blue", "red")
   )
@@ -129,20 +129,20 @@ jitter_wrapper <- function(mydir, model_settings) {
       ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
       ylab = ylab, xlab = xlab
     )
-    abline(h = 0, col = "darkgrey", lwd = 2)
+    graphics::abline(h = 0, col = "darkgrey", lwd = 2)
     find <- which(est == like)
-    points(keys[find], (like - est)[find], col = "green3", pch = 16, cex = 1.1)
+    graphics::points(keys[find], (like - est)[find], col = "green3", pch = 16, cex = 1.1)
     find <- which(like - est > 0)
-    points(keys[find], (like - est)[find], col = "blue", pch = 16)
+    graphics::points(keys[find], (like - est)[find], col = "blue", pch = 16)
     if (sum(like - est < 0) > 0) {
       find <- like - est < 0
-      points(keys[find], (like - est)[find], col = "red", pch = 16, cex = 1.1)
-      mtext(
+      graphics::points(keys[find], (like - est)[find], col = "red", pch = 16, cex = 1.1)
+      graphics::mtext(
         side = 3, cex = 1.25,
         "Warning: Only jitters near the base model shown"
       )
     }
-    legend("topleft",
+    graphics::legend("topleft",
       legend = c("Base Model Likelihood", "Higher Likelihood", "Lower Likelihood"),
       bty = "n", pch = 16, col = c("green3", "blue", "red")
     )
@@ -195,8 +195,8 @@ jitter_wrapper <- function(mydir, model_settings) {
   )
 
   # write tables
-  write.csv(x = table(unlist(bounds)), file = file.path(jitter_dir, "jitter_parsonbounds.csv"), row.names = FALSE)
-  write.csv(x = out, file = file.path(jitter_dir, "jitter_results.csv"), row.names = FALSE)
+  utils::write.csv(x = table(unlist(bounds)), file = file.path(jitter_dir, "jitter_parsonbounds.csv"), row.names = FALSE)
+  utils::write.csv(x = out, file = file.path(jitter_dir, "jitter_results.csv"), row.names = FALSE)
 
   message("Finished jitters.")
 }

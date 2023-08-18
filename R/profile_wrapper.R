@@ -61,7 +61,7 @@ profile_wrapper <- function(mydir, model_settings) {
     }
 
     all_files <- list.files(file.path(mydir, model_settings$base_name))
-    capture.output(file.copy(
+    utils::capture.output(file.copy(
       from = file.path(mydir, model_settings$base_name, all_files),
       to = profile_dir, overwrite = TRUE
     ), file = "run_diag_warning.txt")

@@ -50,7 +50,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     )
   ])
   ii <- which(profilesummary$likelihoods_by_fleet$Label %in% like_comp)
-  check <- aggregate(ALL ~ Label, profilesummary$likelihoods_by_fleet[ii, ], FUN = sum)
+  check <- stats::aggregate(ALL ~ Label, profilesummary$likelihoods_by_fleet[ii, ], FUN = sum)
   use <- check[which(check$ALL != 0), "Label"]
   # If present remove the likes that we don't typically show
   use <- use[which(!use %in% c("Disc_like", "Catch_like", "mnwt_like"))]
@@ -90,12 +90,12 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   }
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = 7, w = 7)
-  par(mfrow = panel)
+  graphics::par(mfrow = panel)
   r4ss::SSplotProfile(
     summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get,
     profile.label = label, ymax = ymax1, exact = exact
   )
-  abline(h = 1.92, lty = 3, col = "red")
+  graphics::abline(h = 1.92, lty = 3, col = "red")
 
   if ("Length_like" %in% use) {
     r4ss::PinerPlot(
@@ -129,7 +129,6 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     )
   }
 
-
   maxyr <- min(profilesummary$endyrs + 1)
   minyr <- max(profilesummary$startyrs)
   est <- rep$parameters[rep$parameters$Label == para, "Value", 2]
@@ -147,44 +146,43 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     rep$likelihoods_used[1, 1])
 
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
-  sb0 <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
-  sbf <- as.numeric(profilesummary$SpawnBio[na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
-  depl <- as.numeric(profilesummary$Bratio[na.omit(profilesummary$Bratio$Yr) == maxyr, n])
+  sb0 <- as.numeric(profilesummary$SpawnBio[stats::na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
+  sbf <- as.numeric(profilesummary$SpawnBio[stats::na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
+  depl <- as.numeric(profilesummary$Bratio[stats::na.omit(profilesummary$Bratio$Yr) == maxyr, n])
 
   # Get the relative management targets - only grab the first element since the targets should be the same
   btarg <- as.numeric(profilesummary$btarg[1])
   thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
-  par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
+  graphics::par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
   # parameter vs. likelihood
   plot(x, like, type = "l", lwd = 2, xlab = label, ylab = "Change in -log-likelihood", ylim = ylike)
-  abline(h = 0, lty = 2, col = "black")
+  graphics::abline(h = 0, lty = 2, col = "black")
   if (max(ylike) < 40) {
-    abline(h = 1.92, lty = 3, col = "red")
-    abline(h = -1.92, lty = 3, col = "red")
+    graphics::abline(h = 1.92, lty = 3, col = "red")
+    graphics::abline(h = -1.92, lty = 3, col = "red")
   }
-  points(est, 0, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  graphics::points(est, 0, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. final depletion
   plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
-  points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-  abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
+  graphics::points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  graphics::abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
   if(btarg > 0){
-    legend("bottomright",
+    graphics::legend("bottomright",
            legend = c("Management target", "Minimum stock size threshold"),
            lty = 2, col = c("darkgreen", "red"), bty = "n"
-    )    
+    )
   }
 
   # parameter vs. SB0
   plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
-  points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  graphics::points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
   plot(x, sbf, type = "l", lwd = 2, xlab = label, ylab = expression(SB[final]), ylim = c(0, max(sbf)))
-  points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-
+  graphics::points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # Create the sb and depl trajectories plot
   # Figure out what the base model parameter is in order to label that in the plot

@@ -7,23 +7,22 @@
 get_settings(settings = NULL, verbose = FALSE)
 }
 \arguments{
-\item{settings}{A list of the current settings where each object in the
-list must be named. Those names that are not found in the stored list will
-be added. The default value of \code{NULL} leads to a full list being returned.}
+\item{settings}{A list of the current settings where each object in the list
+must be named. Those names that are not found in the stored list will be
+added. The default value of \code{NULL} leads to a full list being
+returned.}
 
-\item{verbose}{A logical value specifying if the message should be output
-to the screen or not.}
+\item{verbose}{A logical value specifying if the message should be output to
+the screen or not.}
 }
 \value{
-A list of setting for running model diagnostics.
+A list of settings for running model diagnostics.
 }
 \description{
 Check that all of the settings are in the list
 }
 \examples{
 get_settings(list("Njitter" = 10))
-
-settings <- list()
 
 }
 \author{
