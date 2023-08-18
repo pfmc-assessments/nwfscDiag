@@ -13,7 +13,6 @@
 
 run_diagnostics <- function(mydir, model_settings) {
 
-  library(dplyr)
   # Check for Report file
   model_dir <- file.path(mydir, paste0(model_settings$base_name))
 
