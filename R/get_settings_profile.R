@@ -1,8 +1,11 @@
 #' Get default settings for profiles
 #'
-#' Create a matrix of default values for profiling over
-#' the typical parameters given results will be presented to the
-#' Pacific Fisheries Management Council.
+#' Create a data frame of parameters you want to profile over. The default
+#' inputs for this function represent the typical parameters you would want
+#' to profile over but the data frame can actually accommodate any viable
+#' parameter in your Stock Synthesis model. Note that the defaults are, at a
+#' minimum, the profiles needed in your assessment document if you are
+#' presenting to the Pacific Fisheries Management Council.
 #'
 #' @details
 #' The `param_space` argument indicates where the range of of the profile
