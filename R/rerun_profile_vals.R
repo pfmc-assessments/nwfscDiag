@@ -84,7 +84,11 @@ rerun_profile_vals <- function(mydir,
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
 
-  file.copy(file.path(profile_dir, "ss.exe"), temp_dir, overwrite = TRUE)
+  file.copy(
+    file.path(profile_dir, paste0(model_settings[["exe"]], ".exe")),
+    temp_dir,
+    overwrite = TRUE
+  )
   file.copy(file.path(profile_dir, model_settings$newctlfile), temp_dir)
   file.copy(file.path(profile_dir, model_settings$oldctlfile), temp_dir)
   file.copy(file.path(profile_dir, data_file_nm), temp_dir)
@@ -119,15 +123,21 @@ rerun_profile_vals <- function(mydir,
   r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
 
   for (i in run_num) {
-    setwd(temp_dir)
     r4ss::SS_changepars(
       ctlfile = model_settings$newctlfile,
       newctlfile = model_settings$newctlfile,
       strings = para,
       newvals = vec[i],
-      estimate = FALSE
+      estimate = FALSE,
+      dir = temp_dir
     )
-    system("ss -nohess")
+    r4ss::run(
+      dir = temp_dir,
+      exe = model_settings[["exe"]],
+      extras = "-nohess",
+      skipfinished = FALSE,
+      verbose = FALSE
+    )
 
     mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
     like <- mod$likelihoods_used[1, 1]
@@ -143,7 +153,13 @@ rerun_profile_vals <- function(mydir,
           starter$jitter_fraction <- add + starter$jitter_fraction
         }
         r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
-        system("ss -nohess")
+        r4ss::run(
+          dir = temp_dir,
+          exe = model_settings[["exe"]],
+          extras = "-nohess",
+          skipfinished = FALSE,
+          verbose = FALSE
+        )
         mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
         like <- mod$likelihoods_used[1, 1]
         if (like < like_check[i]) {
@@ -155,16 +171,24 @@ rerun_profile_vals <- function(mydir,
     files <- c("CompReport", "covar", "Report", "warning")
     for (j in 1:length(files)) {
       file.rename(
-        paste0(files[j], ".sso"),
-        paste0(files[j], i, ".sso")
+        file.path(temp_dir, paste0(files[j], ".sso")),
+        file.path(temp_dir, paste0(files[j], i, ".sso"))
       )
-      file.copy(paste0(files[j], i, ".sso"),
+      file.copy(
+        file.path(temp_dir, paste0(files[j], i, ".sso")),
         profile_dir,
         overwrite = TRUE
       )
     }
-    file.rename("ss.par", paste0("ss.par_", i, ".sso"))
-    file.copy(paste0("ss.par_", i, ".sso"), profile_dir, overwrite = TRUE)
+    file.rename(
+      file.path(temp_dir, "ss.par"),
+      file.path(temp_dir, paste0("ss.par_", i, ".sso"))
+    )
+    file.copy(
+      file.path(temp_dir, paste0("ss.par_", i, ".sso")),
+      profile_dir,
+      overwrite = TRUE
+    )
   }
 
   profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
