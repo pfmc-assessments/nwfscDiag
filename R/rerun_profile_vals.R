@@ -79,8 +79,10 @@ rerun_profile_vals <- function(mydir,
   }
   para <- para_name
 
-  prior_used <- model_settings$profile_details[model_settings$profile_details$parameters == para_name, "use_prior_like"]
-  profile_dir <- paste0(mydir, "_profile_", para_name, "_prior_like_", prior_used)
+  profile_dir <- file.path(
+    mydir,
+    paste(model_settings[["base_name"]], "profile", para_name, sep = "_")
+  )
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
 
@@ -115,12 +117,20 @@ rerun_profile_vals <- function(mydir,
   like_check <- profilesummary$likelihoods[1, ]
 
   # Change the control file name in the starter file
-  starter <- r4ss::SS_readstarter(file.path(temp_dir, "starter.ss"))
+  starter <- r4ss::SS_readstarter(
+    file.path(temp_dir, "starter.ss"),
+    verbose = FALSE
+  )
   starter$jitter_fraction <- 0.01
   starter$init_values_src <- model_settings$init_values_src
   # make sure the prior likelihood is calculated for non-estimated quantities
-  starter$prior_like <- prior_used
-  r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
+  starter$prior_like <- 1
+  r4ss::SS_writestarter(
+    starter,
+    dir = temp_dir,
+    overwrite = TRUE,
+    verbose = FALSE
+  )
 
   for (i in run_num) {
     r4ss::SS_changepars(
