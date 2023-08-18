@@ -1,6 +1,6 @@
 Package: nwfscDiag
 Type: Package
-Title: Generate standard NWFSC assessment diagnostics
+Title: Generate Standard NWFSC Assessment Diagnostics
 Version: 1.1.2
 Author: Chantel Wetzel
 Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
