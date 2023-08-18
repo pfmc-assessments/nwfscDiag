@@ -214,7 +214,7 @@ rerun_profile_vals <- function(mydir,
     paste0("profile_", para, "_parsonbounds.csv"),
     paste0("profile_", para, "_quant_table.csv"),
     paste0("profile_", para, "_results.csv"),
-    paste0(para, "_profile_output.Rdat")
+    paste0(para, "_profile_output.Rdata")
   )
 
   for (i in 1:length(save_files)) {
