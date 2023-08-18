@@ -1,0 +1,9 @@
+utils::globalVariables(c(
+  "ind",
+  "Label",
+  "num",
+  "Qty",
+  "Quantity",
+  "type",
+  "values"
+))
