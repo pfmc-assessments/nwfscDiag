@@ -129,7 +129,6 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     )
   }
 
-  dev.off()
 
   maxyr <- min(profilesummary$endyrs + 1)
   minyr <- max(profilesummary$startyrs)
@@ -186,7 +185,6 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   plot(x, sbf, type = "l", lwd = 2, xlab = label, ylab = expression(SB[final]), ylim = c(0, max(sbf)))
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
-  dev.off()
 
   # Create the sb and depl trajectories plot
   # Figure out what the base model parameter is in order to label that in the plot
