@@ -13,7 +13,6 @@
 
 run_diagnostics <- function(mydir, model_settings) {
 
-  library(dplyr)
   # Check for Report file
   model_dir <- file.path(mydir, paste0(model_settings$base_name))
 
@@ -21,7 +20,7 @@ run_diagnostics <- function(mydir, model_settings) {
     orig_dir <- getwd()
     setwd(model_dir)
     cat("Running model in directory:", getwd(), "\n")
-    run(
+    r4ss::run(
       dir = model_dir,
       exe = model_settings$exe,
       extras = model_settings$extras

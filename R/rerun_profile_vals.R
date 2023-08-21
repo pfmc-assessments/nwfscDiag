@@ -1,27 +1,66 @@
-#' Generate likelihood profiles
-#' To be called from the run_diagnostics function after creating
-#' the model settings using the get_settings function.
+#' Rerun some of the models in a likelihood profile
 #'
+#' To be called after [run_diagnostics()] in the instance when a model within a
+#' profile has bad dynamics and could benefit from attempting the run with
+#' different starting values. The jitter fraction will be turned on and the
+#' model will be reran in hopes that a better likelihood can be found. The
+#' summary diagnostics will be recreated as well.
 #'
 #' @template mydir
-#' @param para_name SS parameter name that the profile was run across. This is used to
-#' located the correct folder combined with the mydir function input (e.g. paste0(mydir, "_profile_", para_name))
+#' @param para_name SS parameter name that the profile was run across. This is
+#'   used to located the correct folder combined with the mydir function input
+#'   (e.g., `paste0(mydir, "/", model_settings[["base_name"]], "_profile_",
+#'   para_name)`).
 #' @template model_settings
-#' @param run_num A single or vector of run numbers that you would like to rerun for convergence.
-#' This input needs to match the run number for the original profile (e.g., Report6.sso) that
-#' you would like to rerun.
-#' @param data_file_nm SS data file name
+#' @param run_num An integer vector specifying the run numbers that you would
+#'   like to rerun for convergence. This input needs to match the run number for
+#'   the original profile (e.g., Report6.sso) that you would like to rerun.
+#' @param data_file_nm A character string specifying the name of the SS3 data
+#'   file. This is more than likely `"data.ss"`.
 #'
-#' @author Chantel Wetzel.
+#' @author Chantel Wetzel
 #' @export
 #' 
 #' @examples
-#' rerun_profile_vals(mydir = file.path(directory, "base_model"),
-#'           model_settings = model_settings,
-#'           para_name =  "NatM_uniform_Fem_GP_1",
-#'           run_num = c(3, 4),
-#'           data_file_nm = "data.ss")
-#'
+#' \dontrun{
+#' model_settings <- get_settings()
+#' temp_profile_dir <- file.path(tempdir(), "profile")
+#' r4ss::copy_SS_inputs(
+#'   recursive = TRUE,
+#'   verbose = FALSE,
+#'   dir.old = system.file(package = "r4ss", "extdata", "simple_small"),
+#'   dir.new = file.path(temp_profile_dir, "simple_small"),
+#'   overwrite = TRUE
+#' )
+#' ss3_path <- r4ss::get_ss3_exe(
+#'   dir = file.path(temp_profile_dir, "simple_small")
+#' )
+#' model_settings <- get_settings(
+#'   settings = list(
+#'     base_name = "simple_small",
+#'     exe = gsub("\\.exe", "", basename(ss3_path)),
+#'     run = c("profile"),
+#'     profile_details = get_settings_profile(
+#'       parameters = c("NatM_uniform_Fem_GP_1"),
+#'       low =  c(0.20),
+#'       high = c(0.25),
+#'       step_size = c(0.02),
+#'       param_space = c("multiplier")
+#'     )
+#'   )
+#' )
+#' run_diagnostics(
+#'   mydir = temp_profile_dir,
+#'   model_settings = model_settings
+#' )
+#' rerun_profile_vals(
+#'   mydir = temp_profile_dir,
+#'   model_settings = model_settings,
+#'   para_name =  "NatM_uniform_Fem_GP_1",
+#'   run_num = c(1),
+#'   data_file_nm = "data.ss"
+#' )
+#'}
 rerun_profile_vals <- function(mydir,
                                para_name,
                                model_settings,
@@ -40,12 +79,16 @@ rerun_profile_vals <- function(mydir,
   }
   para <- para_name
 
-  prior_used <- model_settings$profile_details[model_settings$profile_details$parameters == para_name, "use_prior_like"]
-  profile_dir <- paste0(mydir, "_profile_", para_name, "_prior_like_", prior_used)
+  profile_dir <-  paste(mydir, "profile", para_name, sep = "_")
+  
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
 
-  file.copy(file.path(profile_dir, "ss.exe"), temp_dir, overwrite = TRUE)
+  file.copy(
+    file.path(profile_dir, paste0(model_settings[["exe"]], ".exe")),
+    temp_dir,
+    overwrite = TRUE
+  )
   file.copy(file.path(profile_dir, model_settings$newctlfile), temp_dir)
   file.copy(file.path(profile_dir, model_settings$oldctlfile), temp_dir)
   file.copy(file.path(profile_dir, data_file_nm), temp_dir)
@@ -72,23 +115,37 @@ rerun_profile_vals <- function(mydir,
   like_check <- profilesummary$likelihoods[1, ]
 
   # Change the control file name in the starter file
-  starter <- r4ss::SS_readstarter(file.path(temp_dir, "starter.ss"))
+  starter <- r4ss::SS_readstarter(
+    file.path(temp_dir, "starter.ss"),
+    verbose = FALSE
+  )
   starter$jitter_fraction <- 0.01
   starter$init_values_src <- model_settings$init_values_src
   # make sure the prior likelihood is calculated for non-estimated quantities
-  starter$prior_like <- prior_used
-  r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
+  starter$prior_like <- 1
+  r4ss::SS_writestarter(
+    starter,
+    dir = temp_dir,
+    overwrite = TRUE,
+    verbose = FALSE
+  )
 
   for (i in run_num) {
-    setwd(temp_dir)
     r4ss::SS_changepars(
       ctlfile = model_settings$newctlfile,
       newctlfile = model_settings$newctlfile,
       strings = para,
       newvals = vec[i],
-      estimate = FALSE
+      estimate = FALSE,
+      dir = temp_dir
     )
-    system("ss -nohess")
+    r4ss::run(
+      dir = temp_dir,
+      exe = model_settings[["exe"]],
+      extras = "-nohess",
+      skipfinished = FALSE,
+      verbose = FALSE
+    )
 
     mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
     like <- mod$likelihoods_used[1, 1]
@@ -104,7 +161,13 @@ rerun_profile_vals <- function(mydir,
           starter$jitter_fraction <- add + starter$jitter_fraction
         }
         r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
-        system("ss -nohess")
+        r4ss::run(
+          dir = temp_dir,
+          exe = model_settings[["exe"]],
+          extras = "-nohess",
+          skipfinished = FALSE,
+          verbose = FALSE
+        )
         mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
         like <- mod$likelihoods_used[1, 1]
         if (like < like_check[i]) {
@@ -116,16 +179,24 @@ rerun_profile_vals <- function(mydir,
     files <- c("CompReport", "covar", "Report", "warning")
     for (j in 1:length(files)) {
       file.rename(
-        paste0(files[j], ".sso"),
-        paste0(files[j], i, ".sso")
+        file.path(temp_dir, paste0(files[j], ".sso")),
+        file.path(temp_dir, paste0(files[j], i, ".sso"))
       )
-      file.copy(paste0(files[j], i, ".sso"),
+      file.copy(
+        file.path(temp_dir, paste0(files[j], i, ".sso")),
         profile_dir,
         overwrite = TRUE
       )
     }
-    file.rename("ss.par", paste0("ss.par_", i, ".sso"))
-    file.copy(paste0("ss.par_", i, ".sso"), profile_dir, overwrite = TRUE)
+    file.rename(
+      file.path(temp_dir, "ss.par"),
+      file.path(temp_dir, paste0("ss.par_", i, ".sso"))
+    )
+    file.copy(
+      file.path(temp_dir, paste0("ss.par_", i, ".sso")),
+      profile_dir,
+      overwrite = TRUE
+    )
   }
 
   profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
@@ -141,7 +212,7 @@ rerun_profile_vals <- function(mydir,
     paste0("profile_", para, "_parsonbounds.csv"),
     paste0("profile_", para, "_quant_table.csv"),
     paste0("profile_", para, "_results.csv"),
-    paste0(para, "_profile_output.Rdat")
+    paste0(para, "_profile_output.Rdata")
   )
 
   for (i in 1:length(save_files)) {
