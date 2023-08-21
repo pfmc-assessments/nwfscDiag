@@ -79,10 +79,8 @@ rerun_profile_vals <- function(mydir,
   }
   para <- para_name
 
-  profile_dir <- file.path(
-    mydir,
-    paste(model_settings[["base_name"]], "profile", para_name, sep = "_")
-  )
+  profile_dir <-  paste(mydir, "profile", para_name, sep = "_")
+  
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
 
