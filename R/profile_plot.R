@@ -90,6 +90,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   }
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = 7, w = 7)
+  on.exit(grDevices::dev.off(), add = TRUE)
   graphics::par(mfrow = panel)
   r4ss::SSplotProfile(
     summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get,
@@ -155,6 +156,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
+  on.exit(grDevices::dev.off(), add = TRUE)
   graphics::par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
   # parameter vs. likelihood
   plot(x, like, type = "l", lwd = 2, xlab = label, ylab = "Change in -log-likelihood", ylim = ylike)

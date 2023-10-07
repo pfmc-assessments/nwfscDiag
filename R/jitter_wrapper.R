@@ -101,6 +101,7 @@ jitter_wrapper <- function(mydir, model_settings) {
   ylab <- "Change in negative log-likelihood"
   xlab <- "Iteration"
   pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, ".png"), h = 12, w = 9)
+  on.exit(grDevices::dev.off(), add = TRUE)
   plot(keys, like - est,
     ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
     ylab = ylab, xlab = xlab
@@ -125,6 +126,7 @@ jitter_wrapper <- function(mydir, model_settings) {
 
   if (ymax > 100) {
     pngfun(wd = jitter_dir, file = paste0("Jitter_Zoomed_SubPlot_", model_settings$jitter_fraction, ".png"), h = 12, w = 9)
+    on.exit(grDevices::dev.off(), add = TRUE)
     plot(keys, like - est,
       ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
       ylab = ylab, xlab = xlab
