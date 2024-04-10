@@ -39,7 +39,7 @@ profile_wrapper <- function(mydir, model_settings) {
     f(x / accuracy) * accuracy
   }
 
-  r4ss::check_exe(file.path(mydir, model_settings$base_name, model_settings$exe))
+  r4ss::check_exe(exe = model_settings$exe, dir = file.path(mydir, model_settings$base_name))
 
   N <- nrow(model_settings$profile_details)
 
