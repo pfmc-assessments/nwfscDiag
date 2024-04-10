@@ -45,7 +45,7 @@ profile_wrapper <- function(mydir, model_settings) {
   #   stop("Executable not found in ", file.path(mydir, model_settings$base_name))
   # }
 
-  r4ss::check_exe(file.path(mydir, model_settings$base_name))
+  r4ss::check_exe(file.path(mydir, model_settings$base_name, model_settings$exe))
 
   N <- nrow(model_settings$profile_details)
 
