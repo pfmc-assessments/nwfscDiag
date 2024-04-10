@@ -39,7 +39,7 @@ profile_wrapper <- function(mydir, model_settings) {
     f(x / accuracy) * accuracy
   }
 
-  check_exe <- paste0(model_settings$exe, ".exe")
+  check_exe <- model_settings$exe
   # check whether exe is in directory
   if (!check_exe %in% list.files(file.path(mydir, model_settings$base_name))) {
     stop("Executable not found in ", file.path(mydir, model_settings$base_name))
