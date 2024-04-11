@@ -13,6 +13,8 @@
 
 run_diagnostics <- function(mydir, model_settings) {
 
+  r4ss::check_exe(exe = model_settings$exe, dir = file.path(mydir, model_settings$base_name))
+  
   # Check for Report file
   model_dir <- file.path(mydir, paste0(model_settings$base_name))
 
