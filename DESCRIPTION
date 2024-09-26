@@ -1,11 +1,11 @@
 Package: nwfscDiag
 Type: Package
-Title: Generate standard NWFSC assessment diagnostics
+Title: Generate Standard NWFSC Assessment Diagnostics
 Version: 1.1.2
 Author: Chantel Wetzel
 Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
 Description: Package that can automates diagnositics for SS3 models by running jitters, retrospective, and profiles.  
-License: What license is it under?
+License: GPL (>=3)
 URL: https://github.com/pfmc-assessments/nwfscDiag
 BugReports: https://github.com/pfmc-assessments/nwfscDiag/issues
 LazyData: true
@@ -15,13 +15,16 @@ Imports:
     dplyr,
     kableExtra,
     knitr,
+    lifecycle,
+    magrittr,
     r4ss (>= 1.38.0),
+    tibble,
     tidyr,
     utils,
-    xfun,
-    testthat
+    xfun
 Suggests:
-    devtools
+    devtools,
+    testthat
 Remotes: 
     github::r4ss/r4ss
 RoxygenNote: 7.2.3

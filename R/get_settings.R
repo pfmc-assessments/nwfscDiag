@@ -1,20 +1,20 @@
 #' Check that all of the settings are in the list
 #'
-#' @param settings A list of the current settings where each object in the
-#' list must be named. Those names that are not found in the stored list will
-#' be added. The default value of \code{NULL} leads to a full list being returned.
-#' @param verbose A logical value specifying if the message should be output
-#' to the screen or not.
+#' @param settings A list of the current settings where each object in the list
+#'   must be named. Those names that are not found in the stored list will be
+#'   added. The default value of \code{NULL} leads to a full list being
+#'   returned.
+#' @param verbose A logical value specifying if the message should be output to
+#'   the screen or not.
 #'
-#' @return A list of setting for running model diagnostics.
+#' @return
+#' A list of settings for running model diagnostics.
 #'
 #' @author Chantel Wetzel & Kelli Faye Johnson
 #' @export
 #'
 #' @examples
 #' get_settings(list("Njitter" = 10))
-#'
-#' settings <- list()
 #'
 get_settings <- function(settings = NULL, verbose = FALSE) {
   
@@ -43,9 +43,9 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     retro_yrs = -1:-5,
     overwrite = TRUE,
     show_in_console = FALSE,
-    
+
     # Plot target lines
-    btarg = NULL, 
+    btarg = NULL,
     minbthresh = NULL,
 
     # Profile Settings

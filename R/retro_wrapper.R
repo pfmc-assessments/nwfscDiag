@@ -352,14 +352,18 @@ retro_wrapper <- function(mydir,  model_settings) {
 
   # Make table for document with caption
   rhos %>%
-    tidyr::spread(key = "type", value = "values") %>%
     dplyr::mutate(
       Quantity = gsub("(^[FSB]+$)", "\\\\emph{\\1}", Quantity),
+      values = round(unlist(values), 3)
     ) %>%
+    tidyr::spread(key = "type", value = "values") %>%
     kableExtra::kbl(
-      format = "latex", booktabs = TRUE, digits = 2, longtable = TRUE,
+      format = "latex",
+      booktabs = TRUE,
+      longtable = FALSE,
       label = "RetroMohnsrho",
       escape = FALSE,
+      align = "r",
       caption = paste(
         "The magnitude of retrospective pattern",
         "(Mohn's rho; Mohn, 1999) given the removal of",

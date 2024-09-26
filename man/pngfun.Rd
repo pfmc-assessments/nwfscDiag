@@ -2,23 +2,23 @@
 % Please edit documentation in R/pdf_fxn.R
 \name{pngfun}
 \alias{pngfun}
-\title{PNG figure funtion}
+\title{Create a \code{.png} figure}
 \usage{
 pngfun(wd, file, w = 7, h = 7, pt = 12)
 }
 \arguments{
-\item{wd}{location to save figure}
+\item{wd}{A string providing the directory location where you want the
+figure saved.}
 
-\item{file}{plot name}
+\item{file}{A string providing the name of the .png file that will be
+saved in \code{wd}.}
 
-\item{w}{figure width}
+\item{w, h}{Numeric values providing the figure width and height in inches.}
 
-\item{h}{figure height in inches}
-
-\item{pt}{point size}
+\item{pt}{Numeric value providing the point size.}
 }
 \description{
-PNG figure funtion
+Create a \code{.png} figure
 }
 \author{
 by Chantel Wetzel

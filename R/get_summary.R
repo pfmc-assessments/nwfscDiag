@@ -1,14 +1,15 @@
-#' Generate likelihood profiles
-#' To be called from the run_diagnostics function after creating
-#' the model settings using the get_settings function.
+#' Generate results from likelihood profiles
 #'
+#' Used by [profile_wrapper()] to write summary statistics to the disk.
 #'
 #' @template mydir
-#' @param name Identify if the csv file show jitter, retro, or profile results
-#' @param para SS3 parameter name that the profile was run across
-#' @param vec vector of parameter values the profile covers
-#' @param profilemodels object created by the SSgetoutput function
-#' @param profilesummary object created by the SSsummarize function
+#' @param name Identify if the csv file show jitter, retro, or profile results.
+#' @param para A character string specifying the SS3 parameter name that the
+#'   profile pertains to.
+#' @param vec A numeric vector specifying the parameter values that the
+#'   profile covers.
+#' @param profilemodels An object returned from [r4ss::SSgetoutput()].
+#' @param profilesummary An object returned from [r4ss::SSsummarize()].
 #'
 #' @author Chantel Wetzel & Kelli Johnson
 #' @export
@@ -96,6 +97,8 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
   #  colnames(new_out) <- paste0("h ", vec)
   #}
   #write.csv(x = new_out, file = file.path(mydir, paste0(name, "_quant_table.csv")), row.names = TRUE)
+
+  utils::write.csv(x = new_out, file = file.path(mydir, paste0(name, "_quant_table.csv")), row.names = TRUE)
 
   return()
 }
