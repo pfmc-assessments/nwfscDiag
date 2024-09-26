@@ -90,12 +90,12 @@ profile_wrapper <- function(mydir, model_settings) {
 
     if (sum(check_para) == 0) {
       print(para)
-      stop("The input profile_custom does not match a parameter in the file ",  
+      stop("The input profile_custom does not match a parameter in the file ",
         model_settings$oldctlfile)
     }
 
     # Copy oldctlfile to newctlfile before modifying it
-    file.copy(file.path(profile_dir, model_settings$oldctlfile), 
+    file.copy(file.path(profile_dir, model_settings$oldctlfile),
       file.path(profile_dir, model_settings$newctlfile))
 
     # Change the control file name in the starter file
@@ -155,12 +155,12 @@ profile_wrapper <- function(mydir, model_settings) {
     num <- sort(vec, index.return = TRUE)$ix
 
     # backup original control.ss_new file for use in second half of profile
-    file.copy(file.path(profile_dir, model_settings$oldctlfile), 
+    file.copy(file.path(profile_dir, model_settings$oldctlfile),
       file.path(profile_dir, "backup_oldctlfile.ss"),
       overwrite = model_settings$overwrite)
     # backup original par file for use in second half of profile
     # if usepar = TRUE
-    file.copy(file.path(profile_dir, "ss.par"), 
+    file.copy(file.path(profile_dir, "ss.par"),
       file.path(profile_dir, "backup_ss.par"),
       overwrite = model_settings$overwrite)
 
@@ -169,14 +169,14 @@ profile_wrapper <- function(mydir, model_settings) {
       whichruns <- which(vec %in% if(iprofile == 1){low} else {high})
       if (!is.null(model_settings$whichruns)) {
         whichruns <- intersect(model_settings$whichruns, whichruns)
-      } 
+      }
       if (iprofile == 2) {
         # copy backup back to use in second half of profile
-        file.copy(file.path(profile_dir, "backup_oldctlfile.ss"), 
+        file.copy(file.path(profile_dir, "backup_oldctlfile.ss"),
           file.path(profile_dir, model_settings$oldctlfile))
         # copy backup back to use in second half of profile
-        file.copy(file.path(profile_dir, "backup_ss.par"), 
-          file.path(profile_dir, "ss.par"), 
+        file.copy(file.path(profile_dir, "backup_ss.par"),
+          file.path(profile_dir, "ss.par"),
           overwrite = model_settings$overwrite)
       }
       profile <- r4ss::profile(
@@ -213,7 +213,7 @@ profile_wrapper <- function(mydir, model_settings) {
       profilesummary$minbthresh <- model_settings$minbthresh
     }
     profilesummary$subplots <- model_settings$subplots
-    
+
     profile_output <- list()
     profile_output$mydir <- profile_dir
     profile_output$para <- para
@@ -244,7 +244,6 @@ profile_wrapper <- function(mydir, model_settings) {
       mydir = profile_dir,
       name = paste0("profile_", para),
       para = para,
-      # vec = vec[num],
       vec = profilesummary$pars %>%
         dplyr::filter(Label == para) %>%
         dplyr::select(dplyr::starts_with("rep")) %>%
