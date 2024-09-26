@@ -56,7 +56,7 @@ jobs:
         run: |
           wget -O ss3 https://github.com/nmfs-ost/ss3-source-code/releases/latest/download/ss3_linux
           sudo chmod a+x ss3
-          cp ss3 inst/extdata/simple_small/ss3
+          cp ss3 inst/extdata/simple/ss3
           rm ss3
 
       - name: run r-cmd-check using R
