@@ -20,8 +20,9 @@
 
 jitter_wrapper <- function(mydir, model_settings) {
   if (!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
-    message("There is no Report.sso file in the base model directory", file.path(mydir, model_settings$base_name))
-    stop()
+    cli::cli_abort("There is no Report.sso file in the base model directory:
+    {file.path(mydir, model_settings$base_name}")
+
   }
 
   # Create a jitter folder with the same naming structure as the base model
@@ -33,7 +34,7 @@ jitter_wrapper <- function(mydir, model_settings) {
     to = jitter_dir,
     overwrite = TRUE
   ), file = "run_diag_warning.txt")
-  message("Running jitters: temporarily changing working directory to: ", jitter_dir)
+  cli::cli_inform("Running jitters: temporarily changing working directory to: {jitter_dir}")
 
   r4ss::jitter(
     dir = jitter_dir,
@@ -43,8 +44,8 @@ jitter_wrapper <- function(mydir, model_settings) {
     verbose = model_settings$verbose,
     jitter_fraction = model_settings$jitter_fraction,
     init_values_src = model_settings$jitter_init_values_src,
-    extras = model_settings$extras,
-    show_in_console = model_settings$show_in_console
+    extras = model_settings$extras#,
+    #show_in_console = model_settings$show_in_console
   )
 
   #### Read in results using other r4ss functions
@@ -200,5 +201,5 @@ jitter_wrapper <- function(mydir, model_settings) {
   utils::write.csv(x = table(unlist(bounds)), file = file.path(jitter_dir, "jitter_parsonbounds.csv"), row.names = FALSE)
   utils::write.csv(x = out, file = file.path(jitter_dir, "jitter_results.csv"), row.names = FALSE)
 
-  message("Finished jitters.")
+  cli::cli_inform("Finished jitters.")
 }

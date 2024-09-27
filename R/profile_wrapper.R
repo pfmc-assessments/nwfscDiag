@@ -59,7 +59,7 @@ profile_wrapper <- function(mydir, model_settings) {
       from = file.path(mydir, model_settings$base_name, all_files),
       to = profile_dir, overwrite = TRUE
     ), file = "run_diag_warning.txt")
-    message(paste0("Running profile for ", para, "."))
+    cli::cli_inform("Running profile for {para}.")
 
     # check for whether oldctlfile exists
     if (!file.exists(file.path(profile_dir, model_settings$oldctlfile))) {
@@ -71,11 +71,13 @@ profile_wrapper <- function(mydir, model_settings) {
         }
         r4ss::run(
           dir = profile_dir,
-          exe = model_settings$exe,
-          extras = model_settings$extras
+          exe = model_settings[["exe"]],
+          extras = model_settings[["extras"]],
+          skipfinished = FALSE,
+          verbose = model_settings[["verbose"]]
         )
       } else {
-        stop("Can not find ", model_settings$oldctlfile)
+        cli::cli_abort("Can not find {model_settings$oldctlfile}")
       }
     }
 
@@ -90,8 +92,8 @@ profile_wrapper <- function(mydir, model_settings) {
 
     if (sum(check_para) == 0) {
       print(para)
-      stop("The input profile_custom does not match a parameter in the file ",
-        model_settings$oldctlfile)
+      cli::cli_abort("The input profile_custom does not match a parameter in the file
+        {model_settings$oldctlfile}")
     }
 
     # Copy oldctlfile to newctlfile before modifying it
@@ -194,7 +196,6 @@ profile_wrapper <- function(mydir, model_settings) {
         overwrite = model_settings$overwrite,
         whichruns = whichruns, # values set above
         prior_check = model_settings$prior_check,
-        read_like = model_settings$read_like,
         exe = model_settings$exe,
         verbose = model_settings$verbose,
         extras = model_settings$extras
@@ -259,6 +260,6 @@ profile_wrapper <- function(mydir, model_settings) {
       profilesummary = profilesummary
     )
 
-    message("Finished profile of ", para, ".")
+    cli::cli_inform("Finished profile of {para}.")
   } # end parameter loop
 }

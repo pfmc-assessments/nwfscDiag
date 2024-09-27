@@ -13,21 +13,23 @@
 
 run_diagnostics <- function(mydir, model_settings) {
 
-  r4ss::check_exe(exe = model_settings$exe, dir = file.path(mydir, model_settings$base_name))
-  
+  exe <- r4ss::check_exe(exe = model_settings$exe, dir = file.path(mydir, model_settings$base_name))[["exe"]]
+  model_settings$exe <- exe
   '%>%' <- magrittr::'%>%'
-  
+
   # Check for Report file
   model_dir <- file.path(mydir, paste0(model_settings$base_name))
 
   if (!file.exists(file.path(model_dir, "Report.sso"))) {
     orig_dir <- getwd()
     setwd(model_dir)
-    cat("Running model in directory:", getwd(), "\n")
+    cli::cli_info("Running model in directory: {getwd()}")
     r4ss::run(
       dir = model_dir,
       exe = model_settings$exe,
-      extras = model_settings$extras
+      extras = model_settings$extras,
+      skipfinished = FALSE,
+      verbose = model_settings$verbose
     )
     setwd(orig_dir)
   }

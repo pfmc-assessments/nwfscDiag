@@ -17,7 +17,7 @@
 #' get_settings(list("Njitter" = 10))
 #'
 get_settings <- function(settings = NULL, verbose = FALSE) {
-  
+
   if (is.vector(settings)) settings <- as.list(settings)
 
   Settings_all <- list(
@@ -26,7 +26,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     run = c("jitter", "profile", "retro"),
     profile_details = NULL,
     version = "3.30",
-    exe = "ss",
+    exe = "ss3",
     verbose = FALSE,
 
     # Jitter Settings
@@ -71,26 +71,22 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
   Settings_all$profile_details <- get_settings_profile()
 
   need <- !names(Settings_all) %in% names(settings)
-  if (verbose) {
-    message("Adding the following objects to settings:\n",
-      paste(names(Settings_all[need]), collapse = "\n"), "\n",
-      appendLF = TRUE
-    )
-  }
   Settings_all <- c(settings, Settings_all[need])
 
   # Check some items
   if (!is.null(Settings_all$profile_details)) {
     if (length(Settings_all$profile_details[is.na(Settings_all$profile_details)]) > 0) {
-      stop("Missing entry in the get_settings_profile data frame.")
+      cli::cli_abort(
+        "Missing entry in the get_settings_profile data frame."
+      )
     }
     if (!is.numeric(Settings_all$profile_details$low) &
       !is.numeric(Settings_all$profile_details$high) &
       !is.numeric(Settings_all$profile_details$step_size)) {
-      stop("There is a non-numeric value in the low, high, or step size field of the get_settings_profile data frame.")
+      cli::cli_abort("There is a non-numeric value in the low, high, or step size field of the get_settings_profile data frame.")
     }
     if (sum(!Settings_all$profile_details$param_space %in% c("real", "relative", "multiplier")) > 0) {
-      stop("The param_space column should be either real or relative in the get_settings_profile data frame.")
+      cli::cli_abort("The param_space column should be either real or relative in the get_settings_profile data frame.")
     }
   }
 

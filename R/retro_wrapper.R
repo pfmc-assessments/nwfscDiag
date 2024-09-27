@@ -10,7 +10,7 @@
 #'
 #' @template mydir
 #' @template model_settings
-#' 
+#'
 #' @author Chantel Wetzel
 #' @return
 #' Nothing is explicitly returned from `retro_wrapper`.
@@ -43,28 +43,29 @@
 retro_wrapper <- function(mydir,  model_settings) {
 
   if(!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
-    message("There is no Report.sso file in the base model directory", file.path(mydir, model_settings$base_name))
-    stop()
+    cli::cli_abort("There is no Report.sso file in the base model directory
+      {file.path(mydir, model_settings$base_name)}")
+
   }
 
 	# Create a jitter folder with the same naming structure as the base model
 	retro_dir <- file.path(mydir, paste0(model_settings$base_name, "_retro_", length(model_settings$retro_yrs), "_yr_peel"))
   dir.create(retro_dir, showWarnings = FALSE)
-  all_files = list.files(file.path(mydir, model_settings$base_name)) 
+  all_files = list.files(file.path(mydir, model_settings$base_name))
   ignore <- file.copy(
     from = file.path(mydir, model_settings$base_name, all_files),
     to = retro_dir,
     overwrite = TRUE
   )
-  message("Running retrospectives.")
+  cli::cli_inform("Running retrospectives.")
 
   r4ss::retro(
-    dir = retro_dir, 
-    oldsubdir = model_settings$oldsubdir, 
-    newsubdir = model_settings$newsubdir,  	
+    dir = retro_dir,
+    oldsubdir = model_settings$oldsubdir,
+    newsubdir = model_settings$newsubdir,
     years = model_settings$retro_yrs,
     overwrite = model_settings$overwrite,
-    exe = model_settings$exe, 
+    exe = model_settings$exe,
     extras = model_settings$extras,
     show_in_console = model_settings$show_in_console
   )
@@ -73,7 +74,7 @@ retro_wrapper <- function(mydir,  model_settings) {
 
   runs <- list()
   for(aa in 1:(length(model_settings$retro_yrs) + 1)) {
-  	if (aa == 1) { 
+  	if (aa == 1) {
       runs[[aa]] <- r4ss::SS_output(dir = file.path(mydir, model_settings$base_name), verbose = FALSE, printstats = FALSE)
   	} else {
   		tmp = file.path(retro_dir, model_settings$newsubdir, paste0("retro", model_settings$retro_yrs[aa-1]))
@@ -125,7 +126,7 @@ retro_wrapper <- function(mydir,  model_settings) {
   retro_output$rhos <- rhos
 
   save(
-    retro_dir, 
+    retro_dir,
     endyrvec,
     retroSummary,
     model_settings,
@@ -145,7 +146,7 @@ retro_wrapper <- function(mydir,  model_settings) {
         ifelse(abs(model_settings$retro_yrs) == 1, "", "s")
       )
     ),
-    btarg = model_settings$btarg, 
+    btarg = model_settings$btarg,
     minbthresh = model_settings$minbthresh,
     ylimAdj = 1.2,
     plotdir = retro_dir,
@@ -162,7 +163,7 @@ retro_wrapper <- function(mydir,  model_settings) {
       legendloc = "topleft",
       plotdir = retro_dir,
       ylimAdj = 1.2,
-      btarg = model_settings$btarg, 
+      btarg = model_settings$btarg,
       minbthresh = model_settings$minbthresh,
       print = TRUE, plot = FALSE, pdf = FALSE
     ),
@@ -191,7 +192,7 @@ retro_wrapper <- function(mydir,  model_settings) {
         ifelse(abs(model_settings$retro_yrs) == 1, "", "s")
       )
     ),
-    btarg = model_settings$btarg, 
+    btarg = model_settings$btarg,
     minbthresh = model_settings$minbthresh,
     subplot = c(2, 4),
     ylimAdj = 1.2,
@@ -209,10 +210,10 @@ retro_wrapper <- function(mydir,  model_settings) {
       legendloc = "topright",
       ylimAdj = 1.2,
       plotdir = retro_dir,
-      btarg = model_settings$btarg, 
+      btarg = model_settings$btarg,
       minbthresh = model_settings$minbthresh,
       print = TRUE, plot = FALSE, pdf = FALSE
-    ),  
+    ),
     subplot = c(2, 4),
     legendlabels = lapply(
       c("AFSC_Hurtado_SSB", "AFSC_Hurtado_Bratio"),
@@ -228,7 +229,7 @@ retro_wrapper <- function(mydir,  model_settings) {
     })
   )
 
-  label <- ifelse(retroSummary$SpawnOutputUnits[1] == "biomass", 
+  label <- ifelse(retroSummary$SpawnOutputUnits[1] == "biomass",
     "Spawning Biomass", "Spawning Output")
   n <- ncol(retroSummary$SpawnBio) - 2
   years <- retroSummary$startyr[1]:retroSummary$endyr[1] + 1
@@ -236,23 +237,23 @@ retro_wrapper <- function(mydir,  model_settings) {
   base <- as.symbol("model1")
   sb <- retroSummary$SpawnBio %>%
       dplyr::filter(Yr %in% years) %>%
-      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100)) 
+      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100))
   sb$Reference_Point <- label
   bratio <- retroSummary$Bratio %>%
       dplyr::filter(Yr %in% years) %>%
-      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100)) 
+      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100))
   bratio$Reference_Point <- "Fraction Unfished"
   f <- retroSummary$Fvalue %>%
       dplyr::filter(Yr %in% years) %>%
-      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100)) 
+      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100))
   f$Reference_Point <- "F"
   rec <- retroSummary$recruits %>%
       dplyr::filter(Yr %in% years) %>%
-      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100)) 
+      dplyr::mutate_at(dplyr::vars(denom), list(per_diff = ~100*./model1 - 100))
   rec$Reference_Point <- "Recruits"
 
   col_names <- c("Yr", "Reference_Point", paste0("model", 1:n, "_per_diff"))
-  df <- rbind(sb[ , colnames(sb) %in% col_names], 
+  df <- rbind(sb[ , colnames(sb) %in% col_names],
               bratio[, colnames(bratio) %in% col_names],
               f[ , colnames(f) %in% col_names],
               rec[, colnames(rec) %in% col_names]) %>%
@@ -269,12 +270,12 @@ retro_wrapper <- function(mydir,  model_settings) {
       df_out$model[df_out$model == col_name] <- paste0("Retro -", a-1)
     }
     y <- y - 1
-  } 
+  }
   colnames(df_out)[colnames(df_out) == "model"] <- "Run"
   leg_order <- c("Base Model", paste0("Retro -", 1:(length(endyrvec) -1)))
   df_out$Run <- factor(df_out$Run, levels = leg_order)
   xrange <- c(ifelse(min(df_out$Yr) < 1980, 1980, min(df_out$Yr)), max(df_out$Yr))
-  find <- df_out %>% dplyr::filter(Yr >= xrange[1]) %>% 
+  find <- df_out %>% dplyr::filter(Yr >= xrange[1]) %>%
     dplyr::summarize(
       bound = abs(max(diff)))
   yrange <- c(-1 * find$bound - 5, find$bound + 5)
@@ -282,54 +283,54 @@ retro_wrapper <- function(mydir,  model_settings) {
   ggplot2::ggplot(df_out, ggplot2::aes(x = Yr, y = diff, col = Run)) +
       ggplot2::geom_line() +
       ggplot2::geom_point() +
-      #ylim(yrange) + 
-      ggplot2::scale_x_continuous(limits = xrange, expand = c(0,0)) + 
+      #ylim(yrange) +
+      ggplot2::scale_x_continuous(limits = xrange, expand = c(0,0)) +
       ggplot2::ylab("% Differece from Base Model") +
       ggplot2::xlab("Year") +
       ggplot2::scale_colour_viridis_d() +
-      ggplot2::theme_bw(base_size = 15) + 
+      ggplot2::theme_bw(base_size = 15) +
       ggplot2::facet_wrap("Reference_Point", scales = 'free_y')
   ggplot2::ggsave(filename = file.path(retro_dir, "retro_percent_difference_4_panel.png"), width = 10, height = 12)
 
   sub_out <- df_out[df_out$Reference_Point != "Recruits",]
-  find <- sub_out %>% dplyr::filter(Yr >= xrange[1]) %>% 
+  find <- sub_out %>% dplyr::filter(Yr >= xrange[1]) %>%
     dplyr::summarize(
       bound = abs(max(diff)))
   yrange <- c(-1 * find$bound - 5, find$bound + 5)
-  
+
   ggplot2::ggplot(sub_out, ggplot2::aes(x = Yr, y = diff, col = Run)) +
       ggplot2::geom_line() +
       ggplot2::geom_point() +
-      ggplot2::ylim(yrange) + 
-      ggplot2::scale_x_continuous(limits = xrange, expand = c(0,0)) + 
+      ggplot2::ylim(yrange) +
+      ggplot2::scale_x_continuous(limits = xrange, expand = c(0,0)) +
       ggplot2::ylab("% Differece from Base Model") +
       ggplot2::xlab("Year") +
       ggplot2::scale_colour_viridis_d() +
-      ggplot2::theme_bw(base_size = 15) + 
+      ggplot2::theme_bw(base_size = 15) +
       ggplot2::facet_wrap("Reference_Point", ncol = 1, nrow = 3)
   ggplot2::ggsave(filename = file.path(retro_dir, "retro_percent_difference_3_panel.png"), width = 10, height = 12)
-  
+
   endyrvec_long <- (min(endyrvec)-5):max(endyrvec)
   pngfun(wd = retro_dir, file = "recruitment_retrospective_squid.png", h = 7, w = 7)
   r4ss::SSplotRetroRecruits(
     retroSummary = retroSummary,
-    endyrvec = endyrvec, 
+    endyrvec = endyrvec,
     cohorts = endyrvec_long,
     main = ""
   )
   dev.off()
 
   nwfscDiag::get_param_values(
-    mydir = retro_dir, 
+    mydir = retro_dir,
     name = "retro",
-    vec = c("Base Model", paste0("Retro -", 1:(length(endyrvec)-1))), 
+    vec = c("Base Model", paste0("Retro -", 1:(length(endyrvec)-1))),
     summary = retroSummary
   )
 
   utils::write.csv(
     x = data.frame(
       caption = paste(
-        "Retrospective patterns for", 
+        "Retrospective patterns for",
         c("spawning stock biomass (\\emph{SSB})", "fraction unfished"),
         "when up to", xfun::numbers_to_words(max(abs(model_settings$retro_yr))),
         "years of data were removed from the base model.",
@@ -384,5 +385,5 @@ retro_wrapper <- function(mydir,  model_settings) {
       file = file.path(retro_dir, "mohnsrho.tex")
     )
 
-	message("Finished retrospective runs.")
+	cli::cli_inform("Finished retrospective runs.")
 }
