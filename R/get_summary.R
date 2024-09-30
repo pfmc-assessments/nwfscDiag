@@ -40,14 +40,6 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
 
   # write tables
   utils::write.csv(x = table(unlist(bounds)), file = file.path(mydir, paste0(name, "_parsonbounds.csv")), row.names = FALSE)
-
   utils::write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
-
-  get_param_values(
-    mydir = mydir,
-    para = para,
-    vec = vec,
-    summary = profilesummary)
-
   return()
 }

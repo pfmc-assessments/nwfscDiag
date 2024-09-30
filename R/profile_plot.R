@@ -17,8 +17,8 @@
 #' @export
 #' @seealso [profile_wrapper] and [rerun_profile_vals] call `profile_plot`.
 
-profile_plot <- function(mydir, rep, para, profilesummary) {
-  
+plot_profile <- function(mydir, rep, para, profilesummary) {
+
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
     ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
       ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
@@ -141,9 +141,9 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   # determine whether to include the prior likelihood component in the likelihood profile
   starter <- r4ss::SS_readstarter(file = file.path(mydir, "starter.ss"))
   like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] -
-    ifelse(starter$prior_like == 0, 
+    ifelse(starter$prior_like == 0,
       profilesummary$likelihoods[profilesummary$likelihoods$Label == "Parm_priors", n],
-      0) - 
+      0) -
     rep$likelihoods_used[1, 1])
 
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
@@ -153,7 +153,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
 
   # Get the relative management targets - only grab the first element since the targets should be the same
   btarg <- as.numeric(profilesummary$btarg[1])
-  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
+  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   on.exit(grDevices::dev.off(), add = TRUE)
@@ -179,14 +179,14 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   }
 
   # parameter vs. SB0
-  plot(x, sb0, type = "l", lwd = 2, xlab = label, 
-    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers", 
+  plot(x, sb0, type = "l", lwd = 2, xlab = label,
+    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers",
       expression(SO[0]), expression(SB[0])), ylim = c(0, max(sb0)))
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
-  plot(x, sbf, type = "l", lwd = 2, xlab = label, 
-    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers", 
+  plot(x, sbf, type = "l", lwd = 2, xlab = label,
+    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers",
       expression(SO[final]), expression(SB[final])), ylim = c(0, max(sbf)))
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
@@ -207,7 +207,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     legendlabels = sprintf(
       fmt = "%s = %s%s",
       # Paste the following three strings together element wise
-      # using the above format of string1 = string2string3 
+      # using the above format of string1 = string2string3
       get,
       pretty_decimal(x),
       ifelse(est == x, " (base)", "")
@@ -215,7 +215,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     ylimAdj = 1.15,
     btarg = btarg,
     minbthresh = thresh,
-    plotdir = mydir, 
+    plotdir = mydir,
     subplots = profilesummary$subplots,
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")

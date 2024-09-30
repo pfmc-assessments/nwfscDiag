@@ -4,15 +4,14 @@
 #'
 #'
 #' @template mydir
-#' @param name Identify if the csv file show jitter, retro, or profile results
-#' @param para SS3 parameter name that the profile was run across
-#' @param vec vector of parameter values or retrospective runs the summary object contains
-#' @param summary object created by the SSsummarize function
+#' @param para SS3 parameter name (string) that the profile was run across.
+#' @param vec Vector of parameter values or retrospective runs the summary object contains
+#' @param summary List created by the [r4ss::SSsummarize()] function
 #'
 #' @author Chantel Wetzel & Kelli Johnson
 #' @export
 
-get_param_values <- function(mydir, para = NULL, name = NULL, vec, summary) {
+get_param_values <- function(mydir, para = NULL, vec, summary) {
 
   x <- summary
   n <- x$n
