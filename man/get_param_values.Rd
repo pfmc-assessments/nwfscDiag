@@ -6,7 +6,7 @@
 To be called from the run_diagnostics function after creating
 the model settings using the get_settings function.}
 \usage{
-get_param_values(mydir, para = NULL, name = NULL, vec, summary)
+get_param_values(mydir, para = NULL, vec, summary)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
@@ -14,13 +14,11 @@ There is no default entry for \code{mydir}.
 An example of user input could be
 \code{mydir = file.path("C:/my_models", "base_model")}.}
 
-\item{para}{SS3 parameter name that the profile was run across}
+\item{para}{SS3 parameter name (string) that the profile was run across.}
 
-\item{name}{Identify if the csv file show jitter, retro, or profile results}
+\item{vec}{Vector of parameter values or retrospective runs the summary object contains}
 
-\item{vec}{vector of parameter values or retrospective runs the summary object contains}
-
-\item{summary}{object created by the SSsummarize function}
+\item{summary}{List created by the \code{\link[r4ss:SSsummarize]{r4ss::SSsummarize()}} function}
 }
 \description{
 Generate likelihood profiles
