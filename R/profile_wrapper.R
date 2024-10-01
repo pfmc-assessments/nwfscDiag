@@ -33,19 +33,15 @@
 
 profile_wrapper <- function(mydir, model_settings) {
 
-  # Add the round_any function from the plyr package to avoid conflicts between
-  # plyr and dplyr.
-  round_any <- function(x, accuracy, f = round) {
-    f(x / accuracy) * accuracy
-  }
-
   N <- nrow(model_settings$profile_details)
 
   for (aa in 1:N) {
     para <- model_settings$profile_details$parameters[aa]
+    profile_settings <- model_settings
+    profile_settings[["profile_details"]] <- profile_settings[["profile_details"]][aa, ]
     output <- run_profile(
       mydir = mydir,
-      model_settings = model_settings,
+      model_settings = profile_settings,
       para = para
     )
 
