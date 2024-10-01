@@ -90,5 +90,13 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     }
   }
 
+  if ("profile" %in% Settings_all[["run"]]) {
+    if (Settings_all[["verbose"]]){
+      check_profile_range(
+        mydir = mydir,
+        model_settings = Settings_all)
+    }
+  }
+
   return(Settings_all)
 }
