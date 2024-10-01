@@ -35,11 +35,7 @@
 #' @export
 
 run_profile <- function(mydir, model_settings, para) {
-  # Add the round_any function from the plyr package to avoid conflicts between
-  # plyr and dplyr.
-  round_any <- function(x, accuracy, f = round) {
-    f(x / accuracy) * accuracy
-  }
+
   # Create a profile folder with the same naming structure as the base model
   # Add a label to show if prior was used or not
   profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
