@@ -254,14 +254,20 @@ rerun_profile_vals <- function(mydir,
 
   get_summary(
     mydir = profile_dir,
-    name = paste0("profile_", para),
     para = para,
     vec = vec[num],
     profilemodels = profilemodels,
     profilesummary = profilesummary
   )
 
-  profile_plot(
+  get_param_values(
+    mydir = profile_dir,
+    para = para,
+    vec = vec[num],
+    summary = oprofilesummary
+  )
+
+  plot_profile(
     mydir = profile_dir,
     para = para,
     rep = rep,
