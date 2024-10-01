@@ -65,38 +65,4 @@ get_retro_quants <- function(mydir,  model_settings, output) {
     file = file.path(retro_dir, "retrofigures4doc.csv"),
     row.names = FALSE
   )
-
-  # Make table for document with caption
-  rhos %>%
-    dplyr::mutate(
-      Quantity = gsub("(^[FSB]+$)", "\\\\emph{\\1}", Quantity),
-      values = round(unlist(values), 3)
-    ) %>%
-    tidyr::spread(key = "type", value = "values") %>%
-    kableExtra::kbl(
-      format = "latex",
-      booktabs = TRUE,
-      longtable = FALSE,
-      label = "RetroMohnsrho",
-      escape = FALSE,
-      align = "r",
-      caption = paste(
-        "The magnitude of retrospective pattern",
-        "(Mohn's rho; Mohn, 1999) given the removal of",
-        xfun::numbers_to_words(max(abs(model_settings$retro_yr))),
-        "years of data for",
-        "fishing intensity (\\emph{F}),",
-        "fraction unfished (Figure \\ref{fig:RetroFractionunfished}),",
-        " recruitment, and",
-        "spawning stock biomass (\\emph{SSB}; Figure \\ref{fig:RetroSsb}).",
-        "Columns are",
-        "a derivation of Mohn's rho (Hurtado-Ferro et al. 2015) used by the Alaska Fisheries Science Center (AFSC),",
-        "as originally described in Mohn (1999),",
-        "and a derivation of Mohn's rho (Woods Hole Mohn's rho; Legault 2009) used by the Northeast Fisheries Science Center (NEFSC)."
-      )
-    ) %>%
-    kableExtra::kable_classic(full_width = FALSE) %>%
-    kableExtra::save_kable(
-      file = file.path(retro_dir, "mohnsrho.tex")
-    )
 }
