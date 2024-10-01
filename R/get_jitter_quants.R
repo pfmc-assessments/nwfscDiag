@@ -18,6 +18,7 @@ get_jitter_quants <- function(mydir, model_settings, output) {
   jitter_dir <- output[["plotdir"]]
   like <- output[["like"]]
   est <- output[["est"]]
+  profilesummary <- output[["profilesummary"]]
 
   outputs <- output$profilemodels
   quants <- lapply(outputs, "[[", "derived_quants")
