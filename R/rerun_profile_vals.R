@@ -20,7 +20,7 @@
 #'
 #' @author Chantel Wetzel
 #' @export
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' model_settings <- get_settings()
@@ -67,20 +67,20 @@ rerun_profile_vals <- function(mydir,
                                run_num,
                                data_file_nm) {
   if (missing(mydir)) {
-    stop("Stop: Need to specify mydir.")
+    cli::cli_abort("Stop: Need to specify mydir.")
   }
 
   if (missing(run_num)) {
-    stop("Stop: Need to specify run_num.")
+    cli::cli_abort("Stop: Need to specify run_num.")
   }
 
   if (missing(para_name)) {
-    stop("Stop: Need to specify parameter name via parameter function input.")
+    cli::cli_abort("Stop: Need to specify parameter name via parameter function input.")
   }
   para <- para_name
 
   profile_dir <-  paste(mydir, "profile", para_name, sep = "_")
-  
+
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
 
@@ -106,8 +106,8 @@ rerun_profile_vals <- function(mydir,
   )$Label == para
 
   if (sum(check_para) == 0) {
-    stop("The input profile_custom does not match a parameter in the ",
-      model_settings$oldctlfile)
+    cli::cli_abort("The input profile_custom does not match a parameter in the
+      {model_settings$oldctlfile}")
   }
 
   load(file.path(profile_dir, paste0(para_name, "_profile_output.Rdata")))
@@ -144,7 +144,7 @@ rerun_profile_vals <- function(mydir,
       exe = model_settings[["exe"]],
       extras = "-nohess",
       skipfinished = FALSE,
-      verbose = FALSE
+      verbose = model_settings[["verbose"]]
     )
 
     mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
@@ -254,14 +254,20 @@ rerun_profile_vals <- function(mydir,
 
   get_summary(
     mydir = profile_dir,
-    name = paste0("profile_", para),
     para = para,
     vec = vec[num],
     profilemodels = profilemodels,
     profilesummary = profilesummary
   )
 
-  profile_plot(
+  get_param_values(
+    mydir = profile_dir,
+    para = para,
+    vec = vec[num],
+    summary = oprofilesummary
+  )
+
+  plot_profile(
     mydir = profile_dir,
     para = para,
     rep = rep,

@@ -5,8 +5,9 @@
 #'
 #' @template mydir
 #' @param rep A list of model output as returned by [r4ss::SS_output()].
-#' @param para A character value that matches a parameter name as used in the
-#' SS control.ss_new parameter names.
+#' @param para A character string specifying the SS3 parameter name that the
+#'   profile pertains to. The parameter name should match the name in the
+#'   control.ss_new file from SS3.
 #' The name will be cleaned up for plotting purposes internally within the function.
 #' For example, `SR_BH_steep` becomes "Steepness (_h_)".
 #' @param profilesummary Output from [r4ss::SSsummarize()].
@@ -15,10 +16,10 @@
 #'
 #' @author Chantel Wetzel.
 #' @export
-#' @seealso [profile_wrapper] and [rerun_profile_vals] call `profile_plot`.
+#' @seealso [profile_wrapper] and [rerun_profile_vals] call `plot_profile`.
 
-profile_plot <- function(mydir, rep, para, profilesummary) {
-  
+plot_profile <- function(mydir, rep, para, profilesummary) {
+
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
     ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
       ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
@@ -141,9 +142,9 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   # determine whether to include the prior likelihood component in the likelihood profile
   starter <- r4ss::SS_readstarter(file = file.path(mydir, "starter.ss"))
   like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] -
-    ifelse(starter$prior_like == 0, 
+    ifelse(starter$prior_like == 0,
       profilesummary$likelihoods[profilesummary$likelihoods$Label == "Parm_priors", n],
-      0) - 
+      0) -
     rep$likelihoods_used[1, 1])
 
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
@@ -153,7 +154,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
 
   # Get the relative management targets - only grab the first element since the targets should be the same
   btarg <- as.numeric(profilesummary$btarg[1])
-  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))    
+  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   on.exit(grDevices::dev.off(), add = TRUE)
@@ -168,9 +169,9 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   graphics::points(est, 0, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. final depletion
-  plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = "Fraction of unfished", ylim = c(0, 1.2))
-  graphics::points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
-  graphics::abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
+  plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = expression("Fraction Unfished"[final]), ylim = c(0, 1.2))
+  points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
   if(btarg > 0){
     graphics::legend("bottomright",
            legend = c("Management target", "Minimum stock size threshold"),
@@ -179,12 +180,16 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
   }
 
   # parameter vs. SB0
-  plot(x, sb0, type = "l", lwd = 2, xlab = label, ylab = expression(SB[0]), ylim = c(0, max(sb0)))
-  graphics::points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  plot(x, sb0, type = "l", lwd = 2, xlab = label,
+    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers",
+      expression(SO[0]), expression(SB[0])), ylim = c(0, max(sb0)))
+  points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
-  plot(x, sbf, type = "l", lwd = 2, xlab = label, ylab = expression(SB[final]), ylim = c(0, max(sbf)))
-  graphics::points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  plot(x, sbf, type = "l", lwd = 2, xlab = label,
+    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers",
+      expression(SO[final]), expression(SB[final])), ylim = c(0, max(sbf)))
+  points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # Create the sb and depl trajectories plot
   # Figure out what the base model parameter is in order to label that in the plot
@@ -203,7 +208,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     legendlabels = sprintf(
       fmt = "%s = %s%s",
       # Paste the following three strings together element wise
-      # using the above format of string1 = string2string3 
+      # using the above format of string1 = string2string3
       get,
       pretty_decimal(x),
       ifelse(est == x, " (base)", "")
@@ -211,7 +216,7 @@ profile_plot <- function(mydir, rep, para, profilesummary) {
     ylimAdj = 1.15,
     btarg = btarg,
     minbthresh = thresh,
-    plotdir = mydir, 
+    plotdir = mydir,
     subplots = profilesummary$subplots,
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")
