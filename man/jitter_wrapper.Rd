@@ -28,7 +28,6 @@ Plots and tables generated to visualize results
 The following functions interact with \code{jitter_wrapper}:
 \itemize{
 \item \link{run_diagnostics}: calls \code{jitter_wrapper}
-\item \link[r4ss:jitter]{r4ss::jitter}: the workhorse of \code{jitter_wrapper} that does the jitters
 }
 }
 \author{

@@ -5,7 +5,7 @@
 \title{Wrapper to run each of the 3 standard diagnostic items:
 \enumerate{
 \item Jitter
-\item Profiles across female m, steepness, and R0
+\item Profiles across requested SS3 parameters
 \item Retrospectives
 }}
 \usage{
@@ -28,7 +28,7 @@ A vector of likelihoods for each jitter iteration.
 Wrapper to run each of the 3 standard diagnostic items:
 \enumerate{
 \item Jitter
-\item Profiles across female m, steepness, and R0
+\item Profiles across requested SS3 parameters
 \item Retrospectives
 }
 }

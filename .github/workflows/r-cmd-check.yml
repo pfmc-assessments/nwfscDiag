@@ -52,13 +52,12 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Get the latest release SS3 executable and move to expected location
+      - name: Get the latest SS3 executable and move to expected location
         run: |
-          curl https://api.github.com/repos/nmfs-ost/ss3-source-code/releases/latest | grep "browser_download_url" | grep -Eo 'https://[^\"]*' | grep "ss_linux" | xargs wget
-          mv ss_linux ss
-          sudo chmod a+x ss
-          cp ss inst/extdata/simple/ss
-          rm ss
+          wget -O ss3 https://github.com/nmfs-ost/ss3-source-code/releases/latest/download/ss3_linux
+          sudo chmod a+x ss3
+          cp ss3 inst/extdata/simple_small/ss3
+          rm ss3
 
       - name: run r-cmd-check using R
         env:
