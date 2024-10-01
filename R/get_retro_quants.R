@@ -37,7 +37,7 @@ get_retro_quants <- function(mydir,  model_settings, output) {
 
   get_param_values(
     mydir = retro_dir,
-    name = "retro",
+    para = "retro",
     vec = c("Base Model", paste0("Retro -", 1:(length(endyrvec)-1))),
     summary = retroSummary
   )
