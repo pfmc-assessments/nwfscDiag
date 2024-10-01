@@ -10,14 +10,15 @@
 #' @seealso
 #' The following functions interact with `profile_wrapper()`:
 #' * [get_settings()]: populates a list of settings for `model_settings`
-#' * [run_diagnostics()]: calls `profile_wrapper()`
+#' * [run_diagnostics()]: calls `profile_wrapper()` which calls this function.
 #' * [r4ss::profile()]: the workhorse of `profile_wrapper()` that does the
 #'   parameter profiles
 #'
 #' @template mydir
 #' @template model_settings
-#' @param The parameter to run the profile for as specified in the
-#' `model_settings$profile_details$parameters`.
+#' @param para A character string specifying the SS3 parameter name that the
+#'   profile pertains to. The parameter name should match the name in the
+#'   control.ss_new file from SS3.
 #'
 #' @author Chantel Wetzel and Ian Taylor.
 #' @return
@@ -34,6 +35,11 @@
 #' @export
 
 run_profile <- function(mydir, model_settings, para) {
+  # Add the round_any function from the plyr package to avoid conflicts between
+  # plyr and dplyr.
+  round_any <- function(x, accuracy, f = round) {
+    f(x / accuracy) * accuracy
+  }
   # Create a profile folder with the same naming structure as the base model
   # Add a label to show if prior was used or not
   profile_dir <- file.path(mydir, paste0(model_settings$base_name, "_profile_", para))
@@ -107,25 +113,25 @@ run_profile <- function(mydir, model_settings, para) {
   est <- rep$parameters[rep$parameters$Label == para, "Value"]
 
   # Determine the parameter range
-  if (model_settings$profile_details$param_space[aa] == "relative") {
+  if (model_settings$profile_details$param_space == "relative") {
     range <- c(
-      est + model_settings$profile_details$low[aa],
-      est + model_settings$profile_details$high[aa]
+      est + model_settings$profile_details$low,
+      est + model_settings$profile_details$high
     )
   }
-  if (model_settings$profile_details$param_space[aa] == "multiplier") {
+  if (model_settings$profile_details$param_space == "multiplier") {
     range <- c(
-      est - est * model_settings$profile_details$low[aa],
-      est + est * model_settings$profile_details$high[aa]
+      est - est * model_settings$profile_details$low,
+      est + est * model_settings$profile_details$high
     )
   }
-  if (model_settings$profile_details$param_space[aa] == "real") {
+  if (model_settings$profile_details$param_space == "real") {
     range <- c(
-      model_settings$profile_details$low[aa],
-      model_settings$profile_details$high[aa]
+      model_settings$profile_details$low,
+      model_settings$profile_details$high
     )
   }
-  step_size <- model_settings$profile_details$step_size[aa]
+  step_size <- model_settings$profile_details$step_size
 
   # Create parameter vect from base down and the base up
   if (est != round_any(est, step_size, f = floor)) {
