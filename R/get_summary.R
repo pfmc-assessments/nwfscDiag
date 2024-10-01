@@ -3,9 +3,9 @@
 #' Used by [profile_wrapper()] to write summary statistics to the disk.
 #'
 #' @template mydir
-#' @param name Identify if the csv file show jitter, retro, or profile results.
 #' @param para A character string specifying the SS3 parameter name that the
-#'   profile pertains to.
+#'   profile pertains to. The parameter name should match the name in the
+#'   control.ss_new file from SS3.
 #' @param vec A numeric vector specifying the parameter values that the
 #'   profile covers.
 #' @param profilemodels An object returned from [r4ss::SSgetoutput()].
@@ -14,7 +14,7 @@
 #' @author Chantel Wetzel & Kelli Johnson
 #' @export
 
-get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
+get_summary <- function(mydir, para, vec, profilemodels, profilesummary) {
 
   # Need to identify a way to determine if a model estimates male growth parameters as offsets from females
 
@@ -39,7 +39,6 @@ get_summary <- function(mydir, para, vec, name, profilemodels, profilesummary) {
   )
 
   # write tables
-  utils::write.csv(x = table(unlist(bounds)), file = file.path(mydir, paste0(name, "_parsonbounds.csv")), row.names = FALSE)
-  utils::write.csv(x = out, file = file.path(mydir, paste0(name, "_results.csv")), row.names = FALSE)
-  return()
+  utils::write.csv(x = table(unlist(bounds)), file = file.path(mydir, paste0(para, "_parsonbounds.csv")), row.names = FALSE)
+  utils::write.csv(x = out, file = file.path(mydir, paste0(para, "_results.csv")), row.names = FALSE)
 }

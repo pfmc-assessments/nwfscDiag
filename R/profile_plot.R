@@ -5,8 +5,9 @@
 #'
 #' @template mydir
 #' @param rep A list of model output as returned by [r4ss::SS_output()].
-#' @param para A character value that matches a parameter name as used in the
-#' SS control.ss_new parameter names.
+#' @param para A character string specifying the SS3 parameter name that the
+#'   profile pertains to. The parameter name should match the name in the
+#'   control.ss_new file from SS3.
 #' The name will be cleaned up for plotting purposes internally within the function.
 #' For example, `SR_BH_steep` becomes "Steepness (_h_)".
 #' @param profilesummary Output from [r4ss::SSsummarize()].
@@ -15,7 +16,7 @@
 #'
 #' @author Chantel Wetzel.
 #' @export
-#' @seealso [profile_wrapper] and [rerun_profile_vals] call `profile_plot`.
+#' @seealso [profile_wrapper] and [rerun_profile_vals] call `plot_profile`.
 
 plot_profile <- function(mydir, rep, para, profilesummary) {
 

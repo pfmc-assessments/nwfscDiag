@@ -16,8 +16,9 @@ An example of user input could be
 Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
 
-\item{The}{parameter to run the profile for as specified in the
-\code{model_settings$profile_details$parameters}.}
+\item{para}{A character string specifying the SS3 parameter name that the
+profile pertains to. The parameter name should match the name in the
+control.ss_new file from SS3.}
 }
 \value{
 Nothing is explicitly returned from \code{profile_wrapper()}.
@@ -45,7 +46,7 @@ information on a workflow to use this function.
 The following functions interact with \code{profile_wrapper()}:
 \itemize{
 \item \code{\link[=get_settings]{get_settings()}}: populates a list of settings for \code{model_settings}
-\item \code{\link[=run_diagnostics]{run_diagnostics()}}: calls \code{profile_wrapper()}
+\item \code{\link[=run_diagnostics]{run_diagnostics()}}: calls \code{profile_wrapper()} which calls this function.
 \item \code{\link[r4ss:profile]{r4ss::profile()}}: the workhorse of \code{profile_wrapper()} that does the
 parameter profiles
 }

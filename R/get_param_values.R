@@ -4,7 +4,9 @@
 #'
 #'
 #' @template mydir
-#' @param para SS3 parameter name (string) that the profile was run across.
+#' @param para A character string specifying the SS3 parameter name that the
+#'   profile pertains to. The parameter name should match the name in the
+#'   control.ss_new file from SS3.
 #' @param vec Vector of parameter values or retrospective runs the summary object contains
 #' @param summary List created by the [r4ss::SSsummarize()] function
 #'
