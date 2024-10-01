@@ -14,8 +14,9 @@ An example of user input could be
 
 \item{rep}{A list of model output as returned by \code{\link[r4ss:SS_output]{r4ss::SS_output()}}.}
 
-\item{para}{A character value that matches a parameter name as used in the
-SS control.ss_new parameter names.
+\item{para}{A character string specifying the SS3 parameter name that the
+profile pertains to. The parameter name should match the name in the
+control.ss_new file from SS3.
 The name will be cleaned up for plotting purposes internally within the function.
 For example, \code{SR_BH_steep} becomes "Steepness (\emph{h})".}
 
@@ -28,7 +29,7 @@ Create plots to be included in presentations and documents that
 summarize a likelihood profile.
 }
 \seealso{
-\link{profile_wrapper} and \link{rerun_profile_vals} call \code{profile_plot}.
+\link{profile_wrapper} and \link{rerun_profile_vals} call \code{plot_profile}.
 }
 \author{
 Chantel Wetzel.

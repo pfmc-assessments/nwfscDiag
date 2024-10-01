@@ -4,7 +4,7 @@
 \alias{get_summary}
 \title{Generate results from likelihood profiles}
 \usage{
-get_summary(mydir, para, vec, name, profilemodels, profilesummary)
+get_summary(mydir, para, vec, profilemodels, profilesummary)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
@@ -13,12 +13,11 @@ An example of user input could be
 \code{mydir = file.path("C:/my_models", "base_model")}.}
 
 \item{para}{A character string specifying the SS3 parameter name that the
-profile pertains to.}
+profile pertains to. The parameter name should match the name in the
+control.ss_new file from SS3.}
 
 \item{vec}{A numeric vector specifying the parameter values that the
 profile covers.}
-
-\item{name}{Identify if the csv file show jitter, retro, or profile results.}
 
 \item{profilemodels}{An object returned from \code{\link[r4ss:SSgetoutput]{r4ss::SSgetoutput()}}.}
 

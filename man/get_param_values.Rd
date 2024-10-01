@@ -14,7 +14,9 @@ There is no default entry for \code{mydir}.
 An example of user input could be
 \code{mydir = file.path("C:/my_models", "base_model")}.}
 
-\item{para}{SS3 parameter name (string) that the profile was run across.}
+\item{para}{A character string specifying the SS3 parameter name that the
+profile pertains to. The parameter name should match the name in the
+control.ss_new file from SS3.}
 
 \item{vec}{Vector of parameter values or retrospective runs the summary object contains}
 
