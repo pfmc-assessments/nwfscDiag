@@ -1,8 +1,12 @@
 ---
 title: "nwfscDiag"
 author: "Chantel Wetzel"
-format: html
-editor: visual
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{nwfscSurvey}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 # nwfscDiag: Diagnostic Package for West Coast Groundfish Assessments
