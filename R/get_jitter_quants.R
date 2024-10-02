@@ -50,10 +50,10 @@ get_jitter_quants <- function(mydir, model_settings, output) {
         round(model_settings[["jitter_fraction"]], 2), " and the jittering was repeated ",
         xfun::numbers_to_words(model_settings[["Njitter"]]), " times.",
         "A better, i.e., lower negative log-likelihood, fit was ",
-        ifelse(
+        dplyr::if_else(
           sum(like - est < 0) == 0,
-          "not found",
-          paste0("found for ", xfun::numbers_to_words(sum(like - est < 0)), " fits")
+          true = "not found",
+          false = paste0("found for ", xfun::numbers_to_words(sum(like - est < 0)), " fits")
         ),
         "Through the jittering analysis performed here and ",
         "the estimation of likelihood profiles, ",
