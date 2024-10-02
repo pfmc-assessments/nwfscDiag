@@ -37,32 +37,34 @@ get_jitter_quants <- function(mydir, model_settings, output) {
 
   # Write a md file to be included in a stock assessment document
   # Text was pirated from @chantelwetzel-noaa's 2021 dover assessment
-  file_md <- file.path(jitter_dir, "model-results-jitter.md")
-  sink(file_md)
-  on.exit(sink(), add = TRUE)
-  cat(
-    sep = "",
-    "Model convergence was in part based on starting the minimization process ",
-    "from dispersed values of the maximum likelihood estimates to determine if the ",
-    "estimation routine results in a smaller likelihood.\n",
-    "Starting parameters were jittered using the built-in functionality of ",
-    "Stock Synthesis, where you specify a jitter fraction.\n",
-    "Here we used a jitter fraction of ",
-    round(model_settings$jitter_fraction, 2), " and the jittering was repeated ",
-    xfun::numbers_to_words(model_settings$Njitter), " times.\n",
-    "A better, i.e., lower negative log-likelihood, fit was ",
-    ifelse(
-      sum(like - est < 0) == 0,
-      "not found",
-      paste0("found for ", xfun::numbers_to_words(sum(like - est < 0)), " fits")
-    ), ".\n",
-    "Several models resulted in similar log-likelihood values ",
-    "with little difference in the overall model estimates, ",
-    "indicating a relatively flat likelihood surface around the maximum likelihood estimate.\n",
-    "Through the jittering analysis performed here and ",
-    "the estimation of likelihood profiles, ",
-    "we are confident that the base model as presented represents the ",
-    "best fit to the data given the assumptions made.\n"
+  utils::write.csv(
+    x = data.frame(
+      caption = paste(
+        sep = "",
+        "Model convergence was in part based on starting the minimization process ",
+        "from dispersed values of the maximum likelihood estimates to determine if the ",
+        "estimation routine results in a smaller likelihood.",
+        "Starting parameters were jittered using the built-in functionality of ",
+        "Stock Synthesis, where you specify a jitter fraction.",
+        "Here we used a jitter fraction of ",
+        round(model_settings[["jitter_fraction"]], 2), " and the jittering was repeated ",
+        xfun::numbers_to_words(model_settings[["Njitter"]]), " times.",
+        "A better, i.e., lower negative log-likelihood, fit was ",
+        ifelse(
+          sum(like - est < 0) == 0,
+          "not found",
+          paste0("found for ", xfun::numbers_to_words(sum(like - est < 0)), " fits")
+        ),
+        "Through the jittering analysis performed here and ",
+        "the estimation of likelihood profiles, ",
+        "we are confident that the base model as presented represents the ",
+        "best fit to the data given the assumptions made."),
+      alt_caption = "Comparison of the negative log-likelihood across jitter runs",
+    label = c("jitter", "jitter-zoomed"),
+    filein = file.path("..", jitter_dir, c("jitter.png", "jitter_zoomed.png"))
+    ),
+    file = file.path(jitter_dir, "jitterfigures4doc.csv"),
+    row.names = FALSE
   )
 
   # write tables
