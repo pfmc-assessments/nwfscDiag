@@ -19,11 +19,11 @@ plot_jitter <- function(mydir, model_settings, output) {
   est <- output[["est"]]
   profilesummary <- output[["profilesummary"]]
 
-  ymax <- as.numeric(stats::quantile(unlist(profilesummary$likelihoods[1, keys]), 0.80))
+  ymax <- as.numeric(stats::quantile(unlist(profilesummary[["likelihoods"]][1, keys]), 0.80))
   ymin <- min(like - est) + 1
   ylab <- "Change in negative log-likelihood"
   xlab <- "Iteration"
-  pngfun(wd = jitter_dir, file = paste0("Jitter_", model_settings$jitter_fraction, ".png"), h = 12, w = 9)
+  pngfun(wd = jitter_dir, file = "jitter.png", h = 12, w = 9)
   on.exit(grDevices::dev.off(), add = TRUE)
   plot(keys, like - est,
        ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
@@ -48,7 +48,7 @@ plot_jitter <- function(mydir, model_settings, output) {
   )
 
   if (ymax > 100) {
-    pngfun(wd = jitter_dir, file = paste0("Jitter_Zoomed_SubPlot_", model_settings$jitter_fraction, ".png"), h = 12, w = 9)
+    pngfun(wd = jitter_dir, file = "jitter_zoomed.png", h = 12, w = 9)
     on.exit(grDevices::dev.off(), add = TRUE)
     plot(keys, like - est,
          ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,

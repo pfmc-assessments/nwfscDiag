@@ -15,18 +15,18 @@
 #' @export
 
 run_jitter <- function(mydir, model_settings) {
-  if (!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
+  if (!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
+    base <- model_settings[["base_name"]]
     cli::cli_abort("There is no Report.sso file in the base model directory:
-    {file.path(mydir, model_settings$base_name}")
-
+    {file.path(mydir, base}")
   }
 
   # Create a jitter folder with the same naming structure as the base model
-  jitter_dir <- file.path(mydir, paste0(model_settings$base_name, "_jitter_", model_settings$jitter_fraction))
+  jitter_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_jitter_", model_settings[["jitter_fraction"]]))
   dir.create(jitter_dir, showWarnings = FALSE)
-  all_files <- list.files(file.path(mydir, model_settings$base_name))
+  all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
   utils::capture.output(file.copy(
-    from = file.path(mydir, model_settings$base_name, all_files),
+    from = file.path(mydir, model_settings[["base_name"]], all_files),
     to = jitter_dir,
     overwrite = TRUE
   ), file = "run_diag_warning.txt")
@@ -34,23 +34,23 @@ run_jitter <- function(mydir, model_settings) {
 
   r4ss::jitter(
     dir = jitter_dir,
-    exe = model_settings$exe,
-    Njitter = model_settings$Njitter,
-    printlikes = model_settings$printlikes,
-    verbose = model_settings$verbose,
-    jitter_fraction = model_settings$jitter_fraction,
-    init_values_src = model_settings$jitter_init_values_src,
-    extras = model_settings$extras
+    exe = model_settings[["exe"]],
+    Njitter = model_settings[["Njitter"]],
+    printlikes = model_settings[["printlikes"]],
+    verbose = model_settings[["verbose"]],
+    jitter_fraction = model_settings[["jitter_fraction"]],
+    init_values_src = model_settings[["jitter_init_values_src"]],
+    extras = model_settings[["extras"]]
   )
 
   #### Read in results using other r4ss functions
-  keys <- 1:model_settings$Njitter
+  keys <- 1:model_settings[["Njitter"]]
   profilemodels <- r4ss::SSgetoutput(
     dirvec = jitter_dir,
     keyvec = keys,
     getcovar = FALSE,
     forecast = FALSE,
-    verbose = FALSE,
+    verbose = model_settings[["verbose"]],
     listlists = TRUE,
     underscore = FALSE,
     save.lists = FALSE
@@ -68,18 +68,18 @@ run_jitter <- function(mydir, model_settings) {
   )
 
   est <- base$likelihoods_used[1, 1]
-  like <- as.numeric(profilesummary$likelihoods[1, keys])
-  ymax <- as.numeric(stats::quantile(unlist(profilesummary$likelihoods[1, keys]), 0.80))
+  like <- as.numeric(profilesummary[["likelihoods"]][1, keys])
+  ymax <- as.numeric(stats::quantile(unlist(profilesummary[["likelihoods"]][1, keys]), 0.80))
   ymin <- min(like - est) + 1
 
   jitter_output <- list()
-  jitter_output$plotdir <- jitter_dir
-  jitter_output$est <- est
-  jitter_output$keys <- keys
-  jitter_output$like <- like
-  jitter_output$model_settings <- model_settings
-  jitter_output$profilesummary <- profilesummary
-  jitter_output$profilemodels <- profilemodels
+  jitter_output[["plotdir"]] <- jitter_dir
+  jitter_output[["est"]] <- est
+  jitter_output[["keys"]] <- keys
+  jitter_output[["like"]] <- like
+  jitter_output[["model_settings"]] <- model_settings
+  jitter_output[["profilesummary"]] <- profilesummary
+  jitter_output[["profilemodels"]] <- profilemodels
 
   save(
     jitter_dir,

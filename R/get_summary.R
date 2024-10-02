@@ -22,7 +22,7 @@ get_summary <- function(mydir, para, vec, profilemodels, profilesummary) {
   outputs <- profilemodels
   quants <- lapply(outputs, "[[", "derived_quants")
   status <- sapply(sapply(outputs, "[[", "parameters", simplify = FALSE), "[[", "Status")
-  bounds <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
+  bounds <- apply(status, 2, function(x) rownames(outputs[[1]][["parameters"]])[x %in% c("LO", "HI")])
 
   out <- data.frame(
     "run" = gsub("replist", "", names(outputs)),
@@ -31,9 +31,8 @@ get_summary <- function(mydir, para, vec, profilemodels, profilesummary) {
     "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
     "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
     "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
-    "SBfinal" = sapply(quants, "[[", paste0("SSB_", outputs[[1]]$endyr + 1), "Value"),
-    "Deplfinal" = sapply(quants, "[[", paste0("Bratio_", outputs[[1]]$endyr + 1), "Value"),
-    # "Fmsy" = sapply(quants, "[[", "annF_MSY", "Value"),
+    "SBfinal" = sapply(quants, "[[", paste0("SSB_", outputs[[1]][["endyr"]] + 1), "Value"),
+    "Deplfinal" = sapply(quants, "[[", paste0("Bratio_", outputs[[1]][["endyr"]] + 1), "Value"),
     "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
     stringsAsFactors = FALSE
   )

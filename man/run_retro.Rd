@@ -41,7 +41,7 @@ complete with captions and alternative text.
 inside of an environment with \code{results = "asis"}
 to include a table of Mohn's rho values in a document.
 
-\code{sa4ss::read_child(file.path(paste0(params$model, "_retro"), "mohnsrho.tex"))}
+\code{sa4ss::read_child(file.path(paste0(params[["model"]], "_retro"), "mohnsrho.tex"))}
 \item \code{retro_output.Rdata} with a list of R objects.
 }
 }

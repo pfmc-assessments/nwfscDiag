@@ -20,16 +20,16 @@ get_jitter_quants <- function(mydir, model_settings, output) {
   est <- output[["est"]]
   profilesummary <- output[["profilesummary"]]
 
-  outputs <- output$profilemodels
+  outputs <- output[["profilemodels"]]
   quants <- lapply(outputs, "[[", "derived_quants")
   status <- sapply(sapply(outputs, "[[", "parameters", simplify = FALSE), "[[", "Status")
-  bounds <- apply(status, 2, function(x) rownames(outputs[[1]]$parameters)[x %in% c("LO", "HI")])
+  bounds <- apply(status, 2, function(x) rownames(outputs[[1]][["parameters"]])[x %in% c("LO", "HI")])
   out <- data.frame(
     "run" = gsub("replist", "", names(outputs)),
     "likelihood" = sapply(sapply(outputs, "[[", "likelihoods_used", simplify = FALSE), "[", 1, 1),
     "gradient" = sapply(outputs, "[[", "maximum_gradient_component"),
     "SB0" = sapply(quants, "[[", "SSB_Virgin", "Value"),
-    "SBfinal" = sapply(quants, "[[", paste0("SSB_", profilesummary$endyrs[1]), "Value"),
+    "SBfinal" = sapply(quants, "[[", paste0("SSB_", profilesummary[["endyrs"]][1]), "Value"),
     "Nparsonbounds" = apply(status, 2, function(x) sum(x %in% c("LO", "HI"))),
     "Lowest NLL" = ifelse(min(like) == like, "Best Fit", 0),
     stringsAsFactors = FALSE

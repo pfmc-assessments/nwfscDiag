@@ -68,24 +68,24 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     subplots = c(1, 3)
   )
 
-  Settings_all$profile_details <- get_settings_profile()
+  Settings_all[["profile_details"]] <- get_settings_profile()
 
   need <- !names(Settings_all) %in% names(settings)
   Settings_all <- c(settings, Settings_all[need])
 
   # Check some items
-  if (!is.null(Settings_all$profile_details)) {
-    if (length(Settings_all$profile_details[is.na(Settings_all$profile_details)]) > 0) {
+  if (!is.null(Settings_all[["profile_details"]])) {
+    if (length(Settings_all[["profile_details"]][is.na(Settings_all[["profile_details"]])]) > 0) {
       cli::cli_abort(
         "Missing entry in the get_settings_profile data frame."
       )
     }
-    if (!is.numeric(Settings_all$profile_details$low) &
-      !is.numeric(Settings_all$profile_details$high) &
-      !is.numeric(Settings_all$profile_details$step_size)) {
+    if (!is.numeric(Settings_all[["profile_details"]][["low"]]) &
+      !is.numeric(Settings_all[["profile_details"]][["high"]]) &
+      !is.numeric(Settings_all[["profile_details"]][["step_size"]])) {
       cli::cli_abort("There is a non-numeric value in the low, high, or step size field of the get_settings_profile data frame.")
     }
-    if (sum(!Settings_all$profile_details$param_space %in% c("real", "relative", "multiplier")) > 0) {
+    if (sum(!Settings_all[["profile_details"]][["param_space"]] %in% c("real", "relative", "multiplier")) > 0) {
       cli::cli_abort("The param_space column should be either real or relative in the get_settings_profile data frame.")
     }
   }

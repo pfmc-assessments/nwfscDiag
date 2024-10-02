@@ -41,17 +41,17 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     exact <- TRUE
   }
 
-  n <- 1:profilesummary$n
+  n <- 1:profilesummary[["n"]]
 
-  like_comp <- unique(profilesummary$likelihoods_by_fleet$Label[
+  like_comp <- unique(profilesummary[["likelihoods_by_fleet"]][["Label"]][
     c(
-      -grep("_lambda", profilesummary$likelihoods_by_fleet$Label),
-      -grep("_N_use", profilesummary$likelihoods_by_fleet$Label),
-      -grep("_N_skip", profilesummary$likelihoods_by_fleet$Label)
+      -grep("_lambda", profilesummary[["likelihoods_by_fleet"]][["Label"]]),
+      -grep("_N_use",  profilesummary[["likelihoods_by_fleet"]][["Label"]]),
+      -grep("_N_skip", profilesummary[["likelihoods_by_fleet"]][["Label"]])
     )
   ])
-  ii <- which(profilesummary$likelihoods_by_fleet$Label %in% like_comp)
-  check <- stats::aggregate(ALL ~ Label, profilesummary$likelihoods_by_fleet[ii, ], FUN = sum)
+  ii <- which(profilesummary[["likelihoods_by_fleet"]][["Label"]] %in% like_comp)
+  check <- stats::aggregate(ALL ~ Label, profilesummary[["likelihoods_by_fleet"]][ii, ], FUN = sum)
   use <- check[which(check$ALL != 0), "Label"]
   # If present remove the likes that we don't typically show
   use <- use[which(!use %in% c("Disc_like", "Catch_like", "mnwt_like"))]
@@ -71,7 +71,7 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   }
 
   # Determine the y-axis for the profile plot for all data types together
-  ymax1 <- max(profilesummary$likelihoods[1, n]) - min(profilesummary$likelihoods[1, n])
+  ymax1 <- max(profilesummary[["likelihoods"]][1, n]) - min(profilesummary[["likelihoods"]][1, n])
   if (ymax1 > 70) {
     ymax1 <- 70
   }
@@ -80,9 +80,9 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   }
 
   # Determine the y-axis for the piner profile plots by each data type
-  lab.row <- ncol(profilesummary$likelihoods)
-  ymax2 <- max(apply(profilesummary$likelihoods[-1, -lab.row], 1, max) -
-    apply(profilesummary$likelihoods[-1, -lab.row], 1, min))
+  lab.row <- ncol(profilesummary[["likelihoods"]])
+  ymax2 <- max(apply(profilesummary[["likelihoods"]][-1, -lab.row], 1, max) -
+    apply(profilesummary[["likelihoods"]][-1, -lab.row], 1, min))
   if (ymax2 > 70) {
     ymax2 <- 70
   }
@@ -131,30 +131,30 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     )
   }
 
-  maxyr <- min(profilesummary$endyrs + 1)
-  minyr <- max(profilesummary$startyrs)
-  est <- rep$parameters[rep$parameters$Label == para, "Value", 2]
-  sb0_est <- rep$derived_quants[rep$derived_quants$Label == "SSB_Virgin", "Value"]
-  sbf_est <- rep$derived_quants[rep$derived_quants$Label == paste0("SSB_", maxyr), "Value"]
-  depl_est <- rep$derived_quants[rep$derived_quants$Label == paste0("Bratio_", maxyr), "Value"]
+  maxyr <- min(profilesummary[["endyrs"]] + 1)
+  minyr <- max(profilesummary[["startyrs"]])
+  est <- rep[["parameters"]][rep[["parameters"]][["Label"]] == para, "Value", 2]
+  sb0_est <- rep[["derived_quants"]][rep[["derived_quants"]][["Label"]] == "SSB_Virgin", "Value"]
+  sbf_est <- rep[["derived_quants"]][rep[["derived_quants"]][["Label"]] == paste0("SSB_", maxyr), "Value"]
+  depl_est <- rep[["derived_quants"]][rep[["derived_quants"]][["Label"]] == paste0("Bratio_", maxyr), "Value"]
 
-  x <- as.numeric(profilesummary$pars[profilesummary$pars$Label == para, n])
+  x <- as.numeric(profilesummary[["pars"]][profilesummary[["pars"]][["Label"]] == para, n])
   # determine whether to include the prior likelihood component in the likelihood profile
   starter <- r4ss::SS_readstarter(file = file.path(mydir, "starter.ss"))
-  like <- as.numeric(profilesummary$likelihoods[profilesummary$likelihoods$Label == "TOTAL", n] -
-    ifelse(starter$prior_like == 0,
-      profilesummary$likelihoods[profilesummary$likelihoods$Label == "Parm_priors", n],
+  like <- as.numeric(profilesummary[["likelihoods"]][profilesummary[["likelihoods"]][["Label"]] == "TOTAL", n] -
+    ifelse(starter[["prior_like"]] == 0,
+      profilesummary[["likelihoods"]][profilesummary[["likelihoods"]][["Label"]] == "Parm_priors", n],
       0) -
-    rep$likelihoods_used[1, 1])
+    rep[["likelihoods_used"]][1, 1])
 
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
-  sb0 <- as.numeric(profilesummary$SpawnBio[stats::na.omit(profilesummary$SpawnBio$Label) == "SSB_Virgin", n])
-  sbf <- as.numeric(profilesummary$SpawnBio[stats::na.omit(profilesummary$SpawnBio$Yr) == maxyr, n])
-  depl <- as.numeric(profilesummary$Bratio[stats::na.omit(profilesummary$Bratio$Yr) == maxyr, n])
+  sb0 <- as.numeric(profilesummary[["SpawnBio"]][stats::na.omit(profilesummary[["SpawnBio"]][["Label"]]) == "SSB_Virgin", n])
+  sbf <- as.numeric(profilesummary[["SpawnBio"]][stats::na.omit(profilesummary[["SpawnBio"]][["Yr"]]) == maxyr, n])
+  depl <- as.numeric(profilesummary[["Bratio"]][stats::na.omit(profilesummary[["Bratio"]][["Yr"]]) == maxyr, n])
 
   # Get the relative management targets - only grab the first element since the targets should be the same
-  btarg <- as.numeric(profilesummary$btarg[1])
-  thresh <- as.numeric(profilesummary$minbthresh[1]) # ifelse(btarg == 0.40, 0.25, ifelse(btarg == 0.25, 0.125, -1))
+  btarg <- as.numeric(profilesummary[["btargs"]][1])
+  thresh <- as.numeric(profilesummary[["minbthreshs"]][1])
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
   on.exit(grDevices::dev.off(), add = TRUE)
@@ -181,13 +181,13 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
 
   # parameter vs. SB0
   plot(x, sb0, type = "l", lwd = 2, xlab = label,
-    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers",
+    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
       expression(SO[0]), expression(SB[0])), ylim = c(0, max(sb0)))
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
   plot(x, sbf, type = "l", lwd = 2, xlab = label,
-    ylab = ifelse(profilesummary$SpawnOutputUnits[1] == "numbers",
+    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
       expression(SO[final]), expression(SB[final])), ylim = c(0, max(sbf)))
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
@@ -217,7 +217,7 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     btarg = btarg,
     minbthresh = thresh,
     plotdir = mydir,
-    subplots = profilesummary$subplots,
+    subplots = profilesummary[["subplots"]],
     pdf = FALSE, print = TRUE, plot = FALSE,
     filenameprefix = paste0(para, "_trajectories_")
   )

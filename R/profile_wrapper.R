@@ -48,9 +48,9 @@ profile_wrapper <- function(mydir, model_settings) {
     get_summary(
       mydir = output[["mydir"]],
       para = para,
-      vec = output$profilesummary$pars %>%
-        dplyr::filter(Label == para) %>%
-        dplyr::select(dplyr::starts_with("rep")) %>%
+      vec = output[["profilesummary"]][["pars"]] |>
+        dplyr::filter(Label == para) |>
+        dplyr::select(dplyr::starts_with("rep")) |>
         as.vector(),
       profilemodels = output[["profilemodels"]],
       profilesummary = output[["profilesummary"]]
