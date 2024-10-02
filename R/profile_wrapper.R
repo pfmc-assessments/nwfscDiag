@@ -32,7 +32,6 @@
 #' @export
 
 profile_wrapper <- function(mydir, model_settings) {
-
   N <- nrow(model_settings$profile_details)
 
   for (aa in 1:N) {

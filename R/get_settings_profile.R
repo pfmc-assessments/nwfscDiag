@@ -61,10 +61,10 @@
 #' # Define each parameter in real space
 #' get_settings_profile(
 #'   parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
-#'    						 low =  c(0.02, 0.25, 8),
-#'    						 high = c(0.07, 1.0,  11),
-#'    						 step_size = c(0.005, 0.05, 0.25),
-#'    						 param_space = c('real', 'real', 'real')
+#'   low = c(0.02, 0.25, 8),
+#'   high = c(0.07, 1.0, 11),
+#'   step_size = c(0.005, 0.05, 0.25),
+#'   param_space = c("real", "real", "real")
 #' )
 #'
 #' # Example 2: Run a profile for natural mortality one with the prior likelihood and one without
@@ -83,7 +83,6 @@ get_settings_profile <- function(parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_
                                  step_size = c(0.01, 0.05, 0.25),
                                  param_space = c("multiplier", "real", "relative"),
                                  use_prior_like = lifecycle::deprecated()) {
-
   if (length(parameters) != length(low) |
     length(parameters) != length(high) |
     length(parameters) != length(step_size) |

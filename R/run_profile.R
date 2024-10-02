@@ -35,7 +35,6 @@
 #' @export
 
 run_profile <- function(mydir, model_settings, para) {
-
   # Create a profile folder with the same naming structure as the base model
   # Add a label to show if prior was used or not
   profile_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_profile_", para))
@@ -77,7 +76,7 @@ run_profile <- function(mydir, model_settings, para) {
 
   # Use the SS_parlines function to ensure that the input parameter can be found
   check_para <- r4ss::SS_parlines(
-    ctlfile =  model_settings[["oldctlfile"]],
+    ctlfile = model_settings[["oldctlfile"]],
     dir = profile_dir,
     verbose = FALSE,
     version = model_settings[["version"]],
@@ -90,8 +89,10 @@ run_profile <- function(mydir, model_settings, para) {
   }
 
   # Copy oldctlfile to newctlfile before modifying it
-  file.copy(file.path(profile_dir, model_settings[["oldctlfile"]]),
-            file.path(profile_dir, model_settings[["newctlfile"]]))
+  file.copy(
+    file.path(profile_dir, model_settings[["oldctlfile"]]),
+    file.path(profile_dir, model_settings[["newctlfile"]])
+  )
 
   # Change the control file name in the starter file
   starter <- r4ss::SS_readstarter(file = file.path(profile_dir, "starter.ss"))
@@ -153,28 +154,37 @@ run_profile <- function(mydir, model_settings, para) {
 
   # backup original control.ss_new file for use in second half of profile
   file.copy(file.path(profile_dir, model_settings[["oldctlfile"]]),
-            file.path(profile_dir, "backup_oldctlfile.ss"),
-            overwrite = model_settings$overwrite)
+    file.path(profile_dir, "backup_oldctlfile.ss"),
+    overwrite = model_settings$overwrite
+  )
   # backup original par file for use in second half of profile
   # if usepar = TRUE
   file.copy(file.path(profile_dir, "ss.par"),
-            file.path(profile_dir, "backup_ss.par"),
-            overwrite = model_settings[["overwrite"]])
+    file.path(profile_dir, "backup_ss.par"),
+    overwrite = model_settings[["overwrite"]]
+  )
 
   # loop over down, then up
   for (iprofile in 1:2) {
-    whichruns <- which(vec %in% if(iprofile == 1){low} else {high})
+    whichruns <- which(vec %in% if (iprofile == 1) {
+      low
+    } else {
+      high
+    })
     if (!is.null(model_settings[["whichruns"]])) {
       whichruns <- intersect(model_settings[["whichruns"]], whichruns)
     }
     if (iprofile == 2) {
       # copy backup back to use in second half of profile
-      file.copy(file.path(profile_dir, "backup_oldctlfile.ss"),
-                file.path(profile_dir, model_settings[["oldctlfile"]]))
+      file.copy(
+        file.path(profile_dir, "backup_oldctlfile.ss"),
+        file.path(profile_dir, model_settings[["oldctlfile"]])
+      )
       # copy backup back to use in second half of profile
       file.copy(file.path(profile_dir, "backup_ss.par"),
-                file.path(profile_dir, "ss.par"),
-                overwrite = model_settings[["overwrite"]])
+        file.path(profile_dir, "ss.par"),
+        overwrite = model_settings[["overwrite"]]
+      )
     }
     profile <- r4ss::profile(
       dir = profile_dir,
@@ -204,7 +214,7 @@ run_profile <- function(mydir, model_settings, para) {
 
   profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
   profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
-  if(!is.null(model_settings[["btarg"]])){
+  if (!is.null(model_settings[["btarg"]])) {
     profilesummary[["btarg"]] <- model_settings[["btarg"]]
     profilesummary[["minbthresh"]] <- model_settings[["minbthresh"]]
   }

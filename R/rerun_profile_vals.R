@@ -42,7 +42,7 @@
 #'     run = c("profile"),
 #'     profile_details = get_settings_profile(
 #'       parameters = c("NatM_uniform_Fem_GP_1"),
-#'       low =  c(0.20),
+#'       low = c(0.20),
 #'       high = c(0.25),
 #'       step_size = c(0.02),
 #'       param_space = c("multiplier")
@@ -56,11 +56,11 @@
 #' rerun_profile_vals(
 #'   mydir = temp_profile_dir,
 #'   model_settings = model_settings,
-#'   para_name =  "NatM_uniform_Fem_GP_1",
+#'   para_name = "NatM_uniform_Fem_GP_1",
 #'   run_num = c(1),
 #'   data_file_nm = "data.ss"
 #' )
-#'}
+#' }
 rerun_profile_vals <- function(mydir,
                                para_name,
                                model_settings,
@@ -79,7 +79,7 @@ rerun_profile_vals <- function(mydir,
   }
   para <- para_name
 
-  profile_dir <-  paste(mydir, "profile", para_name, sep = "_")
+  profile_dir <- paste(mydir, "profile", para_name, sep = "_")
 
   temp_dir <- file.path(profile_dir, "temp")
   dir.create(temp_dir, showWarnings = FALSE)
@@ -99,7 +99,7 @@ rerun_profile_vals <- function(mydir,
 
   # Use the SS_parlines function to ensure that the input parameter can be found
   check_para <- r4ss::SS_parlines(
-    ctlfile =  model_settings$oldctlfile,
+    ctlfile = model_settings$oldctlfile,
     dir = temp_dir,
     verbose = FALSE,
     active = FALSE
@@ -155,7 +155,7 @@ rerun_profile_vals <- function(mydir,
     if (like >= like_check[i]) {
       for (ii in 1:5) {
         starter <- r4ss::SS_readstarter(file = file.path(temp_dir, "starter.ss"))
-        if (ii == 1){
+        if (ii == 1) {
           starter$jitter_fraction <- 0.01
         } else {
           starter$jitter_fraction <- add + starter$jitter_fraction

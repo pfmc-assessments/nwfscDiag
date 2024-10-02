@@ -20,7 +20,8 @@
 jitter_wrapper <- function(mydir, model_settings) {
   output <- run_jitter(
     mydir = mydir,
-    model_settings = model_settings)
+    model_settings = model_settings
+  )
   plot_jitter(
     mydir = mydir,
     model_settings = model_settings,

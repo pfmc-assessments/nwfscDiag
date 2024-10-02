@@ -28,7 +28,7 @@
 #'
 #' @export
 
-get_retro_quants <- function(mydir,  model_settings, output) {
+get_retro_quants <- function(mydir, model_settings, output) {
   retro_dir <- output[["plotdir"]]
   endyrvec <- output[["endyrvec"]]
   retroSummary <- output[["retroSummary"]]
@@ -38,7 +38,7 @@ get_retro_quants <- function(mydir,  model_settings, output) {
   get_param_values(
     mydir = retro_dir,
     para = "retro",
-    vec = c("Base Model", paste0("Retro -", 1:(length(endyrvec)-1))),
+    vec = c("Base Model", paste0("Retro -", 1:(length(endyrvec) - 1))),
     summary = retroSummary
   )
 
@@ -53,11 +53,12 @@ get_retro_quants <- function(mydir,  model_settings, output) {
         "recalculated for each peel given the removal of another year of data.",
         "See Table \\ref{tab:RetroMohnsrho} for other derivations of Mohn's rho."
       ),
-      alt_caption = sprintf("Each successive peel of data led to a Mohn's rho of %s for %s.",
-                            lapply(c("SSB", "Bratio"), function(x) {
-                              knitr::combine_words(sprintf("%.2f", (rhosall[rownames(rhosall) == x, ])))
-                            }),
-                            c("SSB", "fraction unfished")
+      alt_caption = sprintf(
+        "Each successive peel of data led to a Mohn's rho of %s for %s.",
+        lapply(c("SSB", "Bratio"), function(x) {
+          knitr::combine_words(sprintf("%.2f", (rhosall[rownames(rhosall) == x, ])))
+        }),
+        c("SSB", "fraction unfished")
       ),
       label = c("RetroSsb", "RetroFractionunfished"),
       filein = file.path("..", retro_dir, c("compare2_spawnbio_uncertainty.png", "compare4_Bratio_uncertainty.png"))
