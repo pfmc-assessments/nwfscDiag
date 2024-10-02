@@ -1,0 +1,192 @@
+---
+title: "nwfscDiag"
+author: "Chantel Wetzel"
+format: html
+editor: visual
+---
+
+# nwfscDiag: Diagnostic Package for West Coast Groundfish Assessments
+
+The package provides the functionality to conduct model diagnostics for Stock Synthesis (SS3) models. The standard diagnostic included in this package are standard required analysis for U.S. West Coast Groundfish stock assessments managed by the Pacific Fisheries Management Council. The package was designed to perform model diagnostics and create plots and tables in a standardized format. The standardized approach will facilitate the use of these outputs in the assessment template approach.
+
+The diagnostics created by the package are: - jitter runs to ensure model convergence at the Maximum Likelihood Estimate (MLE), - retrospective runs to examine model sensitivity to recent data, and\
+- likelihood profiles across parameters.
+
+This package does not maintain backward compatibility with previous versions of Stock Synthesis. However, if needed user can download older package versions that may work with older versions (3.30.+) of Stock Synthesis.
+
+## Installation
+
+nwfscDiag can be installed via github:
+
+```         
+install.packages("remotes")
+remotes::install_github("pfmc-assessments/nwfscDiag")
+```
+
+## Running the code
+
+The package depends upon a few other packages and they should be installed upon installation of the package. The dependent packages are:
+
+```         
+install.packages('dplyr')
+remotes::install_github('r4ss/r4ss')
+```
+
+A new version of r4ss package was released on July 29, 2022 that included some significant changes that are required for the current version of `nwfscDiag` to run. The current version of the nwfscDiag 1.1.2 package is designed to work with the latest release of r4ss. Please see release version 1.0.1 to use earlier versions of r4ss.
+
+## Example: Run all diagnostics
+
+First, you should specify the directory where the base model is located and where the diagnostics will be run and the name of the base model folder:
+
+```         
+library(nwfscDiag)
+directory <- "C:/your directory"
+base_model_name <- "base model"
+```
+
+Another way to do handle directory management is by using a project file and the `here` package:
+
+```         
+directory <- here::here("models")
+base_model_name <- "base model"
+```
+
+The `get_settings_profile()` specifies which parameters to run a profile for and the parameter ranges for each profile. The low and high values can be specified in 3 ways:
+
+-   as a 'multiplier' where a percent where the low and high range will be specified as x% of the base parameter (i.e., (base parameter - base parameter\* x) - (base parameter + base parameter \* x)),
+-   in 'real' space where the low and high values are in the parameter space, and
+-   as 'relative' where the low and high is a specified amount relative to the base model parameter (i.e., (base parameter - x) - (base parameter + x).
+
+Specify the parameters to profile over along with the parameter range and step size:
+
+```         
+profile_info <- get_settings_profile( 
+  parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+  low =  c(0.40, 0.25, -2),
+  high = c(0.40, 1.0,  2),
+  step_size = c(0.005, 0.05, 0.25),
+  param_space = c('multiplier', 'real', 'relative')
+  )
+```
+
+The `parameters` function argument specifies the parameters to profile over where the string provided should match the string label in the SS3 control file. The `low`, `high`, `step_size`, and `param_space` inputs should be vectors of equal length to the `parameters` input. The above example will profile over female natural mortality, steepness, and $R_0$. The female natural mortality parameter profile will range from (base parameter - base parameter\* x) to (base parameter + base parameter \* x) in steps of 0.005, the steepness parameter profile will range from 0.25 to 1.0 in step size of 0.05, and the $R_0$ parameter profile will range from ($R_0$ - 0.25) to ($R_0$ + 0.25) in step size of 0.25.
+
+Next the settings for running the profiles, jitter, and retrospectives within `r4ss` needs to be specified using `get_settings()`:
+
+```         
+model_settings <- get_settings(
+  settings = list(
+    base_name = base_model_name,
+      run = c("jitter", "profile", "retro"),
+      profile_details = profile_info )
+    )
+```
+
+where the above example requests jitters, profiles, and retrospective models to be run for the model file specified above as the `base_model_name` with the profile setting set using `get_settings_profile()` above. Calling `model_settings` in the R terminal will show all default settings.
+
+If `profile` is included in the run requested and `verbose = TRUE` in the `model_settings()` the values for each parameter profiled across will be printed to the screen. Reviewing this information prior to running all diagnostics can be useful to ensure the parameter range and step size was set correctly.
+
+Run all diagnostics:
+
+```         
+run_diagnostics(mydir = directory, model_settings = model_settings)
+```
+
+## Example: Run a single profile
+
+```         
+library(nwfscDiag)
+directory <- here::here("models")
+base_model_name <- "base model"
+
+profile_settings <- get_settings_profile( 
+  parameters =  c("SR_BH_steep"),
+    low =  c(0.25),
+    high = c(1.0),
+    step_size = c(0.05),
+    param_space = c('real')
+    )
+
+model_settings <- get_settings(
+  settings = list(
+    base_name = base_model_name,
+        run = "profile",
+        profile_details = profile_settings)
+    )
+
+run_diagnostics(mydir = directory, model_settings = model_settings)
+```
+
+## Example: Run jitters
+
+```         
+library(nwfscDiag)
+directory <- here::here("models")
+base_model_name <- "base model"
+
+model_settings <- get_settings(
+  settings = list(
+    base_name = base_model_name,
+        run = "jitter",
+        Njitter = 100,
+        jitter_fraction = 0.10)
+    )
+
+run_diagnostics(mydir = directory, model_settings = model_settings)
+```
+
+## Example: Run retrospectives
+
+```         
+library(nwfscDiag)
+directory <- here::here("models")
+base_model_name <- "base model"
+
+model_settings <- get_settings(
+  settings = list(
+    base_name = base_model_name,
+        run = "retro",
+        retro_yrs = -1:-10)
+    )
+
+run_diagnostics(mydir = directory, model_settings = model_settings)
+```
+
+## Example: Rerun select values for a profile
+
+There are instances where not all models runs within a parameter profile converge. In this case one needs to rerun only select models that failed to converge in the profile. The `rerun_profile_vals()` function allows users to do this.
+
+```         
+library(nwfscDiag)
+directory <- here::here("models")
+base_model_name <- "base model"
+rerun_profile_vals(
+  mydir = file.path(model_dir, base_name),
+  model_settings = model_settings,
+  para_name =  "SR_LN(R0)",
+  run_num = c(6, 4,3,2),
+  data_file_nm = "base_model_data_file.dat")
+```
+
+where the `run_num` is the number reported in the profile_SR_LN(RO))\_results.csv file under the run column. Profiles are run out from the base model parameter value to lower or higher values to improve model convergence and hence, the run number reported in the csv is not sequential from the lower to upper bounds.
+
+## Example: Run jitters in parrallel
+
+`r4ss` v1.49.3+ supports running models in parallel. This can be particularly helpful when running jitters. In order to run jitters in parallel, additional specifications are needed outside the `nwfscDiag` package and some additional R packages (`parallelly`, `future`) need to be installed:
+
+```         
+ncores <- parallelly::availableCores(omit = 1)
+future::plan(future::multisession, workers = ncores)
+
+model_settings <- get_settings(settings = list(
+  exe = "ss3",
+  base_name = base_model,
+  run = "jitter",
+  Njitter = 100,
+  jitter_fraction = 0.10))
+
+run_diagnostics(mydir = dir, model_settings = model_settings)
+future::plan(future::sequential)
+```
+
+This same approach could be done with profiles, but is not recommended for models with convergence issues.

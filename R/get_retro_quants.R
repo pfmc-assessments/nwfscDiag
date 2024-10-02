@@ -23,7 +23,7 @@
 #'   inside of an environment with `results = "asis"`
 #'   to include a table of Mohn's rho values in a document.
 #'
-#'   `sa4ss::read_child(file.path(paste0(params$model, "_retro"), "mohnsrho.tex"))`
+#'   `sa4ss::read_child(file.path(paste0(params[["model"]], "_retro"), "mohnsrho.tex"))`
 #'
 #'
 #' @export
@@ -47,7 +47,7 @@ get_retro_quants <- function(mydir,  model_settings, output) {
       caption = paste(
         "Retrospective patterns for",
         c("spawning stock biomass (\\emph{SSB})", "fraction unfished"),
-        "when up to", xfun::numbers_to_words(max(abs(model_settings$retro_yr))),
+        "when up to", xfun::numbers_to_words(max(abs(model_settings[["retro_yrs"]]))),
         "years of data were removed from the base model.",
         "Mohn's rho (Mohn, 1999) values were",
         "recalculated for each peel given the removal of another year of data.",

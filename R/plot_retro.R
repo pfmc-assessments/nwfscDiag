@@ -31,18 +31,19 @@ plot_retro <- function(mydir,  model_settings, output) {
     legendlabels = c(
       "Base Model",
       sprintf("Data %.0f year%s",
-              model_settings$retro_yrs,
-              ifelse(abs(model_settings$retro_yrs) == 1, "", "s")
+              model_settings[["retro_yrs"]],
+              ifelse(abs(model_settings[["retro_yrs"]]) == 1, "", "s")
       )
     ),
-    btarg = model_settings$btarg,
-    minbthresh = model_settings$minbthresh,
+    btarg = model_settings[["btarg"]],
+    minbthresh = model_settings[["minbthresh"]],
     ylimAdj = 1.2,
     plotdir = retro_dir,
     legendloc = "topright",
     print = TRUE,
     plot = FALSE,
-    pdf = FALSE
+    pdf = FALSE,
+    verbose = model_settings[["verbose"]]
   )
   savedplotinfo <- mapply(
     FUN = r4ss::SSplotComparisons,
@@ -52,9 +53,10 @@ plot_retro <- function(mydir,  model_settings, output) {
       legendloc = "topleft",
       plotdir = retro_dir,
       ylimAdj = 1.2,
-      btarg = model_settings$btarg,
-      minbthresh = model_settings$minbthresh,
-      print = TRUE, plot = FALSE, pdf = FALSE
+      btarg = model_settings[["btarg"]],
+      minbthresh = model_settings[["minbthresh"]],
+      print = TRUE, plot = FALSE, pdf = FALSE,
+      verbose = model_settings[["verbose"]]
     ),
     subplot = c(8, 10),
     legendlabels = lapply(
@@ -63,8 +65,8 @@ plot_retro <- function(mydir,  model_settings, output) {
         c(
           "Base Model",
           sprintf("Data %.0f year%s (Revised Mohn's rho %.2f)",
-                  model_settings$retro_yrs,
-                  ifelse(abs(model_settings$retro_yrs) == 1, "", "s"),
+                  model_settings[["retro_yrs"]],
+                  ifelse(abs(model_settings[["retro_yrs"]]) == 1, "", "s"),
                   rhosall[rownames(rhosall) == x, ]
           )
         )
@@ -77,19 +79,20 @@ plot_retro <- function(mydir,  model_settings, output) {
     legendlabels = c(
       "Base Model",
       sprintf("Data %.0f year%s",
-              model_settings$retro_yrs,
-              ifelse(abs(model_settings$retro_yrs) == 1, "", "s")
+              model_settings[["retro_yrs"]],
+              ifelse(abs(model_settings[["retro_yrs"]]) == 1, "", "s")
       )
     ),
-    btarg = model_settings$btarg,
-    minbthresh = model_settings$minbthresh,
+    btarg = model_settings[["btarg"]],
+    minbthresh = model_settings[["minbthresh"]],
     subplot = c(2, 4),
     ylimAdj = 1.2,
     plotdir = retro_dir,
     legendloc = "topright",
     print = TRUE,
     plot = FALSE,
-    pdf = FALSE
+    pdf = FALSE,
+    verbose = model_settings[["verbose"]]
   )
   savedplotinfo <- mapply(
     FUN = r4ss::SSplotComparisons,
@@ -99,9 +102,10 @@ plot_retro <- function(mydir,  model_settings, output) {
       legendloc = "topright",
       ylimAdj = 1.2,
       plotdir = retro_dir,
-      btarg = model_settings$btarg,
-      minbthresh = model_settings$minbthresh,
-      print = TRUE, plot = FALSE, pdf = FALSE
+      btarg = model_settings[["btarg"]],
+      minbthresh = model_settings[["minbthresh"]],
+      print = TRUE, plot = FALSE, pdf = FALSE,
+      verbose = model_settings[["verbose"]]
     ),
     subplot = c(2, 4),
     legendlabels = lapply(
@@ -110,8 +114,8 @@ plot_retro <- function(mydir,  model_settings, output) {
         c(
           "Base Model",
           sprintf("Data %.0f year%s (Revised Mohn's rho %.2f)",
-                  model_settings$retro_yrs,
-                  ifelse(abs(model_settings$retro_yrs) == 1, "", "s"),
+                  model_settings[["retro_yrs"]],
+                  ifelse(abs(model_settings[["retro_yrs"]]) == 1, "", "s"),
                   rhosall[rownames(rhosall) == x, ]
           )
         )
@@ -178,7 +182,7 @@ plot_retro <- function(mydir,  model_settings, output) {
   df_out <- NULL
   y <- years
   for (a in 1:n){
-    col_name <- paste0("per_diff_model", 1:n)
+    col_name <- paste0("per_diff_model", a)
     df_out <- rbind(df_out, df[df[["Yr"]] %in% y & df[["model"]] %in% col_name, ])
     if (a == 1){
       df_out[["model"]][df_out[["model"]] == col_name] <- "Base Model"

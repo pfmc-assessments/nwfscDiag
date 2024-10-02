@@ -34,7 +34,7 @@
 #'   inside of an environment with `results = "asis"`
 #'   to include a table of Mohn's rho values in a document.
 #'
-#'   `sa4ss::read_child(file.path(paste0(params$model, "_retro"), "mohnsrho.tex"))`
+#'   `sa4ss::read_child(file.path(paste0(params[["model"]], "_retro"), "mohnsrho.tex"))`
 #'
 #' * `retro_output.Rdata` with a list of R objects.
 #'
@@ -42,18 +42,17 @@
 
 run_retro <- function(mydir,  model_settings) {
 
-  if(!file.exists(file.path(mydir, model_settings$base_name, "Report.sso"))) {
-    cli::cli_abort("There is no Report.sso file in the base model directory
-      {file.path(mydir, model_settings$base_name)}")
-
+  if(!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
+    base <- model_settings[["base_name"]]
+    cli::cli_abort("There is no Report.sso file in the base model directory {file.path(mydir, base}")
   }
 
   # Create a jitter folder with the same naming structure as the base model
-  retro_dir <- file.path(mydir, paste0(model_settings$base_name, "_retro_", length(model_settings$retro_yrs), "_yr_peel"))
+  retro_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_retro_", length(model_settings[["retro_yrs"]]), "_yr_peel"))
   dir.create(retro_dir, showWarnings = FALSE)
-  all_files = list.files(file.path(mydir, model_settings$base_name))
+  all_files = list.files(file.path(mydir, model_settings[["base_name"]]))
   ignore <- file.copy(
-    from = file.path(mydir, model_settings$base_name, all_files),
+    from = file.path(mydir, model_settings[["base_name"]], all_files),
     to = retro_dir,
     overwrite = TRUE
   )
@@ -61,29 +60,30 @@ run_retro <- function(mydir,  model_settings) {
 
   r4ss::retro(
     dir = retro_dir,
-    oldsubdir = model_settings$oldsubdir,
-    newsubdir = model_settings$newsubdir,
-    years = model_settings$retro_yrs,
-    overwrite = model_settings$overwrite,
-    exe = model_settings$exe,
-    extras = model_settings$extras,
-    show_in_console = model_settings$show_in_console
+    oldsubdir = model_settings[["oldsubdir"]],
+    newsubdir = model_settings[["newsubdir"]],
+    years = model_settings[["retro_yrs"]],
+    overwrite = model_settings[["overwrite"]],
+    exe = model_settings[["exe"]],
+    extras = model_settings[["extras"]],
+    show_in_console = model_settings[["show_in_console"]],
+    verbose = model_settings[["verbose"]]
   )
 
   ignore <- file.remove(from = file.path(retro_dir, all_files))
 
   runs <- list()
-  for(aa in 1:(length(model_settings$retro_yrs) + 1)) {
+  for(aa in 1:(length(model_settings[["retro_yrs"]]) + 1)) {
     if (aa == 1) {
-      runs[[aa]] <- r4ss::SS_output(dir = file.path(mydir, model_settings$base_name), verbose = FALSE, printstats = FALSE)
+      runs[[aa]] <- r4ss::SS_output(dir = file.path(mydir, model_settings[["base_name"]]), verbose = FALSE, printstats = FALSE)
     } else {
-      tmp = file.path(retro_dir, model_settings$newsubdir, paste0("retro", model_settings$retro_yrs[aa-1]))
+      tmp = file.path(retro_dir, model_settings[["newsubdir"]], paste0("retro", model_settings[["retro_yrs"]][aa-1]))
       runs[[aa]] <- r4ss::SS_output(dir = tmp, verbose = FALSE, printstats = FALSE)
     }
   }
 
-  retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = FALSE)
-  endyrvec <- c(retroSummary$endyrs[1], retroSummary$endyrs[1] + model_settings$retro_yrs)
+  retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = model_settings[["verbose"]])
+  endyrvec <- c(retroSummary[["endyrs"]][1], retroSummary[["endyrs"]][1] + model_settings[["retro_yrs"]])
 
   # Calculate Mohn's rho
   rhosall <- mapply(
@@ -92,13 +92,13 @@ run_retro <- function(mydir,  model_settings) {
       seq_along(runs)[-1],
       function(x) r4ss::SSsummarize(runs[1:x], verbose = FALSE)
     ),
-    endyrvec = mapply(seq,from=endyrvec[1], to= endyrvec[-1])
+    verbose = model_settings[["verbose"]],
+    endyrvec = mapply(seq, from = endyrvec[1], to = endyrvec[-1])
   )
 
-  rhos <- rhosall %>%
-    data.frame %>%
-    dplyr::select(values = NCOL(rhosall)) %>%
-    tibble::rownames_to_column("ind") %>%
+  rhos <- data.frame(rhosall) |>
+    dplyr::select(values = NCOL(rhosall)) |>
+    tibble::rownames_to_column("ind") |>
     dplyr::mutate(
       ind = gsub("\\.all$", "", ind),
       Quantity = gsub("[A-Za-z_]+_([A-Za-z]+$)|(^[A-Za-z]+$)", "\\1\\2", ind),
@@ -108,8 +108,8 @@ run_retro <- function(mydir,  model_settings) {
       ind = gsub("^$", "Mohn", ind),
       ind = gsub("WoodHole", "NEFSC", ind),
       ind = gsub("_Hurtado", "", ind),
-    ) %>%
-    dplyr::rename(type = "ind") %>%
+    ) |>
+    dplyr::rename(type = "ind") |>
     dplyr::select(type, Quantity, values)
   utils::write.csv(
     x = as.matrix(rhos),
@@ -118,12 +118,12 @@ run_retro <- function(mydir,  model_settings) {
   )
 
   retro_output <- list()
-  retro_output$plotdir <- retro_dir
-  retro_output$endyrvec <- endyrvec
-  retro_output$retroSummary <- retroSummary
-  retro_output$model_settings <- model_settings
-  retro_output$rhosall <- rhosall
-  retro_output$rhos <- rhos
+  retro_output[["plotdir"]] <- retro_dir
+  retro_output[["endyrvec"]] <- endyrvec
+  retro_output[["retroSummary"]] <- retroSummary
+  retro_output[["model_settings"]] <- model_settings
+  retro_output[["rhosall"]] <- rhosall
+  retro_output[["rhos"]] <- rhos
 
   save(
     retro_dir,
