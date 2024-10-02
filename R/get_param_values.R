@@ -14,7 +14,6 @@
 #' @export
 
 get_param_values <- function(mydir, para = NULL, vec, summary) {
-
   x <- summary
   n <- x[["n"]]
   endyr <- x[["endyrs"]][1] + 1
@@ -52,20 +51,20 @@ get_param_values <- function(mydir, para = NULL, vec, summary) {
   out <- t(out)
   colnames(out) <- vec
 
-  if(!is.null(para)) {
-  	name <- para
-  	if (para == "SR_LN(R0)") {
-  	  colnames(out) <- paste0("R0 ", vec)
-  	}
-  	if (para == "NatM_uniform_Fem_GP_1") {
-  	  colnames(out) <- paste0("M_f ", vec)
-  	}
-  	if (para == "NatM_uniform_Mal_GP_1") {
-  	  colnames(out) <- paste0("M_m ", vec)
-  	}
-  	if (para == "SR_BH_steep") {
-  	  colnames(out) <- paste0("h ", vec)
-  	}
+  if (!is.null(para)) {
+    name <- para
+    if (para == "SR_LN(R0)") {
+      colnames(out) <- paste0("R0 ", vec)
+    }
+    if (para == "NatM_uniform_Fem_GP_1") {
+      colnames(out) <- paste0("M_f ", vec)
+    }
+    if (para == "NatM_uniform_Mal_GP_1") {
+      colnames(out) <- paste0("M_m ", vec)
+    }
+    if (para == "SR_BH_steep") {
+      colnames(out) <- paste0("h ", vec)
+    }
   }
 
   utils::write.csv(x = out, file = file.path(mydir, paste0(name, "_quant_table.csv")), row.names = TRUE)

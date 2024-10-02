@@ -19,7 +19,6 @@
 #' @seealso [profile_wrapper] and [rerun_profile_vals] call `plot_profile`.
 
 plot_profile <- function(mydir, rep, para, profilesummary) {
-
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
     ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
       ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
@@ -46,7 +45,7 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   like_comp <- unique(profilesummary[["likelihoods_by_fleet"]][["Label"]][
     c(
       -grep("_lambda", profilesummary[["likelihoods_by_fleet"]][["Label"]]),
-      -grep("_N_use",  profilesummary[["likelihoods_by_fleet"]][["Label"]]),
+      -grep("_N_use", profilesummary[["likelihoods_by_fleet"]][["Label"]]),
       -grep("_N_skip", profilesummary[["likelihoods_by_fleet"]][["Label"]])
     )
   ])
@@ -144,7 +143,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   like <- as.numeric(profilesummary[["likelihoods"]][profilesummary[["likelihoods"]][["Label"]] == "TOTAL", n] -
     ifelse(starter[["prior_like"]] == 0,
       profilesummary[["likelihoods"]][profilesummary[["likelihoods"]][["Label"]] == "Parm_priors", n],
-      0) -
+      0
+    ) -
     rep[["likelihoods_used"]][1, 1])
 
   ylike <- c(min(like) + ifelse(min(like) != 0, -0.5, 0), max(like))
@@ -172,23 +172,29 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   plot(x, depl, type = "l", lwd = 2, xlab = label, ylab = expression("Fraction Unfished"[final]), ylim = c(0, 1.2))
   points(est, depl_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
   abline(h = c(btarg, thresh), lty = c(2, 2), col = c("darkgreen", "red"))
-  if(btarg > 0){
+  if (btarg > 0) {
     graphics::legend("bottomright",
-           legend = c("Management target", "Minimum stock size threshold"),
-           lty = 2, col = c("darkgreen", "red"), bty = "n"
+      legend = c("Management target", "Minimum stock size threshold"),
+      lty = 2, col = c("darkgreen", "red"), bty = "n"
     )
   }
 
   # parameter vs. SB0
-  plot(x, sb0, type = "l", lwd = 2, xlab = label,
+  plot(x, sb0,
+    type = "l", lwd = 2, xlab = label,
     ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
-      expression(SO[0]), expression(SB[0])), ylim = c(0, max(sb0)))
+      expression(SO[0]), expression(SB[0])
+    ), ylim = c(0, max(sb0))
+  )
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # parameter vs. SBfinal
-  plot(x, sbf, type = "l", lwd = 2, xlab = label,
+  plot(x, sbf,
+    type = "l", lwd = 2, xlab = label,
     ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
-      expression(SO[final]), expression(SB[final])), ylim = c(0, max(sbf)))
+      expression(SO[final]), expression(SB[final])
+    ), ylim = c(0, max(sbf))
+  )
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
 
   # Create the sb and depl trajectories plot

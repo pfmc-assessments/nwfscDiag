@@ -15,7 +15,6 @@
 #' @export
 
 get_summary <- function(mydir, para, vec, profilemodels, profilesummary) {
-
   # Need to identify a way to determine if a model estimates male growth parameters as offsets from females
 
   # get output

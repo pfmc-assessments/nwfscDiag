@@ -12,10 +12,9 @@
 #' @export
 
 run_diagnostics <- function(mydir, model_settings) {
-
   exe <- r4ss::check_exe(exe = model_settings$exe, dir = file.path(mydir, model_settings[["base_name"]]))[["exe"]]
   model_settings[["exe"]] <- exe
-  '%>%' <- magrittr::'%>%'
+  "%>%" <- magrittr::"%>%"
 
   # Check for Report file
   model_dir <- file.path(mydir, paste0(model_settings[["base_name"]]))

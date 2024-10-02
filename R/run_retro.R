@@ -40,9 +40,8 @@
 #'
 #' @export
 
-run_retro <- function(mydir,  model_settings) {
-
-  if(!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
+run_retro <- function(mydir, model_settings) {
+  if (!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
     base <- model_settings[["base_name"]]
     cli::cli_abort("There is no Report.sso file in the base model directory {file.path(mydir, base}")
   }
@@ -50,7 +49,7 @@ run_retro <- function(mydir,  model_settings) {
   # Create a jitter folder with the same naming structure as the base model
   retro_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_retro_", length(model_settings[["retro_yrs"]]), "_yr_peel"))
   dir.create(retro_dir, showWarnings = FALSE)
-  all_files = list.files(file.path(mydir, model_settings[["base_name"]]))
+  all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
   ignore <- file.copy(
     from = file.path(mydir, model_settings[["base_name"]], all_files),
     to = retro_dir,
@@ -73,11 +72,11 @@ run_retro <- function(mydir,  model_settings) {
   ignore <- file.remove(from = file.path(retro_dir, all_files))
 
   runs <- list()
-  for(aa in 1:(length(model_settings[["retro_yrs"]]) + 1)) {
+  for (aa in 1:(length(model_settings[["retro_yrs"]]) + 1)) {
     if (aa == 1) {
       runs[[aa]] <- r4ss::SS_output(dir = file.path(mydir, model_settings[["base_name"]]), verbose = FALSE, printstats = FALSE)
     } else {
-      tmp = file.path(retro_dir, model_settings[["newsubdir"]], paste0("retro", model_settings[["retro_yrs"]][aa-1]))
+      tmp <- file.path(retro_dir, model_settings[["newsubdir"]], paste0("retro", model_settings[["retro_yrs"]][aa - 1]))
       runs[[aa]] <- r4ss::SS_output(dir = tmp, verbose = FALSE, printstats = FALSE)
     }
   }

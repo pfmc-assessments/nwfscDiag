@@ -55,7 +55,7 @@ model_settings <- get_settings(
     run = c("profile"),
     profile_details = get_settings_profile(
       parameters = c("NatM_uniform_Fem_GP_1"),
-      low =  c(0.20),
+      low = c(0.20),
       high = c(0.25),
       step_size = c(0.02),
       param_space = c("multiplier")
@@ -69,7 +69,7 @@ run_diagnostics(
 rerun_profile_vals(
   mydir = temp_profile_dir,
   model_settings = model_settings,
-  para_name =  "NatM_uniform_Fem_GP_1",
+  para_name = "NatM_uniform_Fem_GP_1",
   run_num = c(1),
   data_file_nm = "data.ss"
 )

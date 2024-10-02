@@ -58,10 +58,11 @@ get_jitter_quants <- function(mydir, model_settings, output) {
         "Through the jittering analysis performed here and ",
         "the estimation of likelihood profiles, ",
         "we are confident that the base model as presented represents the ",
-        "best fit to the data given the assumptions made."),
+        "best fit to the data given the assumptions made."
+      ),
       alt_caption = "Comparison of the negative log-likelihood across jitter runs",
-    label = c("jitter", "jitter-zoomed"),
-    filein = file.path("..", jitter_dir, c("jitter.png", "jitter_zoomed.png"))
+      label = c("jitter", "jitter-zoomed"),
+      filein = file.path("..", jitter_dir, c("jitter.png", "jitter_zoomed.png"))
     ),
     file = file.path(jitter_dir, "jitterfigures4doc.csv"),
     row.names = FALSE

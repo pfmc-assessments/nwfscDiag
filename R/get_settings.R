@@ -17,7 +17,6 @@
 #' get_settings(list("Njitter" = 10))
 #'
 get_settings <- function(settings = NULL, verbose = FALSE) {
-
   if (is.vector(settings)) settings <- as.list(settings)
 
   Settings_all <- list(
@@ -91,10 +90,11 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
   }
 
   if ("profile" %in% Settings_all[["run"]]) {
-    if (Settings_all[["verbose"]]){
+    if (Settings_all[["verbose"]]) {
       check_profile_range(
         mydir = mydir,
-        model_settings = Settings_all)
+        model_settings = Settings_all
+      )
     }
   }
 

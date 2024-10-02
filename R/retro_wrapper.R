@@ -40,7 +40,7 @@
 #'
 #' @export
 
-retro_wrapper <- function(mydir,  model_settings) {
+retro_wrapper <- function(mydir, model_settings) {
   output <- run_retro(
     mydir = mydir,
     model_settings = model_settings
@@ -55,5 +55,5 @@ retro_wrapper <- function(mydir,  model_settings) {
     model_settings = model_settings,
     output = output
   )
-	cli::cli_inform("Finished retrospective runs.")
+  cli::cli_inform("Finished retrospective runs.")
 }
