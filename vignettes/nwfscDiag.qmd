@@ -84,7 +84,7 @@ model_settings <- get_settings(
 
 where the above example requests jitters, profiles, and retrospective models to be run for the model file specified above as the `base_model_name` with the profile setting set using `get_settings_profile()` above. Calling `model_settings` in the R terminal will show all default settings.
 
-If `profile` is included in the run requested and `verbose = TRUE` in the `model_settings()` the values for each parameter profiled across will be printed to the screen.  Reviewing this information prior to running all diagnostics can be useful to ensure the parameter range and step size was set correctly. 
+If `profile` is included in the run requested and `verbose = TRUE` in the `model_settings()` the values for each parameter profiled across will be printed to the screen. Reviewing this information prior to running all diagnostics can be useful to ensure the parameter range and step size was set correctly.
 
 Run all diagnostics:
 
@@ -189,4 +189,4 @@ run_diagnostics(mydir = dir, model_settings = model_settings)
 future::plan(future::sequential)
 ```
 
-This same approach could be done with profiles, but is not recommended for models with convergance issues.  
+This same approach could be done with profiles, but is not recommended for models with convergence issues.
