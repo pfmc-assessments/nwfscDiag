@@ -38,7 +38,7 @@ A new version of r4ss package was released on July 29, 2022 that included some s
 
 First, you should specify the directory where the base model is located and where the diagnostics will be run and the name of the base model folder:
 
-```
+```         
 library(nwfscDiag)
 directory <- "C:/your directory"
 base_model_name <- "base model"
@@ -46,7 +46,7 @@ base_model_name <- "base model"
 
 Another way to do handle directory management is by using a project file and the `here` package:
 
-```
+```         
 directory <- here::here("models")
 base_model_name <- "base model"
 ```
@@ -73,50 +73,53 @@ The `parameters` function argument specifies the parameters to profile over wher
 
 Next the settings for running the profiles, jitter, and retrospectives within `r4ss` needs to be specified using `get_settings()`:
 
-```
+```         
 model_settings <- get_settings(
   settings = list(
     base_name = base_model_name,
-	  run = c("jitter", "profile", "retro"),
-	  profile_details = profile_info )
-	)
+      run = c("jitter", "profile", "retro"),
+      profile_details = profile_info )
+    )
 ```
+
 where the above example requests jitters, profiles, and retrospective models to be run for the model file specified above as the `base_model_name` with the profile setting set using `get_settings_profile()` above. Calling `model_settings` in the R terminal will show all default settings.
 
+If `profile` is included in the run requested and `verbose = TRUE` in the `model_settings()` the values for each parameter profiled across will be printed to the screen.  Reviewing this information prior to running all diagnostics can be useful to ensure the parameter range and step size was set correctly. 
+
 Run all diagnostics:
-```
+
+```         
 run_diagnostics(mydir = directory, model_settings = model_settings)
 ```
 
 ## Example: Run a single profile
 
-```
+```         
 library(nwfscDiag)
 directory <- here::here("models")
 base_model_name <- "base model"
 
 profile_settings <- get_settings_profile( 
   parameters =  c("SR_BH_steep"),
-	low =  c(0.25),
-	high = c(1.0),
-	step_size = c(0.05),
-	param_space = c('real')
-	)
+    low =  c(0.25),
+    high = c(1.0),
+    step_size = c(0.05),
+    param_space = c('real')
+    )
 
 model_settings <- get_settings(
   settings = list(
     base_name = base_model_name,
-		run = "profile",
-		profile_details = profile_settings)
-	)
+        run = "profile",
+        profile_details = profile_settings)
+    )
 
 run_diagnostics(mydir = directory, model_settings = model_settings)
-
 ```
 
 ## Example: Run jitters
 
-```
+```         
 library(nwfscDiag)
 directory <- here::here("models")
 base_model_name <- "base model"
@@ -124,18 +127,17 @@ base_model_name <- "base model"
 model_settings <- get_settings(
   settings = list(
     base_name = base_model_name,
-		run = "jitter",
-		Njitter = 100,
-		jitter_fraction = 0.10)
-	)
+        run = "jitter",
+        Njitter = 100,
+        jitter_fraction = 0.10)
+    )
 
 run_diagnostics(mydir = directory, model_settings = model_settings)
-
 ```
 
 ## Example: Run retrospectives
 
-```
+```         
 library(nwfscDiag)
 directory <- here::here("models")
 base_model_name <- "base model"
@@ -143,19 +145,18 @@ base_model_name <- "base model"
 model_settings <- get_settings(
   settings = list(
     base_name = base_model_name,
-		run = "retro",
-		retro_yrs = -1:-10)
-	)
+        run = "retro",
+        retro_yrs = -1:-10)
+    )
 
 run_diagnostics(mydir = directory, model_settings = model_settings)
-
 ```
 
 ## Example: Rerun select values for a profile
 
-There are instances where not all models runs within a parameter profile converge. In this case one needs to rerun only select models that failed to converge in the profile. The `rerun_profile_vals()` function allows users to do this. 
+There are instances where not all models runs within a parameter profile converge. In this case one needs to rerun only select models that failed to converge in the profile. The `rerun_profile_vals()` function allows users to do this.
 
-```
+```         
 library(nwfscDiag)
 directory <- here::here("models")
 base_model_name <- "base model"
@@ -166,13 +167,14 @@ rerun_profile_vals(
   run_num = c(6, 4,3,2),
   data_file_nm = "base_model_data_file.dat")
 ```
-where the `run_num` is the number reported in the profile_SR_LN(RO))_results.csv file under the run column.  Profiles are run out from the base model parameter value to lower or higher values to improve model convergence and hence, the run number reported in the csv is not sequential from the lower to upper bounds.
+
+where the `run_num` is the number reported in the profile_SR_LN(RO))\_results.csv file under the run column. Profiles are run out from the base model parameter value to lower or higher values to improve model convergence and hence, the run number reported in the csv is not sequential from the lower to upper bounds.
 
 ## Example: Run jitters in parrallel
 
-`r4ss` v1.49.3+ supports running models in parallel. This can be particularly helpful when running jitters.  In order to run jitters in parallel, additional specifications are needed outside the `nwfscDiag` package and some additional R packages (`parallelly`, `future`) need to be installed:
+`r4ss` v1.49.3+ supports running models in parallel. This can be particularly helpful when running jitters. In order to run jitters in parallel, additional specifications are needed outside the `nwfscDiag` package and some additional R packages (`parallelly`, `future`) need to be installed:
 
-```
+```         
 ncores <- parallelly::availableCores(omit = 1)
 future::plan(future::multisession, workers = ncores)
 
@@ -186,3 +188,5 @@ model_settings <- get_settings(settings = list(
 run_diagnostics(mydir = dir, model_settings = model_settings)
 future::plan(future::sequential)
 ```
+
+This same approach could be done with profiles, but is not recommended for models with convergance issues.  
