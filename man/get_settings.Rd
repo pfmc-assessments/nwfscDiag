@@ -4,16 +4,18 @@
 \alias{get_settings}
 \title{Check that all of the settings are in the list}
 \usage{
-get_settings(settings = NULL, verbose = FALSE)
+get_settings(mydir = NULL, settings = NULL)
 }
 \arguments{
+\item{mydir}{Directory where model files are located.
+There is no default entry for \code{mydir}.
+An example of user input could be
+\code{mydir = file.path("C:/my_models", "base_model")}.}
+
 \item{settings}{A list of the current settings where each object in the list
 must be named. Those names that are not found in the stored list will be
 added. The default value of \code{NULL} leads to a full list being
 returned.}
-
-\item{verbose}{A logical value specifying if the message should be output to
-the screen or not.}
 }
 \value{
 A list of settings for running model diagnostics.
@@ -22,7 +24,11 @@ A list of settings for running model diagnostics.
 Check that all of the settings are in the list
 }
 \examples{
-get_settings(list("Njitter" = 10))
+\dontrun{
+  get_settings(
+    mydir = "directory"
+    settings = list("Njitter" = 10))
+}
 
 }
 \author{
