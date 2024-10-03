@@ -25,9 +25,10 @@ Check that all of the settings are in the list
 }
 \examples{
 \dontrun{
-  get_settings(
-    mydir = "directory"
-    settings = list("Njitter" = 10))
+get_settings(
+  mydir = "directory",
+  settings = list("Njitter" = 10)
+)
 }
 
 }

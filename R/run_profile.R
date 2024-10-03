@@ -129,7 +129,7 @@ run_profile <- function(mydir, model_settings, para) {
   }
   step_size <- model_settings[["profile_details"]][["step_size"]]
 
-  if((max(range) - min(range)) < step_size) {
+  if ((max(range) - min(range)) < step_size) {
     cli::cli_abort(
       "The step size of {step_size} appears to be set too large to
         profile over {para} from value of {range[1]} to {range[2]}."
@@ -161,7 +161,7 @@ run_profile <- function(mydir, model_settings, para) {
   }
   num <- sort(vec, index.return = TRUE)[["ix"]]
 
-  if(model_settings[["verbose"]]) {
+  if (model_settings[["verbose"]]) {
     cli::cli_inform(
       "Profiling over {para} across values of {sort(vec)}."
     )
