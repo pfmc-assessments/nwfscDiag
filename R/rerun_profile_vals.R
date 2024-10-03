@@ -67,15 +67,21 @@ rerun_profile_vals <- function(mydir,
                                run_num,
                                data_file_nm) {
   if (missing(mydir)) {
-    cli::cli_abort("Stop: Need to specify mydir.")
+    cli::cli_abort(
+      "Need to specify mydir."
+    )
   }
 
   if (missing(run_num)) {
-    cli::cli_abort("Stop: Need to specify run_num.")
+    cli::cli_abort(
+      "Need to specify run_num."
+    )
   }
 
   if (missing(para_name)) {
-    cli::cli_abort("Stop: Need to specify parameter name via parameter function input.")
+    cli::cli_abort(
+      "Need to specify parameter name via parameter function input."
+    )
   }
   para <- para_name
 
@@ -99,7 +105,7 @@ rerun_profile_vals <- function(mydir,
 
   # Use the SS_parlines function to ensure that the input parameter can be found
   check_para <- r4ss::SS_parlines(
-    ctlfile = model_settings$oldctlfile,
+    ctlfile = model_settings[["oldctlfile"]],
     dir = temp_dir,
     verbose = FALSE,
     active = FALSE
@@ -112,17 +118,17 @@ rerun_profile_vals <- function(mydir,
 
   load(file.path(profile_dir, paste0(para_name, "_profile_output.Rdata")))
   vec <- vec_unordered
-  like_check <- profilesummary$likelihoods[1, ]
+  like_check <- profilesummary[["likelihoods"]][1, ]
 
   # Change the control file name in the starter file
   starter <- r4ss::SS_readstarter(
     file.path(temp_dir, "starter.ss"),
     verbose = FALSE
   )
-  starter$jitter_fraction <- 0.01
-  starter$init_values_src <- model_settings$init_values_src
+  starter[["jitter_fraction"]] <- 0.01
+  starter[["init_values_src"]] <- model_settings[["init_values_src"]]
   # make sure the prior likelihood is calculated for non-estimated quantities
-  starter$prior_like <- 1
+  starter[["prior_like"]] <- 1
   r4ss::SS_writestarter(
     starter,
     dir = temp_dir,
@@ -132,8 +138,8 @@ rerun_profile_vals <- function(mydir,
 
   for (i in run_num) {
     r4ss::SS_changepars(
-      ctlfile = model_settings$newctlfile,
-      newctlfile = model_settings$newctlfile,
+      ctlfile = model_settings[["newctlfile"]],
+      newctlfile = model_settings[["newctlfile"]],
       strings = para,
       newvals = vec[i],
       estimate = FALSE,
@@ -148,7 +154,7 @@ rerun_profile_vals <- function(mydir,
     )
 
     mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
-    like <- mod$likelihoods_used[1, 1]
+    like <- mod[["likelihoods_used"]][1, 1]
 
     # See if likelihood is lower than the original - and rerun if not
     add <- 0.01
@@ -156,9 +162,9 @@ rerun_profile_vals <- function(mydir,
       for (ii in 1:5) {
         starter <- r4ss::SS_readstarter(file = file.path(temp_dir, "starter.ss"))
         if (ii == 1) {
-          starter$jitter_fraction <- 0.01
+          starter[["jitter_fraction"]] <- 0.01
         } else {
-          starter$jitter_fraction <- add + starter$jitter_fraction
+          starter[["jitter_fraction"]] <- add + starter[["jitter_fraction"]]
         }
         r4ss::SS_writestarter(starter, dir = temp_dir, overwrite = TRUE)
         r4ss::run(
@@ -169,7 +175,7 @@ rerun_profile_vals <- function(mydir,
           verbose = FALSE
         )
         mod <- r4ss::SS_output(dir = temp_dir, covar = FALSE, printstats = FALSE, verbose = FALSE)
-        like <- mod$likelihoods_used[1, 1]
+        like <- mod[["likelihoods_used"]][1, 1]
         if (like < like_check[i]) {
           break()
         }
@@ -227,16 +233,16 @@ rerun_profile_vals <- function(mydir,
   vec <- vec[num]
 
   profile_output <- list()
-  profile_output$mydir <- profile_dir
-  profile_output$para <- para
-  profile_output$name <- paste0("profile_", para)
-  profile_output$vec <- vec[num]
-  profile_output$model_settings <- model_settings
-  profile_output$profilemodels <- profilemodels
-  profile_output$profilesummary <- profilesummary
-  profile_output$rep <- rep
-  profile_output$vec_unordered <- vec
-  profile_output$num <- num
+  profile_output[["mydir"]] <- profile_dir
+  profile_output[["para"]] <- para
+  profile_output[["name"]] <- paste0("profile_", para)
+  profile_output[["vec"]] <- vec[num]
+  profile_output[["model_settings"]] <- model_settings
+  profile_output[["profilemodels"]] <- profilemodels
+  profile_output[["profilesummary"]] <- profilesummary
+  profile_output[["rep"]] <- rep
+  profile_output[["vec_unordered"]] <- vec
+  profile_output[["num"]] <- num
 
   save(
     profile_dir,
@@ -264,7 +270,7 @@ rerun_profile_vals <- function(mydir,
     mydir = profile_dir,
     para = para,
     vec = vec[num],
-    summary = oprofilesummary
+    summary = profilesummary
   )
 
   plot_profile(

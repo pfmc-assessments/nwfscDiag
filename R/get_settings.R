@@ -1,11 +1,10 @@
 #' Check that all of the settings are in the list
 #'
+#' @template mydir
 #' @param settings A list of the current settings where each object in the list
 #'   must be named. Those names that are not found in the stored list will be
 #'   added. The default value of \code{NULL} leads to a full list being
 #'   returned.
-#' @param verbose A logical value specifying if the message should be output to
-#'   the screen or not.
 #'
 #' @return
 #' A list of settings for running model diagnostics.
@@ -14,9 +13,13 @@
 #' @export
 #'
 #' @examples
-#' get_settings(list("Njitter" = 10))
+#' \dontrun{
+#'   get_settings(
+#'     mydir = "directory"
+#'     settings = list("Njitter" = 10))
+#' }
 #'
-get_settings <- function(settings = NULL, verbose = FALSE) {
+get_settings <- function(mydir = NULL, settings = NULL) {
   if (is.vector(settings)) settings <- as.list(settings)
 
   Settings_all <- list(
@@ -26,7 +29,7 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
     profile_details = NULL,
     version = "3.30",
     exe = "ss3",
-    verbose = FALSE,
+    verbose = TRUE,
 
     # Jitter Settings
     extras = "-nohess",
@@ -90,7 +93,14 @@ get_settings <- function(settings = NULL, verbose = FALSE) {
   }
 
   if ("profile" %in% Settings_all[["run"]]) {
-    if (Settings_all[["verbose"]]) {
+    if (is.null(mydir) & Settings_all[["verbose"]]) {
+      cli::cli_inform(
+        "The directory (mydir) is not provided. Profile parameter names
+        not checked and the profile range not be reported. To check profile
+        information specify mydir and add verbose = TRUE to the settings list."
+      )
+    }
+    if (!is.null(mydir)) {
       check_profile_range(
         mydir = mydir,
         model_settings = Settings_all
