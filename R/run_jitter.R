@@ -29,7 +29,7 @@ run_jitter <- function(mydir, model_settings) {
     from = file.path(mydir, model_settings[["base_name"]], all_files),
     to = jitter_dir,
     overwrite = TRUE
-  ), file = "run_diag_warning.txt")
+  ), file = file.path(jitter_dir, "run_diag_warning.txt"))
   cli::cli_inform("Running jitters: temporarily changing working directory to: {jitter_dir}")
 
   r4ss::jitter(
@@ -37,7 +37,7 @@ run_jitter <- function(mydir, model_settings) {
     exe = model_settings[["exe"]],
     Njitter = model_settings[["Njitter"]],
     printlikes = model_settings[["printlikes"]],
-    verbose = model_settings[["verbose"]],
+    verbose = FALSE,
     jitter_fraction = model_settings[["jitter_fraction"]],
     init_values_src = model_settings[["jitter_init_values_src"]],
     extras = model_settings[["extras"]]
@@ -50,7 +50,7 @@ run_jitter <- function(mydir, model_settings) {
     keyvec = keys,
     getcovar = FALSE,
     forecast = FALSE,
-    verbose = model_settings[["verbose"]],
+    verbose = FALSE,
     listlists = TRUE,
     underscore = FALSE,
     save.lists = FALSE

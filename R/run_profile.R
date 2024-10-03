@@ -43,14 +43,17 @@ run_profile <- function(mydir, model_settings, para) {
   # Check for existing files and delete
   if (model_settings[["remove_files"]] & length(list.files(profile_dir)) != 0) {
     remove <- list.files(profile_dir)
-    file.remove(file.path(profile_dir, remove))
+    utils::capture.output(
+      file.remove(file.path(profile_dir, remove)),
+      file = file.path(profile_dir, "run_diag_warning.txt"))
   }
 
   all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
   utils::capture.output(file.copy(
     from = file.path(mydir, model_settings[["base_name"]], all_files),
-    to = profile_dir, overwrite = TRUE
-  ), file = "run_diag_warning.txt")
+    to = profile_dir,
+    overwrite = TRUE),
+    file = file.path(profile_dir, "run_diag_warning.txt"))
 
   # check for whether oldctlfile exists
   if (!file.exists(file.path(profile_dir, model_settings[["oldctlfile"]]))) {
@@ -80,28 +83,35 @@ run_profile <- function(mydir, model_settings, para) {
     verbose = FALSE,
     version = model_settings[["version"]],
     active = FALSE
-  )$Label == para
+  )[["Label"]] == para
 
-  if (sum(check_para) == 0) {
+  if (!any(check_para)) {
     oldctlfile <- model_settings[["oldctlfile"]]
     cli::cli_abort("{para} does not match a parameter name in the {oldctlfile} file.")
   }
 
   # Copy oldctlfile to newctlfile before modifying it
-  file.copy(
+  utils::capture.output(file.copy(
     file.path(profile_dir, model_settings[["oldctlfile"]]),
-    file.path(profile_dir, model_settings[["newctlfile"]])
+    file.path(profile_dir, model_settings[["newctlfile"]])),
+    file = file.path(profile_dir, "run_diag_warning.txt")
   )
 
   # Change the control file name in the starter file
-  starter <- r4ss::SS_readstarter(file = file.path(profile_dir, "starter.ss"))
+  starter <- r4ss::SS_readstarter(
+    file = file.path(profile_dir, "starter.ss"),
+    verbose = FALSE)
   starter[["ctlfile"]] <- model_settings[["newctlfile"]]
   starter[["init_values_src"]] <- model_settings[["init_values_src"]]
-  r4ss::SS_writestarter(mylist = starter, dir = profile_dir, overwrite = TRUE)
+  r4ss::SS_writestarter(
+    mylist = starter,
+    dir = profile_dir,
+    overwrite = TRUE,
+    verbose = FALSE)
 
   # Read in the base model
   rep <- r4ss::SS_output(
-    file.path(mydir, model_settings[["base_name"]]),
+    dir = file.path(mydir, model_settings[["base_name"]]),
     covar = FALSE,
     printstats = FALSE,
     verbose = FALSE
@@ -168,15 +178,17 @@ run_profile <- function(mydir, model_settings, para) {
   }
 
   # backup original control.ss_new file for use in second half of profile
-  file.copy(file.path(profile_dir, model_settings[["oldctlfile"]]),
+  utils::capture.output(file.copy(file.path(profile_dir, model_settings[["oldctlfile"]]),
     file.path(profile_dir, "backup_oldctlfile.ss"),
-    overwrite = model_settings$overwrite
+    overwrite = model_settings$overwrite),
+    file = file.path(profile_dir, "run_diag_warning.txt")
   )
   # backup original par file for use in second half of profile
   # if usepar = TRUE
-  file.copy(file.path(profile_dir, "ss.par"),
-    file.path(profile_dir, "backup_ss.par"),
-    overwrite = model_settings[["overwrite"]]
+  utils::capture.output(file.copy(file.path(profile_dir, c("ss.par", "ss3.par")),
+    file.path(profile_dir, c("backup_ss_par.sso", "backup_ss3_par.sso")),
+    overwrite = model_settings[["overwrite"]]),
+    file = file.path(profile_dir, "run_diag_warning.txt")
   )
 
   # loop over down, then up
@@ -191,14 +203,17 @@ run_profile <- function(mydir, model_settings, para) {
     }
     if (iprofile == 2) {
       # copy backup back to use in second half of profile
-      file.copy(
+      utils::capture.output(file.copy(
         file.path(profile_dir, "backup_oldctlfile.ss"),
-        file.path(profile_dir, model_settings[["oldctlfile"]])
+        file.path(profile_dir, model_settings[["oldctlfile"]])),
+        file = file.path(profile_dir, "run_diag_warning.txt")
       )
       # copy backup back to use in second half of profile
-      file.copy(file.path(profile_dir, "backup_ss.par"),
-        file.path(profile_dir, "ss.par"),
-        overwrite = model_settings[["overwrite"]]
+      utils::capture.output(file.copy(
+        file.path(profile_dir, c("backup_ss_par.sso", "backup_ss3_par.sso")),
+        file.path(profile_dir, c("ss.par", "ss3.par")),
+        overwrite = model_settings[["overwrite"]]),
+        file = file.path(profile_dir, "run_diag_warning.txt")
       )
     }
     profile <- r4ss::profile(
@@ -218,6 +233,7 @@ run_profile <- function(mydir, model_settings, para) {
       prior_check = model_settings[["prior_check"]],
       exe = model_settings[["exe"]],
       verbose = FALSE,
+      show_in_console = FALSE,
       extras = model_settings[["extras"]]
     )
   }
