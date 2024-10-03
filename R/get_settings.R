@@ -15,7 +15,7 @@
 #' @examples
 #' \dontrun{
 #'   get_settings(
-#'     mydir = "directory"
+#'     mydir = "directory",
 #'     settings = list("Njitter" = 10))
 #' }
 #'
