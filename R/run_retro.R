@@ -66,7 +66,7 @@ run_retro <- function(mydir, model_settings) {
     exe = model_settings[["exe"]],
     extras = model_settings[["extras"]],
     show_in_console = model_settings[["show_in_console"]],
-    verbose = model_settings[["verbose"]]
+    verbose = FALSE
   )
 
   ignore <- file.remove(from = file.path(retro_dir, all_files))
@@ -81,7 +81,7 @@ run_retro <- function(mydir, model_settings) {
     }
   }
 
-  retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = model_settings[["verbose"]])
+  retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = FALSE)
   endyrvec <- c(retroSummary[["endyrs"]][1], retroSummary[["endyrs"]][1] + model_settings[["retro_yrs"]])
 
   # Calculate Mohn's rho
@@ -91,7 +91,7 @@ run_retro <- function(mydir, model_settings) {
       seq_along(runs)[-1],
       function(x) r4ss::SSsummarize(runs[1:x], verbose = FALSE)
     ),
-    verbose = model_settings[["verbose"]],
+    verbose = FALSE,
     endyrvec = mapply(seq, from = endyrvec[1], to = endyrvec[-1])
   )
 
