@@ -51,7 +51,6 @@ run_profile <- function(mydir, model_settings, para) {
     from = file.path(mydir, model_settings[["base_name"]], all_files),
     to = profile_dir, overwrite = TRUE
   ), file = "run_diag_warning.txt")
-  cli::cli_inform("Running profile for {para}.")
 
   # check for whether oldctlfile exists
   if (!file.exists(file.path(profile_dir, model_settings[["oldctlfile"]]))) {
@@ -66,7 +65,7 @@ run_profile <- function(mydir, model_settings, para) {
         exe = model_settings[["exe"]],
         extras = model_settings[["extras"]],
         skipfinished = FALSE,
-        verbose = model_settings[["verbose"]]
+        verbose = FALSE
       )
     } else {
       oldctlfile <- model_settings[["oldctlfile"]]
@@ -85,7 +84,7 @@ run_profile <- function(mydir, model_settings, para) {
 
   if (sum(check_para) == 0) {
     oldctlfile <- model_settings[["oldctlfile"]]
-    cli::cli_abort("The input of {para} does not match a parameter in the file {oldctlfile}")
+    cli::cli_abort("{para} does not match a parameter name in the {oldctlfile} file.")
   }
 
   # Copy oldctlfile to newctlfile before modifying it
@@ -130,6 +129,13 @@ run_profile <- function(mydir, model_settings, para) {
   }
   step_size <- model_settings[["profile_details"]][["step_size"]]
 
+  if((max(range) - min(range)) < step_size) {
+    cli::cli_abort(
+      "The step size of {step_size} appears to be set too large to
+        profile over {para} from value of {range[1]} to {range[2]}."
+    )
+  }
+
   # Create parameter vect from base down and the base up
   if (est != round_any(est, step_size, f = floor)) {
     low <- rev(seq(
@@ -150,7 +156,16 @@ run_profile <- function(mydir, model_settings, para) {
   }
 
   vec <- c(low, high)
+  if (est %in% vec) {
+    vec <- vec[!vec == est]
+  }
   num <- sort(vec, index.return = TRUE)[["ix"]]
+
+  if(model_settings[["verbose"]]) {
+    cli::cli_inform(
+      "Profiling over {para} across values of {sort(vec)}."
+    )
+  }
 
   # backup original control.ss_new file for use in second half of profile
   file.copy(file.path(profile_dir, model_settings[["oldctlfile"]]),
@@ -202,7 +217,7 @@ run_profile <- function(mydir, model_settings, para) {
       whichruns = whichruns, # values set above
       prior_check = model_settings[["prior_check"]],
       exe = model_settings[["exe"]],
-      verbose = model_settings[["verbose"]],
+      verbose = FALSE,
       extras = model_settings[["extras"]]
     )
   }
