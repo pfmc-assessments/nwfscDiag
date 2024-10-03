@@ -90,7 +90,8 @@ get_settings_profile <- function(parameters = c("NatM_uniform_Fem_GP_1", "SR_BH_
     cli::cli_abort(
       "Input vectors do match in length. There were {length(parameters)} parameters,
        {length(low)} lower bounds, {length(high)} high bounds, {length(step_size)}
-        step sizes, and {length(param_space)} parameter spaces specified.")
+        step sizes, and {length(param_space)} parameter spaces specified."
+    )
   }
 
   if (lifecycle::is_present(use_prior_like)) {

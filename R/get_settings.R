@@ -14,9 +14,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'   get_settings(
-#'     mydir = "directory",
-#'     settings = list("Njitter" = 10))
+#' get_settings(
+#'   mydir = "directory",
+#'   settings = list("Njitter" = 10)
+#' )
 #' }
 #'
 get_settings <- function(mydir = NULL, settings = NULL) {
