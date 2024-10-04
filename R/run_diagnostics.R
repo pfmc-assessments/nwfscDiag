@@ -27,7 +27,7 @@ run_diagnostics <- function(mydir, model_settings) {
       exe = model_settings[["exe"]],
       extras = model_settings[["extras"]],
       skipfinished = FALSE,
-      verbose = model_settings[["verbose"]]
+      verbose = FALSE
     )
     setwd(orig_dir)
   }

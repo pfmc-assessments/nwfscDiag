@@ -35,7 +35,7 @@ profile_wrapper <- function(mydir, model_settings) {
   N <- nrow(model_settings$profile_details)
 
   for (aa in 1:N) {
-    para <- model_settings$profile_details$parameters[aa]
+    para <- model_settings[["profile_details"]][["parameters"]][aa]
     profile_settings <- model_settings
     profile_settings[["profile_details"]] <- profile_settings[["profile_details"]][aa, ]
     output <- run_profile(
