@@ -91,7 +91,7 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
 
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = 7, w = 7)
   on.exit(grDevices::dev.off(), add = TRUE)
-  graphics::par(mfrow = panel)
+  graphics::par(mfrow = panel, mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
   r4ss::SSplotProfile(
     summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get,
     profile.label = label, ymax = ymax1, exact = exact

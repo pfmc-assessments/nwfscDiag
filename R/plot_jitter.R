@@ -25,6 +25,7 @@ plot_jitter <- function(mydir, model_settings, output) {
   xlab <- "Iteration"
   pngfun(wd = jitter_dir, file = "jitter.png", h = 12, w = 9)
   on.exit(grDevices::dev.off(), add = TRUE)
+  par(mfrow = c(1, 1), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
   plot(keys, like - est,
     ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
     ylab = ylab, xlab = xlab
@@ -50,6 +51,7 @@ plot_jitter <- function(mydir, model_settings, output) {
   if (ymax > 100) {
     pngfun(wd = jitter_dir, file = "jitter_zoomed.png", h = 12, w = 9)
     on.exit(grDevices::dev.off(), add = TRUE)
+    par(mfrow = c(1, 1), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
     plot(keys, like - est,
       ylim = c(ymin, 100), cex.axis = 1.25, cex.lab = 1.25,
       ylab = ylab, xlab = xlab
