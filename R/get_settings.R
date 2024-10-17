@@ -66,7 +66,6 @@ get_settings <- function(mydir = NULL, settings = NULL) {
     overwrite = TRUE,
     whichruns = NULL,
     prior_check = FALSE,
-    read_like = TRUE,
     init_values_src = 0,
     subplots = c(1, 3)
   )
