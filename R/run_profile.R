@@ -248,6 +248,7 @@ run_profile <- function(mydir, model_settings, para) {
       whichruns = whichruns, # values set above
       prior_check = model_settings[["prior_check"]],
       exe = model_settings[["exe"]],
+      copy_exe = model_settings[["copy_exe"]],
       verbose = FALSE,
       show_in_console = FALSE,
       extras = model_settings[["extras"]]

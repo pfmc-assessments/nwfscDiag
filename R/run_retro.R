@@ -64,6 +64,7 @@ run_retro <- function(mydir, model_settings) {
     years = model_settings[["retro_yrs"]],
     overwrite = model_settings[["overwrite"]],
     exe = model_settings[["exe"]],
+    copy_exe = model_settings[["copy_exe"]],
     extras = model_settings[["extras"]],
     show_in_console = model_settings[["show_in_console"]],
     verbose = FALSE
