@@ -40,7 +40,7 @@ This package was designed to run the standard suite of diagnostics performed on 
 
 An additional diagnostic function that does MCMC draws via `adnuts` was added in April 2025 to the package.  This function does not perform a full MCMC run, but rather does a limited number of draws designed to run within a one to two hours (depending upon your machine) that can allow users to diagnose poorly behaved parameters.  The `run_mcmc_diagnostic` function will run a limited number of MCMC draws, multiple chains, and thinning and provide diagnostic plots for slow and fast mixing parameters. 
 
-## Example: Run all diagnostics
+## Example: Run profile, jitter, and retrospective diagnostics in a single call
 
 First, you should specify the directory where the base model is located and where the diagnostics will be run and the name of the base model folder:
 
@@ -96,6 +96,22 @@ Run all diagnostics:
 
 ```         
 run_diagnostics(mydir = directory, model_settings = model_settings)
+```
+
+## Example: Run MCMC diagnostics
+
+```         
+path <- C:/user.name/model_directory
+
+run_mcmc_diagnostics(
+    dir_wd = path,
+    model = "ss3",
+    extension = ".exe",
+    iter = 200,
+    chains = 2,
+    interactive = FALSE,
+    verbose = FALSE
+  )
 ```
 
 ## Example: Run a single profile
@@ -197,18 +213,4 @@ future::plan(future::sequential)
 
 This same approach could be done with profiles, but is not recommended for models with convergence issues.
 
-## Example: Run MCMC diagnostics
 
-```         
-path <- C:/user.name/model_directory
-
-run_mcmc_diagnostics(
-    dir_wd = path,
-    model = "ss3",
-    extension = ".exe",
-    iter = 200,
-    chains = 2,
-    interactive = FALSE,
-    verbose = FALSE
-  )
-```

@@ -116,7 +116,7 @@ test_that("Do mcmc diagnostics using the simple model", {
     dir_wd = path,
     model = "ss3",
     extension = ".exe",
-    iter = 200,
+    iter = 1000,
     chains = 2,
     interactive = FALSE,
     verbose = FALSE
