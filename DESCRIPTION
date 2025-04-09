@@ -12,6 +12,7 @@ BugReports: https://github.com/pfmc-assessments/nwfscDiag/issues
 Depends:
     R (>= 3.5)
 Imports:
+    adnuts,
     cli,
     dplyr,
     kableExtra,
@@ -28,6 +29,7 @@ Suggests:
     testthat
 Remotes: 
     github::r4ss/r4ss
+    github::cole-monnahan-noaa/adnuts,
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
