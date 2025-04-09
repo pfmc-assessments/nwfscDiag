@@ -29,12 +29,11 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-VigneeteBuilder:
-    knitr
 Remotes: 
-    github::r4ss/r4ss,
-    github::cole-monnahan-noaa/adnuts
+    github::cole-monnahan-noaa/adnuts,
+    github::r4ss/r4ss
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+VigneeteBuilder:knitr

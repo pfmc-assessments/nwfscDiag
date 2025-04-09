@@ -28,13 +28,13 @@
 #'   augmented by Kelli F. Johnson
 #'
 run_mcmc_diagnostics <- function(
-  dir_wd,
-  model = "ss3",
-  extension = ".exe",
-  iter = 2000,
-  chains = 2,
-  interactive = FALSE,
-  verbose = FALSE) {
+    dir_wd,
+    model = "ss3",
+    extension = ".exe",
+    iter = 2000,
+    chains = 2,
+    interactive = FALSE,
+    verbose = FALSE) {
   # Set up and test model for running. This requires
   # pointing to a folder and executable. The folder needs to
   # contain all sufficient input files and assumes optimization
@@ -146,7 +146,7 @@ run_mcmc_diagnostics <- function(
   adnuts::pairs_admb(fit, pars = 13:18, order = "slow", diag = "hist")
   grDevices::dev.off()
   grDevices::png(file.path(p, "fits", "regularization-pairs-hists-fast6.png"))
-  adnuts::pairs_admb(fit, pars=1:6, order='fast')
+  adnuts::pairs_admb(fit, pars = 1:6, order = "fast")
   grDevices::dev.off()
 
   # Marginal MLE vs posterior

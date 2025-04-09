@@ -122,9 +122,8 @@ test_that("Do mcmc diagnostics using the simple model", {
     verbose = FALSE
   )
 
-  check <-  file.exists(
+  check <- file.exists(
     file.path(path, "_mcmc", "fits", "mcmc.rds")
   )
   expect_true(check)
 })
-
