@@ -35,7 +35,6 @@ run_jitter <- function(mydir, model_settings) {
   r4ss::jitter(
     dir = jitter_dir,
     exe = model_settings[["exe"]],
-    copy_exe = model_settings[["copy_exe"]],
     Njitter = model_settings[["Njitter"]],
     printlikes = model_settings[["printlikes"]],
     verbose = FALSE,
