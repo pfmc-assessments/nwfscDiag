@@ -2,15 +2,16 @@ Type: Package
 Package: nwfscDiag
 Title: Generate Standard NWFSC Assessment Diagnostics
 Version: 1.1.2
-Author: Chantel Wetzel
-Maintainer: Chantel Wetzel <chantel.wetzel@noaa.gov>
+Authors@R: 
+    person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7573-8240"))
 Description: Package that can automates diagnositics for SS3 models by
     running jitters, retrospective, and profiles.
 License: GPL (>=3)
 URL: https://github.com/pfmc-assessments/nwfscDiag
 BugReports: https://github.com/pfmc-assessments/nwfscDiag/issues
 Depends:
-    R (>= 3.5)
+    R (>= 4.0)
 Imports:
     adnuts,
     cli,
@@ -25,8 +26,11 @@ Imports:
     utils,
     xfun
 Suggests:
-    devtools,
+    knitr,
+    rmarkdown,
     testthat
+VigneeteBuilder:
+    knitr
 Remotes: 
     github::r4ss/r4ss
     github::cole-monnahan-noaa/adnuts,
