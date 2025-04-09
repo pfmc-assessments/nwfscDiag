@@ -32,8 +32,8 @@ Suggests:
 VigneeteBuilder:
     knitr
 Remotes: 
-    github::r4ss/r4ss
-    github::cole-monnahan-noaa/adnuts,
+    github::r4ss/r4ss,
+    github::cole-monnahan-noaa/adnuts
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
