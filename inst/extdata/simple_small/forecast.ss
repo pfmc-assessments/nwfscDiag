@@ -1,17 +1,14 @@
-#V3.30.22.1;_safe;_compile_date:_Jan 30 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
-#C forecast file written by R function SS_writeforecast
-#C rerun model to get more complete formatting in forecast.ss_new
-#C should work with SS version: 3.3
-#C file write time: 2022-06-15 15:53:34
+#V3.30.23.1;_safe;_compile_date:_Dec  5 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.2
+#C generic forecast file
 # for all year entries except rebuilder; enter either: actual year, -999 for styr, 0 for endyr, neg number for rel. endyr
 1 # Benchmarks: 0=skip; 1=calc F_spr,F_btgt,F_msy; 2=calc F_spr,F0.1,F_msy; 3=add F_Blimit; 
 2 # Do_MSY: 1= set to F(SPR); 2=calc F(MSY); 3=set to F(Btgt) or F0.1; 4=set to F(endyr); 5=calc F(MEY) with MSY_unit options
 # if Do_MSY=5, enter MSY_Units; then list fleet_ID, cost/F, price/mt, include_in_Fmey_scaling; # -fleet_ID to fill; -9999 to terminate
-0.5 # SPR target (e.g. 0.40)
-0.4 # Biomass target (e.g. 0.40)
+0.4 # SPR target (e.g. 0.40)
+0.342 # Biomass target (e.g. 0.40)
 #_Bmark_years: beg_bio, end_bio, beg_selex, end_selex, beg_relF, end_relF, beg_recr_dist, end_recr_dist, beg_SRparm, end_SRparm (enter actual year, or values of 0 or -integer to be rel. endyr)
- 0 0 0 0 0 0 0 0 0 0
-#  2022 2022 2022 2022 2022 2022 2022 2022 2022 2022
+ 2001 2001 2001 2001 2001 2001 1971 2001 1971 2001
+#  2001 2001 2001 2001 2001 2001 1971 2001 1971 2001
 # value <0 convert to endyr-value; except -999 converts to start_yr; must be >=start_yr and <=endyr
 1 #Bmark_relF_Basis: 1 = use year range; 2 = set relF same as forecast below
 #
@@ -20,8 +17,8 @@
 10 # N forecast years 
 0.2 # Fmult (only used for Do_Forecast==5) such that apical_F(f)=Fmult*relF(f)
 #_Fcast_years for averaging:  beg_selex, end_selex, beg_relF, end_relF, beg_mean recruits, end_recruits  (enter actual year, or values of 0 or -integer to be rel. endyr)
- 0 0 0 0 0 0
-#  2022 2022 2022 2022 2022 2022
+ 0 0 -10 0 -999 0
+#  2001 2001 1991 2001 1971 2001
 0 # Forecast selectivity (0=fcast selex is mean from year range; 1=fcast selectivity from time-vary parms). NOTE: logic reverses in new format
 # A revised protocol for the Fcast_yr specification is available and recommended. Template is below.
 #
@@ -36,8 +33,8 @@
 # Method = 0 (or omitted) continue using time_vary parms; 1  use mean of derived factor over specified year range
 # Factor method st_yr end_yr 
 # 10 1 0 0 # selectivity; use:  10 1 0 0
-# 11 1 0 0 # rel_F; use:  11 1 0 0
-# 12 1 0 0 # recruitment; use:  12 1 0 0
+# 11 1 -10 0 # rel_F; use:  11 1 -10 0
+# 12 1 -999 0 # recruitment; use:  12 1 -999 0
 #-9999 0 0 0
 #
 1 # Control rule method (0: none; 1: ramp does catch=f(SSB), buffer on F; 2: ramp does F=f(SSB), buffer on F; 3: ramp does catch=f(SSB), buffer on catch; 4: ramp does F=f(SSB), buffer on catch) 
@@ -53,7 +50,7 @@
 1 # multiplier on base recruitment 
 0 # not used
 #
-2050  # FirstYear for caps and allocations (should be after years with fixed inputs) 
+2010  # FirstYear for caps and allocations (should be after years with fixed inputs) 
 0 # stddev of log(realized catch/target catch) in forecast (set value>0.0 to cause active impl_error)
 0 # Do West Coast gfish rebuilder output: 0=no; 1=yes 
 1999 # Rebuilder:  first year catch could have been set to zero (Ydecl)(-1 to set to 1999)
@@ -62,7 +59,7 @@
 # Note that fleet allocation values is used directly as F if Do_Forecast=4 
 2 # basis for fcast catch tuning and for fcast catch caps and allocation  (2=deadbio; 3=retainbio; 5=deadnum; 6=retainnum); NOTE: same units for all fleets
 # Conditional input if relative F choice = 2
-# enter list of:  season,  fleet, relF; if used, terminate with season=-9999
+# enter list of:  season, fleet, relF; if used, terminate with season=-9999
 # 1 1 1
 # -9999 0 0  # terminator for list of relF
 # enter list of: fleet number, max annual catch for fleets with a max; terminate with fleet=-9999
@@ -78,7 +75,7 @@
 #
 2 # basis for input Fcast catch: -1=read basis with each obs; 2=dead catch; 3=retained catch; 99=input apical_F; NOTE: bio vs num based on fleet's catchunits
 #enter list of Fcast catches or Fa; terminate with line having year=-9999
-#_Yr Seas Fleet Catch(or_F)
+#_year seas fleet catch(or_F)
 -9999 1 1 0 
 #
 999 # verify end of input 
