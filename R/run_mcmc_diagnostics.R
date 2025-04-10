@@ -18,8 +18,6 @@
 #' @param chains A numeric value for the number of chains to run. Default is 2.
 #' @param interactive A logical, where `TRUE` will run
 #'   [adnuts::launch_shinyadmb()]. The default is `FALSE`.
-#' @param do_parallel Switch to determine whether to run chains in parallel or
-#'   not. It is recommended to run in parallel.  The default is TRUE.
 #' @param verbose A logical, specifying if information should be printed
 #'   to the screen. The default is `FALSE` but using `TRUE` can be helpful
 #'   when you are first running the function or when you have a very unstable
@@ -36,7 +34,6 @@ run_mcmc_diagnostics <- function(
   iter = 2000,
   chains = 2,
   interactive = FALSE,
-  do_parallel = TRUE,
   verbose = FALSE) {
   # Set up and test model for running. This requires
   # pointing to a folder and executable. The folder needs to
@@ -83,11 +80,8 @@ run_mcmc_diagnostics <- function(
   thin60min <- floor((60 * 60) / mean(fit$time.total))
   # ------------------------------------------------------------
   # Task 1: Run and demonstrate MCMC convergence diagnostics.
-  if (do_parallel) {
-    chains <- parallel::detectCores() - 3
-  } else {
-    chains <- 1
-  }
+  chains <- parallel::detectCores() - 3
+
   # I recommend using 1000-2000 iterations, with first 10-25%
   # warmup. Start with thin=1, then increase thin rate until
   # convergence diagnostics passed (ESS>200 & Rhat<1.1).
@@ -96,6 +90,7 @@ run_mcmc_diagnostics <- function(
   iter <- iter * thin
   # Duration argument will stop after 40 minutes, only used
   # for the workshop to keep things organized
+  parallel::clusterEvalQ(chains, library(adnuts))
   fit <- adnuts::sample_rwm(
     model = model,
     path = p,
