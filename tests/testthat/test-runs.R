@@ -110,12 +110,11 @@ test_that("Do retrospectives using the simple model", {
 })
 
 test_that("Do mcmc diagnostics using the simple model", {
-  path <- file.path(runs_path, "simple_small")
 
   run_mcmc_diagnostics(
-    dir_wd = path,
+    dir_wd = test_path,
     model = "ss3",
-    extension = ".exe",
+    extension = "",
     iter = 1000,
     chains = 2,
     interactive = FALSE,
