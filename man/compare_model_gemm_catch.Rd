@@ -5,7 +5,7 @@
 \title{Check model estimated total catch to the GEMM estimates}
 \usage{
 compare_model_gemm_catch(
-  r4ss_output,
+  replist,
   common_name,
   dir = NULL,
   add_name = NULL,
@@ -13,6 +13,8 @@ compare_model_gemm_catch(
 )
 }
 \arguments{
+\item{replist}{List of model objects created by \code{r4ss::SS_output()}.}
+
 \item{common_name}{Common name of the species in the GEMM database.}
 
 \item{dir}{Directory to save figure. If no directory is provided the
@@ -26,8 +28,6 @@ model estimated catch compared to the GEMM from 2003+. Default is NULL.}
 
 \item{verbose}{A logical that specifies if you want to print messages and
 warnings to the console. The default is \code{TRUE}.}
-
-\item{replist}{List of model objects created by \code{r4ss::SS_output()}.}
 }
 \description{
 Check model estimated total catch to the GEMM estimates

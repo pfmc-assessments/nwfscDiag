@@ -17,13 +17,13 @@
 #' @export
 #'
 compare_model_gemm_catch <- function(
-    r4ss_output,
+    replist,
     common_name,
     dir = NULL,
     add_name = NULL,
     verbose = TRUE) {
   nwfscSurvey::check_dir(dir = dir, verbose = verbose)
-  if (!is.null(add_name)) { save_name <- paste0("_", add_name)}
+  if (!is.null(add_name)) { add_name <- paste0("_", add_name)}
   catch <- replist[["catch"]] |>
     dplyr::select(Fleet_Name, Yr, sel_bio, dead_bio, ret_bio) |>
     dplyr::rename(year = Yr) |>
@@ -45,12 +45,13 @@ compare_model_gemm_catch <- function(
     )
   }
 
-  gemm <- nwfscSurvey::pull_gemm(common_name = common_name) |>
+  gemm <- nwfscSurvey::pull_gemm(common_name = common_name, dir = dir) |>
     dplyr::group_by(year) |>
     dplyr::summarise(
       gemm_dead_discard = sum(total_discard_with_mort_rates_applied_mt),
       gemm_total_catch = sum(total_discard_with_mort_rates_applied_and_landings_mt)
     )
+
   if (dim(gemm)[1] == 0) {
     if (verbose) {
       cli::cli_abort("{common_name} was not found in the GEMM, check common name.")
@@ -59,35 +60,33 @@ compare_model_gemm_catch <- function(
   catch_gemm <- catch |>
     dplyr::filter(year %in% unique(gemm$year))
 
-  gg1 <- ggplot() +
-    geom_bar(stat = "identity", data = catch_gemm, aes(x = year, y = catch, fill = Fleet_Name), alpha = 0.75) +
-    geom_line(data = gemm, aes(x = year, y = gemm_total_catch), color = "black", linewidth = 2) +
-    scale_fill_viridis_d() +
-    ylab("Total Catch (mt)") +
-    xlab("Year") +
-    theme_bw()
+  gg1 <- ggplot2::ggplot() +
+    ggplot2::geom_bar(stat = "identity", data = catch_gemm, ggplot2::aes(x = year, y = catch, fill = Fleet_Name), alpha = 0.75) +
+    ggplot2::geom_line(data = gemm, ggplot2::aes(x = year, y = gemm_total_catch), color = "black", linewidth = 2) +
+    ggplot2::scale_fill_viridis_d() +
+    ggplot2::ylab("Total Catch (mt)") +
+    ggplot2::xlab("Year") +
+    ggplot2::theme_bw()
 
   if (!is.null(dir)){
-    ggsave(
+    ggplot2::ggsave(
       gg1,
-      filename = file.path(dir, paste0("model_gemm_catch_comparison", save_name, ".png"))
+      filename = file.path(dir, paste0("model_gemm_catch_comparison", add_name, ".png"))
     )
-  } else {
-    gg1
   }
 
-  gg2 <- ggplot() +
-    geom_bar(stat = "identity", data = catch,
-             aes(x = year, y = dead_discard, fill = Fleet_Name), alpha = 0.75) +
-    scale_fill_viridis_d() +
-    ylab("Total Dead Discard (mt)") +
-    xlab("Year") +
-    theme_bw()
+  gg2 <- ggplot2::ggplot() +
+    ggplot2::geom_bar(stat = "identity", data = catch,
+                      ggplot2::aes(x = year, y = dead_discard, fill = Fleet_Name), alpha = 0.75) +
+    ggplot2::scale_fill_viridis_d() +
+    ggplot2::ylab("Total Dead Discard (mt)") +
+    ggplot2::xlab("Year") +
+    ggplot2::theme_bw()
 
   if (!is.null(dir)){
-    ggsave(
+    ggplot2::ggsave(
       gg2,
-      filename = file.path(dir, paste0("model_discard_mortality_all_years", save_name, ".png"))
+      filename = file.path(dir, paste0("model_discard_mortality_all_years", add_name, ".png"))
     )
   } else {
     gg2
@@ -103,6 +102,11 @@ compare_model_gemm_catch <- function(
     ) |>
     dplyr::mutate(
       model_minus_gemm = round(catch - gemm_total_catch, 3)
+    ) |>
+    dplyr::select(-gemm_dead_discard) |>
+    dplyr::rename(
+      model_catch = catch,
+      gemm_catch = gemm_total_catch
     )
 
   if (!is.null(dir)) {
