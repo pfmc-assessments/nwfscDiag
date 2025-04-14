@@ -114,6 +114,18 @@ run_mcmc_diagnostics(
   )
 ```
 
+## Example: Compare model catch estimates to GEMM catch estimates
+
+If you are estimating discarding and retention within your model, you should be comparing the model catch estimates to those within the GEMM.  While the model catches estimates are unlikely to be identical to those within the GEMM, they should be comparable by year.  It is up to the assessment scientist to determine how closely they should align.  The `compare_model_gemm_catch() function creates figures and rda files with comparisons between the model estimates and the GEMMj. 
+
+```   
+replist <- r4ss::SS_output("C:/your model directory)
+compare_catch <- compare_model_gemm_catch(
+    replist = replist,
+    common_name = "sablefish"
+)
+```
+
 ## Example: Run a single profile
 
 ```         
