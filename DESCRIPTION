@@ -16,6 +16,8 @@ Imports:
     adnuts,
     cli,
     dplyr,
+    ggplot2,
+    nwfscSurvey,
     kableExtra,
     knitr,
     lifecycle,
@@ -33,7 +35,8 @@ VigneeteBuilder:
     knitr
 Remotes: 
     github::r4ss/r4ss,
-    github::cole-monnahan-noaa/adnuts
+    github::cole-monnahan-noaa/adnuts,
+    github::pfmc-assessments/nwfscSurvey
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

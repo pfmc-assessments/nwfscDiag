@@ -2,6 +2,7 @@
 
 export("%>%")
 export(check_profile_range)
+export(compare_model_gemm_catch)
 export(get_jitter_quants)
 export(get_param_values)
 export(get_retro_quants)
