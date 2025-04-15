@@ -1,5 +1,5 @@
-#' Check model estimated total catch to the GEMM estimates
-#'
+#' Check model estimated total catch to the GEMM estimates. This function
+#' should only be used to compare estimates for coastwide models.
 #'
 #' @param  replist List of model objects created by `r4ss::SS_output()`.
 #' @param  common_name Common name of the species in the GEMM database.
