@@ -90,7 +90,10 @@ run_mcmc_diagnostics <- function(
   iter <- iter * thin
   # Duration argument will stop after 40 minutes, only used
   # for the workshop to keep things organized
-  parallel::clusterEvalQ(chains, library(adnuts))
+  # The below call was added to try to fix the test for a linux machine
+  # but is did not fix the issue and caused an error for regular use.
+  # Potential fix options: https://stackoverflow.com/questions/46503873/r-parallelisation-error-checkclustercl-not-a-valid-cluster
+  # parallel::clusterEvalQ(chains, library(adnuts))
   fit <- adnuts::sample_rwm(
     model = model,
     path = p,
