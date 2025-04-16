@@ -27,18 +27,20 @@ install.packages("remotes")
 remotes::install_github("pfmc-assessments/nwfscDiag")
 ```
 
-## Running the code
-
-The package depends upon a few other packages and they should be installed upon installation of the package. The dependent packages are:
+or by:
 
 ```         
-install.packages('dplyr')
-remotes::install_github('r4ss/r4ss')
+install.packages("pak")
+pak::pak("pfmc-assessments/nwfscDiag")
 ```
 
-A new version of r4ss package was released on July 29, 2022 that included some significant changes that are required for the current version of `nwfscDiag` to run. The current version of the nwfscDiag 1.1.2 package is designed to work with the latest release of r4ss. Please see release version 1.0.1 to use earlier versions of r4ss.
+## Package overview
 
-## Example: Run all diagnostics
+This package was designed to run the standard suite of diagnostics performed on assessments of U.S. West Coast groundfish stocks: jitters, parameter profiles, and retrospective runs.  This package allows users to run all standard diagnostics with a single function call and have a default suite of diagnostic plots and tables automatically created in a standardized formate. The package calls `r4ss::jitter`, `r4ss::retro`, and `r4ss::profile` for each of the diagnostics and then creates plot via various `r4ss` plotting functions and unique plotting code only available within `nwfscDiag`.
+
+An additional diagnostic function that does MCMC draws via `adnuts` was added in April 2025 to the package.  This function does not perform a full MCMC run, but rather does a limited number of draws designed to run within a one to two hours (depending upon your machine) that can allow users to diagnose poorly behaved parameters.  The `run_mcmc_diagnostic` function will run a limited number of MCMC draws, multiple chains, and thinning and provide diagnostic plots for slow and fast mixing parameters. 
+
+## Example: Run profile, jitter, and retrospective diagnostics in a single call
 
 First, you should specify the directory where the base model is located and where the diagnostics will be run and the name of the base model folder:
 
@@ -94,6 +96,34 @@ Run all diagnostics:
 
 ```         
 run_diagnostics(mydir = directory, model_settings = model_settings)
+```
+
+## Example: Run MCMC diagnostics
+
+```         
+path <- C:/user.name/model_directory
+
+run_mcmc_diagnostics(
+    dir_wd = path,
+    model = "ss3",
+    extension = ".exe",
+    iter = 200,
+    chains = 2,
+    interactive = FALSE,
+    verbose = FALSE
+  )
+```
+
+## Example: Compare model catch estimates to GEMM catch estimates
+
+If you are estimating discarding and retention within your model, you should be comparing the model catch estimates to those within the GEMM.  While the model catches estimates are unlikely to be identical to those within the GEMM, they should be comparable by year.  It is up to the assessment scientist to determine how closely they should align.  The `compare_model_gemm_catch() function creates figures and rda files with comparisons between the model estimates and the GEMMj. 
+
+```   
+replist <- r4ss::SS_output("C:/your model directory)
+compare_catch <- compare_model_gemm_catch(
+    replist = replist,
+    common_name = "sablefish"
+)
 ```
 
 ## Example: Run a single profile
@@ -194,3 +224,5 @@ future::plan(future::sequential)
 ```
 
 This same approach could be done with profiles, but is not recommended for models with convergence issues.
+
+

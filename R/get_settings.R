@@ -30,6 +30,7 @@ get_settings <- function(mydir = NULL, settings = NULL) {
     profile_details = NULL,
     version = "3.30",
     exe = "ss3",
+    copy_exe = TRUE,
     verbose = TRUE,
 
     # Jitter Settings
