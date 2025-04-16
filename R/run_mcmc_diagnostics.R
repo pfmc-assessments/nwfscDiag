@@ -75,13 +75,11 @@ run_mcmc_diagnostics <- function(
   )
 
   # optimize w/ -mcmc flag b/c of bias adjustment.
-  setwd(p)
   r4ss::run(
     dir = p,
     exe = model,
     extras = "-nox -mcmc 100"
   )
-  setwd("..")
 
   # Now test it works in parallel
   fit <- adnuts::sample_rwm(
