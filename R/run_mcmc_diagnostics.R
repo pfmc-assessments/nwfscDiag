@@ -46,7 +46,7 @@ run_mcmc_diagnostics <- function(
   setwd(dir_wd)
 
   # Check for exe
-  exe_present <- file.exists(dir_wd, paste0(model, extension))
+  exe_present <- file.exists(file.path(dir_wd, paste0(model, extension)))
   if (!exe_present) {
     cli::cli_abort(
       "An executable called {paste0(model, extension)} was not found in the directory. The
