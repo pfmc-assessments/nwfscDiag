@@ -110,7 +110,6 @@ test_that("Do retrospectives using the simple model", {
 })
 
 test_that("Do mcmc diagnostics using the simple model", {
-
   #run_mcmc_diagnostics(
   #  dir_wd = test_path,
   #  model = "ss3",
@@ -126,4 +125,3 @@ test_that("Do mcmc diagnostics using the simple model", {
   #)
   #expect_true(check)
 })
-
