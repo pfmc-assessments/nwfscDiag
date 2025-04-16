@@ -5,6 +5,7 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/check_profile_range.html</loc></url>
+<url><loc>/reference/compare_model_gemm_catch.html</loc></url>
 <url><loc>/reference/get_jitter_quants.html</loc></url>
 <url><loc>/reference/get_param_values.html</loc></url>
 <url><loc>/reference/get_retro_quants.html</loc></url>
@@ -13,7 +14,6 @@
 <url><loc>/reference/get_summary.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/jitter_wrapper.html</loc></url>
-<url><loc>/reference/pipe.html</loc></url>
 <url><loc>/reference/plot_jitter.html</loc></url>
 <url><loc>/reference/plot_profile.html</loc></url>
 <url><loc>/reference/plot_retro.html</loc></url>
