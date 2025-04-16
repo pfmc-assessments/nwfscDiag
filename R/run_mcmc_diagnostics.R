@@ -45,10 +45,19 @@ run_mcmc_diagnostics <- function(
   stopifnot(file.exists(dir_wd))
   setwd(dir_wd)
 
-  # Run the model if need be
-  if (!file.exists("Report.sso")) {
-    system(paste(model, "-nohess"))
+  # Check for exe
+  exe_present <- file.exists(dir_wd, paste0(model, extension))
+  if (!exe_present) {
+    cli::cli_abort(
+      "An executable called {paste0(model, extension)} was not found in the directory. The
+      executable is required to be in the folder for this function."
+    )
   }
+
+  # Run the model if need be
+  #if (!file.exists("Report.sso")) {
+  #  system(paste(model, "-nohess"))
+  #}
 
   # Regularization
   p <- "_mcmc"
@@ -64,9 +73,14 @@ run_mcmc_diagnostics <- function(
     paste0(model, extension),
     file.path(p, paste0(model, extension))
   )
+
   # optimize w/ -mcmc flag b/c of bias adjustment.
   setwd(p)
-  system(paste(model, "-nox -mcmc 100"))
+  r4ss::run(
+    dir = p,
+    exe = model,
+    extras = "-nox -mcmc 100"
+  )
   setwd("..")
 
   # Now test it works in parallel
