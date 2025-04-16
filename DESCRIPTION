@@ -1,7 +1,7 @@
 Type: Package
 Package: nwfscDiag
 Title: Generate Standard NWFSC Assessment Diagnostics
-Version: 1.1.2
+Version: 1.2
 Authors@R: 
     person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7573-8240"))
