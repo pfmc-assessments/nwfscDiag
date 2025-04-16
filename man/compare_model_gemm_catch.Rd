@@ -2,11 +2,13 @@
 % Please edit documentation in R/compare_model_gemm_catch.R
 \name{compare_model_gemm_catch}
 \alias{compare_model_gemm_catch}
-\title{Check model estimated total catch to the GEMM estimates}
+\title{Check model estimated total catch to the GEMM estimates. This function
+should only be used to compare estimates for coastwide models.}
 \usage{
 compare_model_gemm_catch(
   replist,
   common_name,
+  gemm_data = NULL,
   dir = NULL,
   add_name = NULL,
   verbose = TRUE
@@ -16,6 +18,15 @@ compare_model_gemm_catch(
 \item{replist}{List of model objects created by \code{r4ss::SS_output()}.}
 
 \item{common_name}{Common name of the species in the GEMM database.}
+
+\item{gemm_data}{A data frame of GEMM data from \code{nwfscSurvey::pull_gemm()}.
+If this argument is left blank, the function will pull the GEMM data
+and evaluate mortality on a coastwide basis.  However, if your model
+is not coastwide and the GEMM data can be split out to match the model
+area (e.g., assessment split north and south of 40 10 N. latitude) this
+filtered data frame can be passed to the function via this argument and
+the total mortality comparisons will be done relative to that data object.
+The default value is NULL.}
 
 \item{dir}{Directory to save figure. If no directory is provided the
 figure is not saved. If a \code{dir} is specified a figure of the model
@@ -30,7 +41,8 @@ model estimated catch compared to the GEMM from 2003+. Default is NULL.}
 warnings to the console. The default is \code{TRUE}.}
 }
 \description{
-Check model estimated total catch to the GEMM estimates
+Check model estimated total catch to the GEMM estimates. This function
+should only be used to compare estimates for coastwide models.
 }
 \author{
 Chantel Wetzel
