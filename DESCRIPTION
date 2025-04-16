@@ -1,7 +1,7 @@
 Type: Package
 Package: nwfscDiag
 Title: Generate Standard NWFSC Assessment Diagnostics
-Version: 1.1.2
+Version: 1.2
 Authors@R: 
     person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7573-8240"))
@@ -16,6 +16,8 @@ Imports:
     adnuts,
     cli,
     dplyr,
+    ggplot2,
+    nwfscSurvey,
     kableExtra,
     knitr,
     lifecycle,
@@ -30,8 +32,9 @@ Suggests:
     rmarkdown,
     testthat
 Remotes: 
+    github::r4ss/r4ss,
     github::cole-monnahan-noaa/adnuts,
-    github::r4ss/r4ss
+    github::pfmc-assessments/nwfscSurvey
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

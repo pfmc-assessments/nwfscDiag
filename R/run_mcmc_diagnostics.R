@@ -45,10 +45,19 @@ run_mcmc_diagnostics <- function(
   stopifnot(file.exists(dir_wd))
   setwd(dir_wd)
 
-  # Run the model if need be
-  if (!file.exists("Report.sso")) {
-    system(paste(model, "-nohess"))
+  # Check for exe
+  exe_present <- file.exists(file.path(dir_wd, paste0(model, extension)))
+  if (!exe_present) {
+    cli::cli_abort(
+      "An executable called {paste0(model, extension)} was not found in the directory. The
+      executable is required to be in the folder for this function."
+    )
   }
+
+  # Run the model if need be
+  #if (!file.exists("Report.sso")) {
+  #  system(paste(model, "-nohess"))
+  #}
 
   # Regularization
   p <- "_mcmc"
@@ -64,10 +73,13 @@ run_mcmc_diagnostics <- function(
     paste0(model, extension),
     file.path(p, paste0(model, extension))
   )
+
   # optimize w/ -mcmc flag b/c of bias adjustment.
-  setwd(p)
-  system(paste(model, "-nox -mcmc 100"))
-  setwd("..")
+  r4ss::run(
+    dir = p,
+    exe = model,
+    extras = "-nox -mcmc 100"
+  )
 
   # Now test it works in parallel
   fit <- adnuts::sample_rwm(
@@ -81,6 +93,7 @@ run_mcmc_diagnostics <- function(
   # ------------------------------------------------------------
   # Task 1: Run and demonstrate MCMC convergence diagnostics.
   chains <- parallel::detectCores() - 3
+
   # I recommend using 1000-2000 iterations, with first 10-25%
   # warmup. Start with thin=1, then increase thin rate until
   # convergence diagnostics passed (ESS>200 & Rhat<1.1).
@@ -89,6 +102,10 @@ run_mcmc_diagnostics <- function(
   iter <- iter * thin
   # Duration argument will stop after 40 minutes, only used
   # for the workshop to keep things organized
+  # The below call was added to try to fix the test for a linux machine
+  # but is did not fix the issue and caused an error for regular use.
+  # Potential fix options: https://stackoverflow.com/questions/46503873/r-parallelisation-error-checkclustercl-not-a-valid-cluster
+  # parallel::clusterEvalQ(chains, library(adnuts))
   fit <- adnuts::sample_rwm(
     model = model,
     path = p,
