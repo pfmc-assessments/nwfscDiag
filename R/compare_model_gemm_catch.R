@@ -32,7 +32,9 @@ compare_model_gemm_catch <- function(
     add_name = NULL,
     verbose = TRUE) {
   nwfscSurvey::check_dir(dir = dir, verbose = verbose)
-  if (!is.null(add_name)) { add_name <- paste0("_", add_name)}
+  if (!is.null(add_name)) {
+    add_name <- paste0("_", add_name)
+  }
   # Check for column name in the CATCH table based on SS3 version
   if (any("kill_bio" %in% colnames(replist[["catch"]]))) {
     colnames(replist[["catch"]])[colnames(replist[["catch"]]) == "kill_bio"] <- "dead_bio"
@@ -58,7 +60,7 @@ compare_model_gemm_catch <- function(
     )
   }
 
-  if (is.null(gemm_data)){
+  if (is.null(gemm_data)) {
     gemm_data <- nwfscSurvey::pull_gemm(common_name = common_name, dir = dir)
   }
   gemm <- gemm_data |>
@@ -84,7 +86,7 @@ compare_model_gemm_catch <- function(
     ggplot2::xlab("Year") +
     ggplot2::theme_bw()
 
-  if (!is.null(dir)){
+  if (!is.null(dir)) {
     ggplot2::ggsave(
       gg1,
       filename = file.path(dir, paste0("model_gemm_catch_comparison", add_name, ".png"))
@@ -99,7 +101,7 @@ compare_model_gemm_catch <- function(
     ggplot2::xlab("Year") +
     ggplot2::theme_bw()
 
-  if (!is.null(dir)){
+  if (!is.null(dir)) {
     ggplot2::ggsave(
       gg2,
       filename = file.path(dir, paste0("model_gemm_dead_discard_comparison", add_name, ".png"))

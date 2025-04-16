@@ -110,8 +110,7 @@ test_that("Do retrospectives using the simple model", {
 })
 
 test_that("Do mcmc diagnostics using the simple model", {
-
-  #run_mcmc_diagnostics(
+  # run_mcmc_diagnostics(
   #  dir_wd = test_path,
   #  model = "ss3",
   #  extension = "",
@@ -119,11 +118,10 @@ test_that("Do mcmc diagnostics using the simple model", {
   #  chains = 2,
   #  interactive = FALSE,
   #  verbose = FALSE
-  #)
+  # )
 
-  #check <-  file.exists(
+  # check <-  file.exists(
   #  file.path(path, "_mcmc", "fits", "mcmc.rds")
-  #)
-  #expect_true(check)
+  # )
+  # expect_true(check)
 })
-
