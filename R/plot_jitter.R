@@ -24,7 +24,6 @@ plot_jitter <- function(mydir, model_settings, output) {
   ylab <- "Change in negative log-likelihood"
   xlab <- "Iteration"
   pngfun(wd = jitter_dir, file = "jitter.png", h = 12, w = 9)
-  on.exit(grDevices::dev.off(), add = TRUE)
   plot(keys, like - est,
     ylim = c(ymin, ymax), cex.axis = 1.25, cex.lab = 1.25,
     ylab = ylab, xlab = xlab
@@ -46,6 +45,7 @@ plot_jitter <- function(mydir, model_settings, output) {
     legend = c("Base Model Likelihood", "Higher Likelihood", "Lower Likelihood"),
     bty = "n", pch = 16, col = c("green3", "blue", "red")
   )
+  dev.off()
 
   if (ymax > 100) {
     pngfun(wd = jitter_dir, file = "jitter_zoomed.png", h = 12, w = 9)
