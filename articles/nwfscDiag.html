@@ -143,7 +143,7 @@ model folder:</p>
 <span><span class="va">base_model_name</span> <span class="op">&lt;-</span> <span class="st">"base model"</span></span></code></pre>
 <p>Another way to do handle directory management is by using a project
 file and the <code>here</code> package:</p>
-<pre><code><span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
+<pre><code><span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="va">base_model_name</span> <span class="op">&lt;-</span> <span class="st">"base model"</span></span></code></pre>
 <p>The <code><a href="../reference/get_settings_profile.html">get_settings_profile()</a></code> specifies which parameters to
 run a profile for and the parameter ranges for each profile. The low and
@@ -244,7 +244,7 @@ compare_catch &lt;- compare_model_gemm_catch(
 <h3 id="example-run-a-single-profile">Example: Run a single profile<a class="anchor" aria-label="anchor" href="#example-run-a-single-profile"></a>
 </h3>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pfmc-assessments/nwfscDiag" class="external-link">nwfscDiag</a></span><span class="op">)</span></span>
-<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
+<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="va">base_model_name</span> <span class="op">&lt;-</span> <span class="st">"base model"</span></span>
 <span></span>
 <span><span class="va">profile_settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_settings_profile.html">get_settings_profile</a></span><span class="op">(</span> </span>
@@ -268,7 +268,7 @@ compare_catch &lt;- compare_model_gemm_catch(
 <h3 id="example-run-jitters">Example: Run jitters<a class="anchor" aria-label="anchor" href="#example-run-jitters"></a>
 </h3>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pfmc-assessments/nwfscDiag" class="external-link">nwfscDiag</a></span><span class="op">)</span></span>
-<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
+<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="va">base_model_name</span> <span class="op">&lt;-</span> <span class="st">"base model"</span></span>
 <span></span>
 <span><span class="va">model_settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_settings.html">get_settings</a></span><span class="op">(</span></span>
@@ -285,7 +285,7 @@ compare_catch &lt;- compare_model_gemm_catch(
 <h3 id="example-run-retrospectives">Example: Run retrospectives<a class="anchor" aria-label="anchor" href="#example-run-retrospectives"></a>
 </h3>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pfmc-assessments/nwfscDiag" class="external-link">nwfscDiag</a></span><span class="op">)</span></span>
-<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
+<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="va">base_model_name</span> <span class="op">&lt;-</span> <span class="st">"base model"</span></span>
 <span></span>
 <span><span class="va">model_settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_settings.html">get_settings</a></span><span class="op">(</span></span>
@@ -305,7 +305,7 @@ profile converge. In this case one needs to rerun only select models
 that failed to converge in the profile. The
 <code><a href="../reference/rerun_profile_vals.html">rerun_profile_vals()</a></code> function allows users to do this.</p>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pfmc-assessments/nwfscDiag" class="external-link">nwfscDiag</a></span><span class="op">)</span></span>
-<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
+<span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="va">base_model_name</span> <span class="op">&lt;-</span> <span class="st">"base model"</span></span>
 <span><span class="fu"><a href="../reference/rerun_profile_vals.html">rerun_profile_vals</a></span><span class="op">(</span></span>
 <span>  mydir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">model_dir</span>, <span class="va">base_name</span><span class="op">)</span>,</span>
