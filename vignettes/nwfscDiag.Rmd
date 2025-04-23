@@ -67,7 +67,7 @@ Specify the parameters to profile over along with the parameter range and step s
 
 ```         
 profile_info <- get_settings_profile( 
-  parameters =  c("NatM_uniform_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
+  parameters =  c("NatM_break_1_Fem_GP_1", "SR_BH_steep", "SR_LN(R0)"),
   low =  c(0.40, 0.25, -2),
   high = c(0.40, 1.0,  2),
   step_size = c(0.005, 0.05, 0.25),
