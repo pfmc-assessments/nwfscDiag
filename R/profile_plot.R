@@ -20,8 +20,8 @@
 
 plot_profile <- function(mydir, rep, para, profilesummary) {
   label <- ifelse(para == "SR_LN(R0)", expression(log(italic(R)[0])),
-    ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1"), "Natural Mortality (female)",
-      ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1"), "Natural Mortality (male)",
+    ifelse(para %in% c("NatM_p_1_Fem_GP_1", "NatM_uniform_Fem_GP_1", "NatM_break_1_Fem_GP_1"), "Natural Mortality (female)",
+      ifelse(para %in% c("NatM_p_1_Mal_GP_1", "NatM_uniform_Mal_GP_1", "NatM_break_1_Mal_GP_1"), "Natural Mortality (male)",
         ifelse(para == "SR_BH_steep", expression(Steepness ~ (italic(h))),
           para
         )
@@ -32,8 +32,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   get <- ifelse(para == "SR_LN(R0)", "R0", para)
 
   if (para %in% c(
-    "SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1",
-    "NatM_uniform_Fem_GP_1", "NatM_uniform_Mal_GP_1", "SR_BH_steep"
+    "SR_LN(R0)", "NatM_p_1_Fem_GP_1", "NatM_p_1_Mal_GP_1", "NatM_break_1_Mal_GP_1",
+    "NatM_break_1_Fem_GP_1", "NatM_uniform_Fem_GP_1", "NatM_uniform_Mal_GP_1", "SR_BH_steep"
   )) {
     exact <- FALSE
   } else {
@@ -201,8 +201,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   # Figure out what the base model parameter is in order to label that in the plot
   get <- dplyr::case_when(
     para == "SR_LN(R0)" ~ "log(R0)",
-    para %in% c("NatM_uniform_Fem_GP_1", "NatM_p_1_Fem_GP_1") ~ "M (f)",
-    para %in% c("NatM_uniform_Mal_GP_1", "NatM_p_1_Mal_GP_1") ~ "M (m)",
+    para %in% c("NatM_uniform_Fem_GP_1", "NatM_p_1_Fem_GP_1", "NatM_break_1_Fem_GP_1") ~ "M (f)",
+    para %in% c("NatM_uniform_Mal_GP_1", "NatM_p_1_Mal_GP_1", "NatM_break_1_Mal_GP_1") ~ "M (m)",
     para == "SR_BH_steep" ~ "h"
   )
 
