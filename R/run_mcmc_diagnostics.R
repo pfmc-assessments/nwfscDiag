@@ -54,6 +54,13 @@ run_mcmc_diagnostics <- function(
     )
   }
 
+  # Check the recruitment option being used
+  ctl <- r4ss::SS_readctl(file = file.path(dir_wd, "control.ss_new"))
+  if (ctl$do_recdev == 1) {
+    cli::cli_abort("Recruitment deviation option is set to 1 (zero-centered) in the control file.
+    In order to avoid bias in MCMCs this option needs to be set to 2.")
+  }
+
   # Run the model if need be
   # if (!file.exists("Report.sso")) {
   #  system(paste(model, "-nohess"))
