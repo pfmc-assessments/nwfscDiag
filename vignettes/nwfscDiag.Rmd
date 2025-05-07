@@ -107,7 +107,7 @@ run_mcmc_diagnostics(
     dir_wd = path,
     model = "ss3",
     extension = ".exe",
-    iter = 200,
+    iter = 2000,
     chains = 2,
     interactive = FALSE,
     verbose = FALSE
