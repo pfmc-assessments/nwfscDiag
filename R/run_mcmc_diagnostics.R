@@ -16,6 +16,11 @@
 #' @param iter A numeric value for the number of MCMC draws to do. Default is
 #'   2000.
 #' @param chains A numeric value for the number of chains to run. Default is 2.
+#' @param hour A numeric value that controls the thin rate.  The thin rate is
+#'   calculated based upon the length of time to run the model to allow the
+#'   function to run in  a pre-specified amount of time. For some models, one
+#'   may want to run this function for longer allowing a greater thin rate.
+#'   The default is 1 hour.
 #' @param interactive A logical, where `TRUE` will run
 #'   [adnuts::launch_shinyadmb()]. The default is `FALSE`.
 #' @param verbose A logical, specifying if information should be printed
@@ -33,6 +38,7 @@ run_mcmc_diagnostics <- function(
     extension = ".exe",
     iter = 2000,
     chains = 2,
+    hour = 1,
     interactive = FALSE,
     verbose = FALSE) {
   # Set up and test model for running. This requires
@@ -105,7 +111,7 @@ run_mcmc_diagnostics <- function(
     chains = chains
   )
   # This thin rate will lead to run time of ~60 mins below
-  thin60min <- floor((60 * 60) / mean(fit$time.total))
+  thin60min <- floor((60 * 60 * hour) / mean(fit$time.total))
   # ------------------------------------------------------------
   # Task 1: Run and demonstrate MCMC convergence diagnostics.
   chains <- parallel::detectCores() - 3
