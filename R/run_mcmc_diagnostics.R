@@ -54,6 +54,22 @@ run_mcmc_diagnostics <- function(
     )
   }
 
+  # Check the recruitment option being used
+  ctl <- r4ss::SS_readctl(file = file.path(dir_wd, "control.ss_new"))
+  if (ctl$do_recdev != 2) {
+    cli::cli_abort("Recruitment deviation option in the control file must be set to option 2 in order to avoid bias in MCMCs.")
+  }
+  # Turn off read the par file if necessary
+  starter <- r4ss::SS_readstarter(file = file.path(dir_wd, "starter.ss"))
+  if (starter$init_values_src == 1) {
+    starter$init_values_src <- 0
+    r4ss::SS_writestarter(
+      mylist = starter,
+      dir = dir_wd,
+      overwrite = TRUE
+    )
+  }
+
   # Run the model if need be
   # if (!file.exists("Report.sso")) {
   #  system(paste(model, "-nohess"))
