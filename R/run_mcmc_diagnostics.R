@@ -110,8 +110,10 @@ run_mcmc_diagnostics <- function(
     iter = iter,
     chains = chains
   )
-  # This thin rate will lead to run time of ~60 mins below
-  thin60min <- floor((60 * 60 * hour) / mean(fit$time.total))
+  # The default thin rate will lead to run time of ~60 mins below
+  duration <- hour * 60
+  thin60min <- floor((60 * duration) / mean(fit$time.total))
+
   # ------------------------------------------------------------
   # Task 1: Run and demonstrate MCMC convergence diagnostics.
   chains <- parallel::detectCores() - 3
@@ -135,7 +137,7 @@ run_mcmc_diagnostics <- function(
     warmup = floor(iter * 0.25),
     chains = chains,
     thin = thin,
-    duration = 60
+    duration = duration
   )
   # Good idea to save the output, I recommend RDS format.
   saveRDS(fit, file = file.path(p, "fits", "mcmc.RDS"))
