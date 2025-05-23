@@ -123,7 +123,7 @@ run_mcmc_diagnostics <- function(
   # convergence diagnostics passed (ESS>200 & Rhat<1.1).
   # printed to screen live!!
   thin <- thin60min # change this as needed
-  iter <- iter * thin
+  iter_adj <- iter * thin
   # Duration argument will stop after 40 minutes, only used
   # for the workshop to keep things organized
   # The below call was added to try to fix the test for a linux machine
@@ -133,8 +133,8 @@ run_mcmc_diagnostics <- function(
   fit <- adnuts::sample_rwm(
     model = model,
     path = p,
-    iter = iter,
-    warmup = floor(iter * 0.25),
+    iter = iter_adj,
+    warmup = floor(iter_adj * 0.25),
     chains = chains,
     thin = thin,
     duration = duration
