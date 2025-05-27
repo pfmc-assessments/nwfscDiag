@@ -21,6 +21,9 @@
 #'   function to run in  a pre-specified amount of time. For some models, one
 #'   may want to run this function for longer allowing a greater thin rate.
 #'   The default is 1 hour.
+#' @param thin The thin level for samples.  The default is NULL where the code will
+#'   determine a thin rate based on the time to the run the model and the number of
+#'   iterations, `iter`.
 #' @param interactive A logical, where `TRUE` will run
 #'   [adnuts::launch_shinyadmb()]. The default is `FALSE`.
 #' @param verbose A logical, specifying if information should be printed
@@ -39,6 +42,7 @@ run_mcmc_diagnostics <- function(
     iter = 2000,
     chains = 2,
     hour = 1,
+    thin = NULL,
     interactive = FALSE,
     verbose = FALSE) {
   # Set up and test model for running. This requires
@@ -110,22 +114,22 @@ run_mcmc_diagnostics <- function(
     iter = iter,
     chains = chains
   )
-  # The default thin rate will lead to run time of ~60 mins below
-  duration <- hour * 60
-  thin60min <- floor((60 * duration) / mean(fit$time.total))
-
-  # ------------------------------------------------------------
-  # Task 1: Run and demonstrate MCMC convergence diagnostics.
-  chains <- parallel::detectCores() - 3
-
   # I recommend using 1000-2000 iterations, with first 10-25%
   # warmup. Start with thin=1, then increase thin rate until
   # convergence diagnostics passed (ESS>200 & Rhat<1.1).
   # printed to screen live!!
-  thin <- thin60min # change this as needed
+
+  # The default thin rate will lead to run time of ~60 mins below
+  duration <- hour * 60
+  if (is.null(thin)) {
+    thin <- floor((60 * duration) / mean(fit$time.total))
+  }
+
+  # ------------------------------------------------------------
+  # Task 1: Run and demonstrate MCMC convergence diagnostics.
+  chains <- parallel::detectCores() -
   iter_adj <- iter * thin
-  # Duration argument will stop after 40 minutes, only used
-  # for the workshop to keep things organized
+
   # The below call was added to try to fix the test for a linux machine
   # but is did not fix the issue and caused an error for regular use.
   # Potential fix options: https://stackoverflow.com/questions/46503873/r-parallelisation-error-checkclustercl-not-a-valid-cluster
