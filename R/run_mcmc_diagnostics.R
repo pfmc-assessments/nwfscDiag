@@ -123,13 +123,14 @@ run_mcmc_diagnostics <- function(
   duration <- hour * 60
   if (is.null(thin)) {
     thin <- floor((60 * duration) / mean(fit$time.total))
+  } else {
+    thin <- thin
   }
+  iter_adj <- iter * thin
 
   # ------------------------------------------------------------
   # Task 1: Run and demonstrate MCMC convergence diagnostics.
-  chains <- parallel::detectCores() -
-  iter_adj <- iter * thin
-
+  chains <- parallel::detectCores() - 3
   # The below call was added to try to fix the test for a linux machine
   # but is did not fix the issue and caused an error for regular use.
   # Potential fix options: https://stackoverflow.com/questions/46503873/r-parallelisation-error-checkclustercl-not-a-valid-cluster
