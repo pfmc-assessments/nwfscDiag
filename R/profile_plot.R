@@ -89,7 +89,7 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     ymax2 <- 5
   }
 
-  adj_size <- ifelse(length(profilesummary$FleetNames) < 6, 7, 10)
+  adj_size <- ifelse(length(profilesummary$FleetNames[[1]]) < 6, 7, 10)
   pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = adj_size, w = adj_size)
   on.exit(grDevices::dev.off(), add = TRUE)
   graphics::par(mfrow = panel)
