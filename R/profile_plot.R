@@ -59,10 +59,10 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   if (tot_plot == 1) {
     panel <- c(2, 1)
   }
-  if (tot_plot != 1 & tot_plot <= 3) {
-    panel <- c(3, 1)
-  }
-  if (tot_plot >= 3) {
+  #if (tot_plot != 1 & tot_plot <= 3) {
+  #  panel <- c(3, 1)
+  #}
+  if (tot_plot >= 2) {
     panel <- c(2, 2)
   }
   if (tot_plot >= 4) {
@@ -89,44 +89,81 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     ymax2 <- 5
   }
 
-  pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = 7, w = 7)
+  adj_size <- ifelse(length(profilesummary$FleetNames) < 6, 7, 10)
+  pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = adj_size, w = adj_size)
   on.exit(grDevices::dev.off(), add = TRUE)
   graphics::par(mfrow = panel)
   r4ss::SSplotProfile(
-    summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get,
-    profile.label = label, ymax = ymax1, exact = exact
+    summaryoutput = profilesummary,
+    main = "Changes in total likelihood",
+    profile.string = get,
+    profile.label = label,
+    ymax = ymax1,
+    exact = exact
   )
   graphics::abline(h = 1.92, lty = 3, col = "red")
 
   if ("Length_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Length_like",
-      main = "Length-composition likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Length_like",
+      main = "Length-composition likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
   if ("Age_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Age_like",
-      main = "Age-composition likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Age_like",
+      main = "Age-composition likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
   if ("Surv_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Surv_like",
-      main = "Survey likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Surv_like",
+      main = "Survey likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
   if ("Init_equ_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Init_equ_like",
-      main = "Initial equilibrium likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Init_equ_like",
+      main = "Initial equilibrium likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
