@@ -100,8 +100,10 @@ rerun_profile_vals <- function(mydir,
   file.copy(file.path(profile_dir, data_file_nm), temp_dir)
   file.copy(file.path(profile_dir, "starter.ss_new"), temp_dir)
   file.copy(file.path(profile_dir, "forecast.ss_new"), temp_dir)
+  file.copy(file.path(profile_dir, "wtatage.ss_new"), temp_dir)
   file.rename(file.path(temp_dir, "starter.ss_new"), file.path(temp_dir, "starter.ss"))
   file.rename(file.path(temp_dir, "forecast.ss_new"), file.path(temp_dir, "forecast.ss"))
+  file.rename(file.path(temp_dir, "wtatage.ss_new"), file.path(temp_dir, "wtatage.ss"))
 
   # Use the SS_parlines function to ensure that the input parameter can be found
   check_para <- r4ss::SS_parlines(
@@ -129,6 +131,7 @@ rerun_profile_vals <- function(mydir,
   starter[["init_values_src"]] <- model_settings[["init_values_src"]]
   # make sure the prior likelihood is calculated for non-estimated quantities
   starter[["prior_like"]] <- 1
+  starter[["ctlfile"]] <- model_settings[["newctlfile"]]
   r4ss::SS_writestarter(
     starter,
     dir = temp_dir,
