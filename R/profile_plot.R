@@ -240,7 +240,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     para == "SR_LN(R0)" ~ "log(R0)",
     para %in% c("NatM_uniform_Fem_GP_1", "NatM_p_1_Fem_GP_1", "NatM_break_1_Fem_GP_1") ~ "M (f)",
     para %in% c("NatM_uniform_Mal_GP_1", "NatM_p_1_Mal_GP_1", "NatM_break_1_Mal_GP_1") ~ "M (m)",
-    para == "SR_BH_steep" ~ "h"
+    para == "SR_BH_steep" ~ "h",
+    .default = para
   )
 
   r4ss::SSplotComparisons(
