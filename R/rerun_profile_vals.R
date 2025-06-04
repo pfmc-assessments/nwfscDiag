@@ -198,11 +198,11 @@ rerun_profile_vals <- function(mydir,
       )
     }
     file.rename(
-      file.path(temp_dir, "ss.par"),
-      file.path(temp_dir, paste0("ss.par_", i, ".sso"))
+      file.path(temp_dir, "ss3.par"),
+      file.path(temp_dir, paste0("ss3.par_", i, ".sso"))
     )
     file.copy(
-      file.path(temp_dir, paste0("ss.par_", i, ".sso")),
+      file.path(temp_dir, paste0("ss3.par_", i, ".sso")),
       profile_dir,
       overwrite = TRUE
     )
