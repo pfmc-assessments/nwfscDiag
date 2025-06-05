@@ -11,6 +11,7 @@ run_mcmc_diagnostics(
   iter = 2000,
   chains = 2,
   hour = 1,
+  thin = NULL,
   interactive = FALSE,
   verbose = FALSE
 )
@@ -42,6 +43,10 @@ calculated based upon the length of time to run the model to allow the
 function to run in  a pre-specified amount of time. For some models, one
 may want to run this function for longer allowing a greater thin rate.
 The default is 1 hour.}
+
+\item{thin}{The thin level for samples.  The default is NULL where the code will
+determine a thin rate based on the time to the run the model and the number of
+iterations, \code{iter}.}
 
 \item{interactive}{A logical, where \code{TRUE} will run
 \code{\link[adnuts:launch_shinyadmb]{adnuts::launch_shinyadmb()}}. The default is \code{FALSE}.}
