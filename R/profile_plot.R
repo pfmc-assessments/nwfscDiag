@@ -219,8 +219,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   # parameter vs. SB0
   plot(x, sb0,
     type = "l", lwd = 2, xlab = label,
-    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
-      expression(SO[0]), expression(SB[0])
+    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "biomass",
+      expression(SB[0]), expression(SO[0])
     ), ylim = c(0, max(sb0))
   )
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
@@ -228,8 +228,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   # parameter vs. SBfinal
   plot(x, sbf,
     type = "l", lwd = 2, xlab = label,
-    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
-      expression(SO[final]), expression(SB[final])
+    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "biomass",
+      expression(SB[final]), expression(SO[final])
     ), ylim = c(0, max(sbf))
   )
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
