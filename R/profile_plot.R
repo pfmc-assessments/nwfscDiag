@@ -59,10 +59,10 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   if (tot_plot == 1) {
     panel <- c(2, 1)
   }
-  if (tot_plot != 1 & tot_plot <= 3) {
-    panel <- c(3, 1)
-  }
-  if (tot_plot >= 3) {
+  #if (tot_plot != 1 & tot_plot <= 3) {
+  #  panel <- c(3, 1)
+  #}
+  if (tot_plot >= 2) {
     panel <- c(2, 2)
   }
   if (tot_plot >= 4) {
@@ -89,44 +89,81 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     ymax2 <- 5
   }
 
-  pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = 7, w = 7)
+  adj_size <- ifelse(length(profilesummary$FleetNames[[1]]) < 6, 7, 10)
+  pngfun(wd = mydir, file = paste0("piner_panel_", para, ".png"), h = adj_size, w = adj_size)
   on.exit(grDevices::dev.off(), add = TRUE)
   graphics::par(mfrow = panel)
   r4ss::SSplotProfile(
-    summaryoutput = profilesummary, main = "Changes in total likelihood", profile.string = get,
-    profile.label = label, ymax = ymax1, exact = exact
+    summaryoutput = profilesummary,
+    main = "Changes in total likelihood",
+    profile.string = get,
+    profile.label = label,
+    ymax = ymax1,
+    exact = exact
   )
   graphics::abline(h = 1.92, lty = 3, col = "red")
 
   if ("Length_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Length_like",
-      main = "Length-composition likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Length_like",
+      main = "Length-composition likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
   if ("Age_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Age_like",
-      main = "Age-composition likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Age_like",
+      main = "Age-composition likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
   if ("Surv_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Surv_like",
-      main = "Survey likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Surv_like",
+      main = "Survey likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
   if ("Init_equ_like" %in% use) {
     r4ss::PinerPlot(
-      summaryoutput = profilesummary, plot = TRUE, print = FALSE, component = "Init_equ_like",
-      main = "Initial equilibrium likelihoods", profile.string = get, profile.label = label,
-      exact = exact, ylab = "Change in -log-likelihood", legendloc = "topright", ymax = ymax2
+      summaryoutput = profilesummary,
+      plot = TRUE,
+      print = FALSE,
+      component = "Init_equ_like",
+      main = "Initial equilibrium likelihoods",
+      profile.string = get,
+      profile.label = label,
+      exact = exact,
+      ylab = "Change in -log-likelihood",
+      legendloc = "topright",
+      ymax = ymax2
     )
   }
 
@@ -182,8 +219,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   # parameter vs. SB0
   plot(x, sb0,
     type = "l", lwd = 2, xlab = label,
-    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
-      expression(SO[0]), expression(SB[0])
+    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "biomass",
+      expression(SB[0]), expression(SO[0])
     ), ylim = c(0, max(sb0))
   )
   points(est, sb0_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
@@ -191,8 +228,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   # parameter vs. SBfinal
   plot(x, sbf,
     type = "l", lwd = 2, xlab = label,
-    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "numbers",
-      expression(SO[final]), expression(SB[final])
+    ylab = ifelse(profilesummary[["SpawnOutputUnits"]][1] == "biomass",
+      expression(SB[final]), expression(SO[final])
     ), ylim = c(0, max(sbf))
   )
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
@@ -203,7 +240,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     para == "SR_LN(R0)" ~ "log(R0)",
     para %in% c("NatM_uniform_Fem_GP_1", "NatM_p_1_Fem_GP_1", "NatM_break_1_Fem_GP_1") ~ "M (f)",
     para %in% c("NatM_uniform_Mal_GP_1", "NatM_p_1_Mal_GP_1", "NatM_break_1_Mal_GP_1") ~ "M (m)",
-    para == "SR_BH_steep" ~ "h"
+    para == "SR_BH_steep" ~ "h",
+    .default = para
   )
 
   r4ss::SSplotComparisons(

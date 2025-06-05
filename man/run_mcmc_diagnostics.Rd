@@ -10,6 +10,7 @@ run_mcmc_diagnostics(
   extension = ".exe",
   iter = 2000,
   chains = 2,
+  hour = 1,
   interactive = FALSE,
   verbose = FALSE
 )
@@ -35,6 +36,12 @@ machines.}
 2000.}
 
 \item{chains}{A numeric value for the number of chains to run. Default is 2.}
+
+\item{hour}{A numeric value that controls the thin rate.  The thin rate is
+calculated based upon the length of time to run the model to allow the
+function to run in  a pre-specified amount of time. For some models, one
+may want to run this function for longer allowing a greater thin rate.
+The default is 1 hour.}
 
 \item{interactive}{A logical, where \code{TRUE} will run
 \code{\link[adnuts:launch_shinyadmb]{adnuts::launch_shinyadmb()}}. The default is \code{FALSE}.}

@@ -128,11 +128,7 @@ plot_retro <- function(mydir, model_settings, output) {
     )
   )
 
-  label <- ifelse(
-    retroSummary[["SpawnOutputUnits"]][1] == "biomass",
-    "Spawning Biomass",
-    "Spawning Output"
-  )
+  label <- retroSummary[["SpawnOutputLabels"]][1]
   n <- ncol(retroSummary[["SpawnBio"]]) - 2
   years <- retroSummary[["startyrs"]][1]:retroSummary[["endyrs"]][1] + 1
   denom <- paste0("model", 1:n)

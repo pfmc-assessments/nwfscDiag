@@ -174,8 +174,8 @@ run_profile <- function(mydir, model_settings, para) {
   }
 
   vec <- c(low, high)
-  if (est %in% vec) {
-    vec <- vec[!vec == est]
+  if (length(vec) != length(unique(vec))) {
+    vec <- unique(vec)
   }
   num <- sort(vec, index.return = TRUE)[["ix"]]
 
