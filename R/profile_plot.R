@@ -194,7 +194,6 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   thresh <- as.numeric(profilesummary[["minbthreshs"]][1])
 
   pngfun(wd = mydir, file = paste0("parameter_panel_", para, ".png"), h = 7, w = 7)
-  on.exit(grDevices::dev.off(), add = TRUE)
   graphics::par(mfrow = c(2, 2), mar = c(4, 4, 2, 2), oma = c(1, 1, 1, 1))
   # parameter vs. likelihood
   plot(x, like, type = "l", lwd = 2, xlab = label, ylab = "Change in -log-likelihood", ylim = ylike)
@@ -233,6 +232,7 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
     ), ylim = c(0, max(sbf))
   )
   points(est, sbf_est, pch = 21, col = "black", bg = "blue", cex = 1.5)
+  grDevices::dev.off()
 
   # Create the sb and depl trajectories plot
   # Figure out what the base model parameter is in order to label that in the plot

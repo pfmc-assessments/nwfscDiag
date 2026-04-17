@@ -15,22 +15,38 @@
 #' @export
 
 run_jitter <- function(mydir, model_settings) {
-  if (!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
+  if (
+    !file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))
+  ) {
     base <- model_settings[["base_name"]]
-    cli::cli_abort("There is no Report.sso file in the base model directory:
-    {file.path(mydir, base}")
+    cli::cli_abort(
+      "There is no Report.sso file in the base model directory:
+    {file.path(mydir, base}"
+    )
   }
 
   # Create a jitter folder with the same naming structure as the base model
-  jitter_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_jitter_", model_settings[["jitter_fraction"]]))
+  jitter_dir <- file.path(
+    mydir,
+    paste0(
+      model_settings[["base_name"]],
+      "_jitter_",
+      model_settings[["jitter_fraction"]]
+    )
+  )
   dir.create(jitter_dir, showWarnings = FALSE)
   all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
-  utils::capture.output(file.copy(
-    from = file.path(mydir, model_settings[["base_name"]], all_files),
-    to = jitter_dir,
-    overwrite = TRUE
-  ), file = file.path(jitter_dir, "run_diag_warning.txt"))
-  cli::cli_inform("Running jitters: temporarily changing working directory to: {jitter_dir}")
+  utils::capture.output(
+    file.copy(
+      from = file.path(mydir, model_settings[["base_name"]], all_files),
+      to = jitter_dir,
+      overwrite = TRUE
+    ),
+    file = file.path(jitter_dir, "run_diag_warning.txt")
+  )
+  cli::cli_inform(
+    "Running jitters: temporarily changing working directory to: {jitter_dir}"
+  )
 
   r4ss::jitter(
     dir = jitter_dir,
@@ -51,7 +67,6 @@ run_jitter <- function(mydir, model_settings) {
     getcovar = FALSE,
     forecast = FALSE,
     verbose = FALSE,
-    listlists = TRUE,
     underscore = FALSE,
     save.lists = FALSE
   )
@@ -69,7 +84,10 @@ run_jitter <- function(mydir, model_settings) {
 
   est <- base$likelihoods_used[1, 1]
   like <- as.numeric(profilesummary[["likelihoods"]][1, keys])
-  ymax <- as.numeric(stats::quantile(unlist(profilesummary[["likelihoods"]][1, keys]), 0.80))
+  ymax <- as.numeric(stats::quantile(
+    unlist(profilesummary[["likelihoods"]][1, keys]),
+    0.80
+  ))
   ymin <- min(like - est) + 1
 
   jitter_output <- list()
