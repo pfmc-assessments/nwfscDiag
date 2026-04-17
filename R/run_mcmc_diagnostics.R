@@ -36,15 +36,16 @@
 #'   augmented by Kelli F. Johnson
 #'
 run_mcmc_diagnostics <- function(
-    dir_wd,
-    model = "ss3",
-    extension = ".exe",
-    iter = 2000,
-    chains = 2,
-    hour = 1,
-    thin = NULL,
-    interactive = FALSE,
-    verbose = FALSE) {
+  dir_wd,
+  model = "ss3",
+  extension = ".exe",
+  iter = 2000,
+  chains = 2,
+  hour = 1,
+  thin = NULL,
+  interactive = FALSE,
+  verbose = FALSE
+) {
   # Set up and test model for running. This requires
   # pointing to a folder and executable. The folder needs to
   # contain all sufficient input files and assumes optimization
