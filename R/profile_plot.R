@@ -59,9 +59,9 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   if (tot_plot == 1) {
     panel <- c(2, 1)
   }
-  #if (tot_plot != 1 & tot_plot <= 3) {
+  # if (tot_plot != 1 & tot_plot <= 3) {
   #  panel <- c(3, 1)
-  #}
+  # }
   if (tot_plot >= 2) {
     panel <- c(2, 2)
   }
