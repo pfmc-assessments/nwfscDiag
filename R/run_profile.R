@@ -262,8 +262,8 @@ run_profile <- function(mydir, model_settings, para) {
   profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
   profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
   if (!is.null(model_settings[["btarg"]])) {
-    profilesummary[["btarg"]] <- model_settings[["btarg"]]
-    profilesummary[["minbthresh"]] <- model_settings[["minbthresh"]]
+    profilesummary[["btargs"]] <- model_settings[["btarg"]]
+    profilesummary[["minbthreshs"]] <- model_settings[["minbthresh"]]
   }
   profilesummary[["subplots"]] <- model_settings[["subplots"]]
 
