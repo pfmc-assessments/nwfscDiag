@@ -25,12 +25,13 @@
 #' @export
 #'
 compare_model_gemm_catch <- function(
-    replist,
-    common_name,
-    gemm_data = NULL,
-    dir = NULL,
-    add_name = NULL,
-    verbose = TRUE) {
+  replist,
+  common_name,
+  gemm_data = NULL,
+  dir = NULL,
+  add_name = NULL,
+  verbose = TRUE
+) {
   nwfscSurvey::check_dir(dir = dir, verbose = verbose)
   if (!is.null(add_name)) {
     add_name <- paste0("_", add_name)

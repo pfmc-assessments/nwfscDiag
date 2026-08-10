@@ -4,7 +4,7 @@
 \alias{run_retro}
 \title{Run \link[r4ss:retro]{r4ss::retro} based on \code{model_settings}}
 \usage{
-run_retro(mydir, model_settings)
+run_retro(mydir, model_settings, skipruns = FALSE)
 }
 \arguments{
 \item{mydir}{Directory where model files are located.
@@ -15,6 +15,10 @@ An example of user input could be
 \item{model_settings}{A list of all model settings.
 Typically, created using \link{get_settings} but users can create their own list,
 as long as it has all of the necessary components for the function at hand.}
+
+\item{skipruns}{Skip the steps where models are run and files are renamed.
+This facilitates reloading the results and makeing plots after manually
+replacing some of the model output.}
 }
 \value{
 Nothing is explicitly returned from \code{retro_wrapper}.
