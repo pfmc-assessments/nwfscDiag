@@ -68,7 +68,7 @@ run_profile <- function(mydir, model_settings, para) {
     # run the model to create it
     if (model_settings[["oldctlfile"]] == "control.ss_new") {
       if (model_settings[["verbose"]]) {
-        message("running model to get control.ss_new file")
+        cli::cli_inform("running model to get control.ss_new file")
       }
       r4ss::run(
         dir = profile_dir,

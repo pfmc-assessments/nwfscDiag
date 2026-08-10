@@ -10,6 +10,9 @@
 #'
 #' @template mydir
 #' @template model_settings
+#' @param skipruns Skip the steps where models are run and files are renamed.
+#' This facilitates reloading the results and makeing plots after manually
+#' replacing some of the model output.
 #'
 #' @author Chantel Wetzel
 #' @return
@@ -40,13 +43,13 @@
 #'
 #' @export
 
-run_retro <- function(mydir, model_settings) {
+run_retro <- function(mydir, model_settings, skipruns = FALSE) {
   if (
     !file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))
   ) {
     base <- model_settings[["base_name"]]
     cli::cli_abort(
-      "There is no Report.sso file in the base model directory {file.path(mydir, base}"
+      "There is no Report.sso file in the base model directory {file.path(mydir, base}}"
     )
   }
 
@@ -60,29 +63,36 @@ run_retro <- function(mydir, model_settings) {
       "_yr_peel"
     )
   )
-  dir.create(retro_dir, showWarnings = FALSE)
-  all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
-  ignore <- file.copy(
-    from = file.path(mydir, model_settings[["base_name"]], all_files),
-    to = retro_dir,
-    overwrite = TRUE
-  )
-  cli::cli_inform("Running retrospectives.")
+  if (skipruns) {
+    cli::cli_inform("Skipping running retrospectives")
+  } else {
+    dir.create(retro_dir, showWarnings = FALSE)
+    all_files = list.files(file.path(mydir, model_settings$base_name))
+    ignore <- file.copy(
+      from = file.path(mydir, model_settings$base_name, all_files),
+      to = retro_dir,
+      overwrite = TRUE
+    )
+    cli::cli_inform("Running retrospectives.")
 
-  r4ss::retro(
-    dir = retro_dir,
-    oldsubdir = model_settings[["oldsubdir"]],
-    newsubdir = model_settings[["newsubdir"]],
-    years = model_settings[["retro_yrs"]],
-    overwrite = model_settings[["overwrite"]],
-    exe = model_settings[["exe"]],
-    extras = model_settings[["extras"]],
-    show_in_console = model_settings[["show_in_console"]],
-    verbose = FALSE
-  )
+    r4ss::retro(
+      dir = retro_dir,
+      oldsubdir = model_settings$oldsubdir,
+      newsubdir = model_settings$newsubdir,
+      years = model_settings$retro_yrs,
+      overwrite = model_settings$overwrite,
+      exe = model_settings$exe,
+      extras = model_settings$extras,
+      show_in_console = model_settings$show_in_console,
+      verbose = model_settings$verbose
+    )
 
-  ignore <- file.remove(from = file.path(retro_dir, all_files))
+    ignore <- file.remove(from = file.path(retro_dir, all_files))
+  } # end of skipping runs
 
+  if (model_settings$verbose) {
+    cli::cli_inform("Reading model output")
+  }
   runs <- list()
   for (aa in 1:(length(model_settings[["retro_yrs"]]) + 1)) {
     if (aa == 1) {
@@ -150,16 +160,6 @@ run_retro <- function(mydir, model_settings) {
   retro_output[["model_settings"]] <- model_settings
   retro_output[["rhosall"]] <- rhosall
   retro_output[["rhos"]] <- rhos
-  if (!is.null(model_settings[["btargs"]])) {
-    retro_output[["btargs"]] <- model_settings[["btargs"]]
-  } else {
-    retro_output[["btargs"]] <- unique(retroSummary[["btargs"]])
-  }
-  if (!is.null(model_settings[["minbthreshs"]])) {
-    retro_output[["minbthreshs"]] <- model_settings[["minbthreshs"]]
-  } else {
-    retro_output[["minbthreshs"]] <- unique(retroSummary[["minbthreshs"]])
-  }
 
   save(
     retro_dir,
