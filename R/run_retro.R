@@ -67,7 +67,7 @@ run_retro <- function(mydir, model_settings, skipruns = FALSE) {
     cli::cli_inform("Skipping running retrospectives")
   } else {
     dir.create(retro_dir, showWarnings = FALSE)
-    all_files = list.files(file.path(mydir, model_settings$base_name))
+    all_files <- list.files(file.path(mydir, model_settings$base_name))
     ignore <- file.copy(
       from = file.path(mydir, model_settings$base_name, all_files),
       to = retro_dir,
