@@ -257,8 +257,8 @@ plot_profile <- function(mydir, rep, para, profilesummary) {
   ])
 
   # Get the relative management targets - only grab the first element since the targets should be the same
-  btarg <- as.numeric(profilesummary[["btarg"]][1])
-  thresh <- as.numeric(profilesummary[["minbthresh"]][1])
+  btarg <- as.numeric(profilesummary[["btargs"]][1])
+  thresh <- as.numeric(profilesummary[["minbthreshs"]][1])
 
   pngfun(
     wd = mydir,

@@ -41,13 +41,25 @@
 #' @export
 
 run_retro <- function(mydir, model_settings) {
-  if (!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
+  if (
+    !file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))
+  ) {
     base <- model_settings[["base_name"]]
-    cli::cli_abort("There is no Report.sso file in the base model directory {file.path(mydir, base}")
+    cli::cli_abort(
+      "There is no Report.sso file in the base model directory {file.path(mydir, base}"
+    )
   }
 
   # Create a jitter folder with the same naming structure as the base model
-  retro_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_retro_", length(model_settings[["retro_yrs"]]), "_yr_peel"))
+  retro_dir <- file.path(
+    mydir,
+    paste0(
+      model_settings[["base_name"]],
+      "_retro_",
+      length(model_settings[["retro_yrs"]]),
+      "_yr_peel"
+    )
+  )
   dir.create(retro_dir, showWarnings = FALSE)
   all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
   ignore <- file.copy(
@@ -74,15 +86,30 @@ run_retro <- function(mydir, model_settings) {
   runs <- list()
   for (aa in 1:(length(model_settings[["retro_yrs"]]) + 1)) {
     if (aa == 1) {
-      runs[[aa]] <- r4ss::SS_output(dir = file.path(mydir, model_settings[["base_name"]]), verbose = FALSE, printstats = FALSE)
+      runs[[aa]] <- r4ss::SS_output(
+        dir = file.path(mydir, model_settings[["base_name"]]),
+        verbose = FALSE,
+        printstats = FALSE
+      )
     } else {
-      tmp <- file.path(retro_dir, model_settings[["newsubdir"]], paste0("retro", model_settings[["retro_yrs"]][aa - 1]))
-      runs[[aa]] <- r4ss::SS_output(dir = tmp, verbose = FALSE, printstats = FALSE)
+      tmp <- file.path(
+        retro_dir,
+        model_settings[["newsubdir"]],
+        paste0("retro", model_settings[["retro_yrs"]][aa - 1])
+      )
+      runs[[aa]] <- r4ss::SS_output(
+        dir = tmp,
+        verbose = FALSE,
+        printstats = FALSE
+      )
     }
   }
 
   retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = FALSE)
-  endyrvec <- c(retroSummary[["endyrs"]][1], retroSummary[["endyrs"]][1] + model_settings[["retro_yrs"]])
+  endyrvec <- c(
+    retroSummary[["endyrs"]][1],
+    retroSummary[["endyrs"]][1] + model_settings[["retro_yrs"]]
+  )
 
   # Calculate Mohn's rho
   rhosall <- mapply(
@@ -123,6 +150,16 @@ run_retro <- function(mydir, model_settings) {
   retro_output[["model_settings"]] <- model_settings
   retro_output[["rhosall"]] <- rhosall
   retro_output[["rhos"]] <- rhos
+  if (!is.null(model_settings[["btargs"]])) {
+    retro_output[["btargs"]] <- model_settings[["btargs"]]
+  } else {
+    retro_output[["btargs"]] <- unique(retroSummary[["btargs"]])
+  }
+  if (!is.null(model_settings[["minbthreshs"]])) {
+    retro_output[["minbthreshs"]] <- model_settings[["minbthreshs"]]
+  } else {
+    retro_output[["minbthreshs"]] <- unique(retroSummary[["minbthreshs"]])
+  }
 
   save(
     retro_dir,

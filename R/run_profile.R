@@ -275,11 +275,24 @@ run_profile <- function(mydir, model_settings, para) {
   vec_unordered <- vec
   vec <- vec[num]
 
-  profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
-  profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
-  if (!is.null(model_settings[["btarg"]])) {
-    profilesummary[["btarg"]] <- model_settings[["btarg"]]
-    profilesummary[["minbthresh"]] <- model_settings[["minbthresh"]]
+  profilemodels <- r4ss::SSgetoutput(
+    dirvec = profile_dir,
+    keyvec = num,
+    verbose = model_settings$verbose
+  )
+  profilesummary <- r4ss::SSsummarize(
+    biglist = profilemodels,
+    verbose = model_settings$verbose
+  )
+  if (!is.null(model_settings[["btargs"]])) {
+    profilesummary[["btargs"]] <- model_settings[["btargs"]]
+  } else {
+    profilesummary[["btargs"]] <- unique(profilesummary[["btargs"]])
+  }
+  if (!is.null(model_settings[["minbthreshs"]])) {
+    profilesummary[["minbthreshs"]] <- model_settings[["minbthreshs"]]
+  } else {
+    profilesummary[["minbthreshs"]] <- unique(profilesummary[["minbthreshs"]])
   }
   profilesummary[["subplots"]] <- model_settings[["subplots"]]
 
