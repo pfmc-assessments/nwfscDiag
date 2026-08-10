@@ -57,7 +57,7 @@ is formatted for inclusion in a document.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_retro</span><span class="op">(</span><span class="va">mydir</span>, <span class="va">model_settings</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_retro</span><span class="op">(</span><span class="va">mydir</span>, <span class="va">model_settings</span>, skipruns <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,6 +75,12 @@ An example of user input could be
 <dd><p>A list of all model settings.
 Typically, created using <a href="get_settings.html">get_settings</a> but users can create their own list,
 as long as it has all of the necessary components for the function at hand.</p></dd>
+
+
+<dt id="arg-skipruns">skipruns<a class="anchor" aria-label="anchor" href="#arg-skipruns"></a></dt>
+<dd><p>Skip the steps where models are run and files are renamed.
+This facilitates reloading the results and makeing plots after manually
+replacing some of the model output.</p></dd>
 
 </dl></div>
     <div id="value">
