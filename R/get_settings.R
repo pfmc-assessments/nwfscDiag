@@ -21,7 +21,9 @@
 #' }
 #'
 get_settings <- function(mydir = NULL, settings = NULL) {
-  if (is.vector(settings)) settings <- as.list(settings)
+  if (is.vector(settings)) {
+    settings <- as.list(settings)
+  }
 
   Settings_all <- list(
     base_name = "model",
@@ -49,8 +51,8 @@ get_settings <- function(mydir = NULL, settings = NULL) {
     show_in_console = FALSE,
 
     # Plot target lines
-    btarg = NULL,
-    minbthresh = NULL,
+    btargs = NULL,
+    minbthreshs = NULL,
 
     # Profile Settings
     remove_files = TRUE,
@@ -78,18 +80,35 @@ get_settings <- function(mydir = NULL, settings = NULL) {
 
   # Check some items
   if (!is.null(Settings_all[["profile_details"]])) {
-    if (length(Settings_all[["profile_details"]][is.na(Settings_all[["profile_details"]])]) > 0) {
+    if (
+      length(Settings_all[["profile_details"]][is.na(Settings_all[[
+        "profile_details"
+      ]])]) >
+        0
+    ) {
       cli::cli_abort(
         "Missing entry in the get_settings_profile data frame."
       )
     }
-    if (!is.numeric(Settings_all[["profile_details"]][["low"]]) &
-      !is.numeric(Settings_all[["profile_details"]][["high"]]) &
-      !is.numeric(Settings_all[["profile_details"]][["step_size"]])) {
-      cli::cli_abort("There is a non-numeric value in the low, high, or step size field of the get_settings_profile data frame.")
+    if (
+      !is.numeric(Settings_all[["profile_details"]][["low"]]) &
+        !is.numeric(Settings_all[["profile_details"]][["high"]]) &
+        !is.numeric(Settings_all[["profile_details"]][["step_size"]])
+    ) {
+      cli::cli_abort(
+        "There is a non-numeric value in the low, high, or step size field of the get_settings_profile data frame."
+      )
     }
-    if (sum(!Settings_all[["profile_details"]][["param_space"]] %in% c("real", "relative", "multiplier")) > 0) {
-      cli::cli_abort("The param_space column should be either real or relative in the get_settings_profile data frame.")
+    if (
+      sum(
+        !Settings_all[["profile_details"]][["param_space"]] %in%
+          c("real", "relative", "multiplier")
+      ) >
+        0
+    ) {
+      cli::cli_abort(
+        "The param_space column should be either real or relative in the get_settings_profile data frame."
+      )
     }
   }
 

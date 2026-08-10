@@ -10,6 +10,9 @@
 #'
 #' @template mydir
 #' @template model_settings
+#' @param skipruns Skip the steps where models are run and files are renamed.
+#' This facilitates reloading the results and makeing plots after manually
+#' replacing some of the model output.
 #'
 #' @author Chantel Wetzel
 #' @return
@@ -40,49 +43,83 @@
 #'
 #' @export
 
-run_retro <- function(mydir, model_settings) {
-  if (!file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))) {
+run_retro <- function(mydir, model_settings, skipruns = FALSE) {
+  if (
+    !file.exists(file.path(mydir, model_settings[["base_name"]], "Report.sso"))
+  ) {
     base <- model_settings[["base_name"]]
-    cli::cli_abort("There is no Report.sso file in the base model directory {file.path(mydir, base}")
+    cli::cli_abort(
+      "There is no Report.sso file in the base model directory {file.path(mydir, base}}"
+    )
   }
 
   # Create a jitter folder with the same naming structure as the base model
-  retro_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_retro_", length(model_settings[["retro_yrs"]]), "_yr_peel"))
-  dir.create(retro_dir, showWarnings = FALSE)
-  all_files <- list.files(file.path(mydir, model_settings[["base_name"]]))
-  ignore <- file.copy(
-    from = file.path(mydir, model_settings[["base_name"]], all_files),
-    to = retro_dir,
-    overwrite = TRUE
+  retro_dir <- file.path(
+    mydir,
+    paste0(
+      model_settings[["base_name"]],
+      "_retro_",
+      length(model_settings[["retro_yrs"]]),
+      "_yr_peel"
+    )
   )
-  cli::cli_inform("Running retrospectives.")
+  if (skipruns) {
+    cli::cli_inform("Skipping running retrospectives")
+  } else {
+    dir.create(retro_dir, showWarnings = FALSE)
+    all_files = list.files(file.path(mydir, model_settings$base_name))
+    ignore <- file.copy(
+      from = file.path(mydir, model_settings$base_name, all_files),
+      to = retro_dir,
+      overwrite = TRUE
+    )
+    cli::cli_inform("Running retrospectives.")
 
-  r4ss::retro(
-    dir = retro_dir,
-    oldsubdir = model_settings[["oldsubdir"]],
-    newsubdir = model_settings[["newsubdir"]],
-    years = model_settings[["retro_yrs"]],
-    overwrite = model_settings[["overwrite"]],
-    exe = model_settings[["exe"]],
-    extras = model_settings[["extras"]],
-    show_in_console = model_settings[["show_in_console"]],
-    verbose = FALSE
-  )
+    r4ss::retro(
+      dir = retro_dir,
+      oldsubdir = model_settings$oldsubdir,
+      newsubdir = model_settings$newsubdir,
+      years = model_settings$retro_yrs,
+      overwrite = model_settings$overwrite,
+      exe = model_settings$exe,
+      extras = model_settings$extras,
+      show_in_console = model_settings$show_in_console,
+      verbose = model_settings$verbose
+    )
 
-  ignore <- file.remove(from = file.path(retro_dir, all_files))
+    ignore <- file.remove(from = file.path(retro_dir, all_files))
+  } # end of skipping runs
 
+  if (model_settings$verbose) {
+    cli::cli_inform("Reading model output")
+  }
   runs <- list()
   for (aa in 1:(length(model_settings[["retro_yrs"]]) + 1)) {
     if (aa == 1) {
-      runs[[aa]] <- r4ss::SS_output(dir = file.path(mydir, model_settings[["base_name"]]), verbose = FALSE, printstats = FALSE)
+      runs[[aa]] <- r4ss::SS_output(
+        dir = file.path(mydir, model_settings[["base_name"]]),
+        verbose = FALSE,
+        printstats = FALSE
+      )
     } else {
-      tmp <- file.path(retro_dir, model_settings[["newsubdir"]], paste0("retro", model_settings[["retro_yrs"]][aa - 1]))
-      runs[[aa]] <- r4ss::SS_output(dir = tmp, verbose = FALSE, printstats = FALSE)
+      tmp <- file.path(
+        retro_dir,
+        model_settings[["newsubdir"]],
+        paste0("retro", model_settings[["retro_yrs"]][aa - 1])
+      )
+      runs[[aa]] <- r4ss::SS_output(
+        dir = tmp,
+        verbose = FALSE,
+        printstats = FALSE
+      )
     }
   }
 
   retroSummary <- r4ss::SSsummarize(biglist = runs, verbose = FALSE)
-  endyrvec <- c(retroSummary[["endyrs"]][1], retroSummary[["endyrs"]][1] + model_settings[["retro_yrs"]])
+  endyrvec <- c(
+    retroSummary[["endyrs"]][1],
+    retroSummary[["endyrs"]][1] + model_settings[["retro_yrs"]]
+  )
 
   # Calculate Mohn's rho
   rhosall <- mapply(

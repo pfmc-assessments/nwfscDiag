@@ -37,7 +37,10 @@
 run_profile <- function(mydir, model_settings, para) {
   # Create a profile folder with the same naming structure as the base model
   # Add a label to show if prior was used or not
-  profile_dir <- file.path(mydir, paste0(model_settings[["base_name"]], "_profile_", para))
+  profile_dir <- file.path(
+    mydir,
+    paste0(model_settings[["base_name"]], "_profile_", para)
+  )
   dir.create(profile_dir, showWarnings = FALSE)
 
   # Check for existing files and delete
@@ -65,7 +68,7 @@ run_profile <- function(mydir, model_settings, para) {
     # run the model to create it
     if (model_settings[["oldctlfile"]] == "control.ss_new") {
       if (model_settings[["verbose"]]) {
-        message("running model to get control.ss_new file")
+        cli::cli_inform("running model to get control.ss_new file")
       }
       r4ss::run(
         dir = profile_dir,
@@ -87,11 +90,14 @@ run_profile <- function(mydir, model_settings, para) {
     verbose = FALSE,
     version = model_settings[["version"]],
     active = FALSE
-  )[["Label"]] == para
+  )[["Label"]] ==
+    para
 
   if (!any(check_para)) {
     oldctlfile <- model_settings[["oldctlfile"]]
-    cli::cli_abort("{para} does not match a parameter name in the {oldctlfile} file.")
+    cli::cli_abort(
+      "{para} does not match a parameter name in the {oldctlfile} file."
+    )
   }
 
   # Copy oldctlfile to newctlfile before modifying it
@@ -158,17 +164,22 @@ run_profile <- function(mydir, model_settings, para) {
   if (est != round_any(est, step_size, f = floor)) {
     low <- rev(seq(
       round_any(range[1], step_size, f = ceiling),
-      round_any(est, step_size, f = floor), step_size
+      round_any(est, step_size, f = floor),
+      step_size
     ))
   } else {
     low <- rev(seq(
       round_any(range[1], step_size, f = ceiling),
-      round_any(est, step_size, f = floor) - step_size, step_size
+      round_any(est, step_size, f = floor) - step_size,
+      step_size
     ))
   }
 
   if (est != round_any(est, step_size, f = ceiling)) {
-    high <- c(est, seq(round_any(est, step_size, f = ceiling), range[2], step_size))
+    high <- c(
+      est,
+      seq(round_any(est, step_size, f = ceiling), range[2], step_size)
+    )
   } else {
     high <- c(seq(round_any(est, step_size, f = ceiling), range[2], step_size))
   }
@@ -187,7 +198,8 @@ run_profile <- function(mydir, model_settings, para) {
 
   # backup original control.ss_new file for use in second half of profile
   utils::capture.output(
-    file.copy(file.path(profile_dir, model_settings[["oldctlfile"]]),
+    file.copy(
+      file.path(profile_dir, model_settings[["oldctlfile"]]),
       file.path(profile_dir, "backup_oldctlfile.ss"),
       overwrite = model_settings$overwrite
     ),
@@ -196,7 +208,8 @@ run_profile <- function(mydir, model_settings, para) {
   # backup original par file for use in second half of profile
   # if usepar = TRUE
   utils::capture.output(
-    file.copy(file.path(profile_dir, c("ss.par", "ss3.par")),
+    file.copy(
+      file.path(profile_dir, c("ss.par", "ss3.par")),
       file.path(profile_dir, c("backup_ss_par.sso", "backup_ss3_par.sso")),
       overwrite = model_settings[["overwrite"]]
     ),
@@ -205,11 +218,14 @@ run_profile <- function(mydir, model_settings, para) {
 
   # loop over down, then up
   for (iprofile in 1:2) {
-    whichruns <- which(vec %in% if (iprofile == 1) {
-      low
-    } else {
-      high
-    })
+    whichruns <- which(
+      vec %in%
+        if (iprofile == 1) {
+          low
+        } else {
+          high
+        }
+    )
     if (!is.null(model_settings[["whichruns"]])) {
       whichruns <- intersect(model_settings[["whichruns"]], whichruns)
     }
@@ -259,11 +275,24 @@ run_profile <- function(mydir, model_settings, para) {
   vec_unordered <- vec
   vec <- vec[num]
 
-  profilemodels <- r4ss::SSgetoutput(dirvec = profile_dir, keyvec = num)
-  profilesummary <- r4ss::SSsummarize(biglist = profilemodels)
-  if (!is.null(model_settings[["btarg"]])) {
-    profilesummary[["btarg"]] <- model_settings[["btarg"]]
-    profilesummary[["minbthresh"]] <- model_settings[["minbthresh"]]
+  profilemodels <- r4ss::SSgetoutput(
+    dirvec = profile_dir,
+    keyvec = num,
+    verbose = model_settings$verbose
+  )
+  profilesummary <- r4ss::SSsummarize(
+    biglist = profilemodels,
+    verbose = model_settings$verbose
+  )
+  if (!is.null(model_settings[["btargs"]])) {
+    profilesummary[["btargs"]] <- model_settings[["btargs"]]
+  } else {
+    profilesummary[["btargs"]] <- unique(profilesummary[["btargs"]])
+  }
+  if (!is.null(model_settings[["minbthreshs"]])) {
+    profilesummary[["minbthreshs"]] <- model_settings[["minbthreshs"]]
+  } else {
+    profilesummary[["minbthreshs"]] <- unique(profilesummary[["minbthreshs"]])
   }
   profilesummary[["subplots"]] <- model_settings[["subplots"]]
 
